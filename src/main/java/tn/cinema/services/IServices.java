@@ -1,11 +1,10 @@
-package tn.esprit.services;
+package tn.cinema.services;
 
-import tn.esprit.entities.User;
 import java.util.List;
 
 public interface IServices<T> {
     void ajouter(T t);
-    void supprimer(T t);
+    void supprimer(int id);
     void modifier(int id);
     List<T> recuperer();
 }

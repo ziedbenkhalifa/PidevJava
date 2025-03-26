@@ -1,4 +1,4 @@
-package tn.esprit.entities;
+package tn.cinema.entities;
 import java.util.Date;
 import java.util.Objects;
 

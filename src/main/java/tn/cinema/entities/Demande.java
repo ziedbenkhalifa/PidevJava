@@ -1,4 +1,4 @@
-package tn.esprit.entities;
+package tn.cinema.entities;
 
 import java.util.Date;
 import java.util.Objects;
@@ -99,8 +99,7 @@ public class Demande {
         this.dateSoumission=new Date();
 
     }
-    public Demande(int nombreJours,String description, String type,String lienSupplementaire,Date dateSoumission){
-        this.id=id;
+    public Demande(int nombreJours,String description, String type,String lienSupplementaire){
         this.userId=userId;
         this.adminId=adminId;
         this.nombreJours=nombreJours;
