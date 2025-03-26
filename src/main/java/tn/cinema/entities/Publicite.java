@@ -1,4 +1,4 @@
-package tn.esprit.entities;
+package tn.cinema.entities;
 
 import java.util.Date;
 import java.util.Objects;
@@ -61,13 +61,6 @@ public class Publicite {
     public Publicite(){
 
     }
-    public Publicite(int demandeId,Date dateDebut,Date dateFin,String support,double montant){
-        this.demandeId=demandeId;
-        this.dateDebut=dateDebut;
-        this.dateFin=dateFin;
-        this.support=support;
-        this.montant=montant;
-    }
     public Publicite(int id,int demandeId,Date dateDebut,Date dateFin,String support,double montant){
         this.id=id;
         this.demandeId=demandeId;
@@ -76,6 +69,21 @@ public class Publicite {
         this.support=support;
         this.montant=montant;
     }
+    public Publicite(int demandeId,Date dateDebut,Date dateFin,String support,double montant){
+        this.demandeId=demandeId;
+        this.dateDebut=dateDebut;
+        this.dateFin=dateFin;
+        this.support=support;
+        this.montant=montant;
+    }
+    public Publicite(Date dateDebut,Date dateFin,String support,double montant){
+        this.demandeId=demandeId;
+        this.dateDebut=dateDebut;
+        this.dateFin=dateFin;
+        this.support=support;
+        this.montant=montant;
+    }
+
 
     @Override
     public String toString() {
