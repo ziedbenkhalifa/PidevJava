@@ -1,11 +1,30 @@
 package tn.cinema.test;
 
+import tn.cinema.entities.Films;
+import tn.cinema.entities.Projection;
+import tn.cinema.services.FilmsService;
+import tn.cinema.services.ProjectionService;
 import tn.cinema.tools.Mydatabase;
+
+import java.sql.SQLException;
+import java.time.LocalDate;
 
 public class Main {
     public static void main(String[] args) {
-        Mydatabase connexion = Mydatabase.getInstance();
-
-
+        FilmsService fs=new FilmsService();
+        ProjectionService ps = new ProjectionService();
+        Films f=new Films("test","test","test","test", LocalDate.of(2001, 1, 1));
+        Projection p=new Projection(20,LocalDate.of(2025,12,15), 12.250F);
+        try {
+            // fs.ajouter(f);
+           // ps.ajouter(p);
+            // fs.modifier(16,"testUp");
+            //fs.supprimer(17);
+            //ps.supprimer(6);
+           // System.out.println(fs.recuperer());
+            System.out.println(ps.recuperer());
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

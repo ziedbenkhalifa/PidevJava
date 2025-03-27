@@ -1,27 +1,66 @@
 package tn.cinema.services;
 
+import tn.cinema.entities.Films;
 import tn.cinema.entities.Projection;
+import tn.cinema.tools.Mydatabase;
 
+import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectionService implements IServices<Projection>{
+
+    Connection cnx;
+    public ProjectionService() {
+        cnx= Mydatabase.getInstance().getCnx();
+    }
+
+
     @Override
-    public void ajouter(Projection projection) {
+    public void ajouter(Projection projection) throws SQLException {
+        String sql = "INSERT INTO projection (capaciter, date_projection, prix) VALUES (?, ?, ?)";
+        PreparedStatement ps =cnx.prepareStatement(sql);
+        ps.setInt(1, projection.getCapaciter());
+        ps.setDate(2, java.sql.Date.valueOf(projection.getDate_projection()));
+        ps.setFloat(3, projection.getPrix());
+        ps.executeUpdate();
+        System.out.println("Projection added");
+    }
+
+    @Override
+    public void supprimer(int id) throws SQLException {
+        String sql = "DELETE FROM projection WHERE id = ?";
+        PreparedStatement ps= cnx.prepareStatement(sql);
+        ps.setInt(1, id);
+        ps.executeUpdate();
+        System.out.println("Projection deleted");
 
     }
 
     @Override
-    public void supprimer(int id) {
+    public void modifier(int id) throws SQLException {
+        String sql = "UPDATE projection SET prix =  WHERE id = " + id;
+        Statement ste = cnx.createStatement();
+        ste.executeUpdate(sql);
+        System.out.println("Film modified successfully");
 
     }
 
     @Override
-    public void modifier(int id) {
-
-    }
-
-    @Override
-    public List<Projection> recuperer() {
-        return List.of();
+    public List<Projection> recuperer() throws SQLException {
+        String sql = "SELECT * FROM projection";
+        Statement ste= cnx.createStatement();
+        ResultSet rs = ste.executeQuery(sql);
+        List<Projection> projections = new ArrayList<>();
+        while (rs.next()) {
+            int id = rs.getInt("id");
+           int capaciter = rs.getInt("Capaciter");
+            LocalDate date_projection = rs.getDate("date_projection").toLocalDate();
+            float prix = rs.getFloat("prix");
+            Projection p = new Projection(id,capaciter,date_projection,prix);
+            projections.add(p);
+        }
+        return projections;
     }
 }
