@@ -1,10 +1,12 @@
 package tn.cinema.services;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface IServices<T> {
-    void ajouter(T t);
-    void supprimer(int id);
-    void modifier(int id);
-    List<T> recuperer();
+    void ajouter(T t) throws SQLException;
+    void supprimer(int id) throws SQLException;
+    void modifier(int id) throws SQLException;
+    List<T> recuperer() throws SQLException;
+
 }
