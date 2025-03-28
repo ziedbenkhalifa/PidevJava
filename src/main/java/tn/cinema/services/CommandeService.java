@@ -16,7 +16,7 @@ public class CommandeService implements IServices<Commande>{
     }
 
     @Override
-    public void modifier(int id) {
+    public void modifier(Commande commande) {
 
     }
 

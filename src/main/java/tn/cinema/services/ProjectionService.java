@@ -39,12 +39,15 @@ public class ProjectionService implements IServices<Projection>{
     }
 
     @Override
-    public void modifier(int id) throws SQLException {
-        String sql = "UPDATE projection SET prix =  WHERE id = " + id;
+    public void modifier(Projection projection) throws SQLException {
+
+    }
+
+    public void modifier(int id,float prix) throws SQLException {
+        String sql = "UPDATE projection SET prix = '" + prix + "' WHERE id = " + id;
         Statement ste = cnx.createStatement();
         ste.executeUpdate(sql);
-        System.out.println("Film modified successfully");
-
+        System.out.println("Projection modified successfully");
     }
 
     @Override

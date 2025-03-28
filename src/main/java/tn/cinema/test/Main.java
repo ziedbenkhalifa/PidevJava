@@ -18,10 +18,11 @@ public class Main {
         try {
             // fs.ajouter(f);
            // ps.ajouter(p);
-            // fs.modifier(16,"testUp");
+            // fs.modifier(15,"testUp");
+            //ps.modifier(7,60);
             //fs.supprimer(17);
             //ps.supprimer(6);
-           // System.out.println(fs.recuperer());
+            System.out.println(fs.recuperer());
             System.out.println(ps.recuperer());
         } catch (SQLException e) {
             System.out.println(e.getMessage());

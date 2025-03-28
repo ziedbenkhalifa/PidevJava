@@ -16,7 +16,7 @@ public class SeanceService implements IServices<Seance>{
     }
 
     @Override
-    public void modifier(int id) {
+    public void modifier(Seance seance) {
 
     }
 

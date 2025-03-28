@@ -38,8 +38,12 @@ public class FilmsService implements IServices<Films>{
     }
 
     @Override
-    public void modifier(int id) throws SQLException {
-        String sql = "UPDATE films SET nom_film =  WHERE id = " + id;
+    public void modifier(Films films) throws SQLException {
+
+    }
+
+    public void modifier(int id,String nom_film) throws SQLException {
+        String sql = "UPDATE films SET nom_film = '" + nom_film + "' WHERE id = " + id;
         Statement ste = cnx.createStatement();
         ste.executeUpdate(sql);
         System.out.println("Film modified successfully");
