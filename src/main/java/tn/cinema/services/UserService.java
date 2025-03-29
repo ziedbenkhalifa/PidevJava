@@ -53,7 +53,7 @@ public class UserService implements IServices<User> {
     }
 
     @Override
-    public void modifier(int id) {
+    public void modifier(User user) {
 
     }
 
