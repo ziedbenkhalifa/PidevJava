@@ -16,7 +16,7 @@ public class CourService implements IServices<Cour>{
     }
 
     @Override
-    public void modifier(int id) {
+    public void modifier(Cour cour) {
 
     }
 

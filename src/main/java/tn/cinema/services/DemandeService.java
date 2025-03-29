@@ -55,9 +55,25 @@ public class DemandeService implements IServices<Demande>{
 
 
     @Override
-    public void modifier(int id) {
+    public void modifier(Demande demande) throws SQLException {
 
+        String sql = "UPDATE demande SET " +
+                "nbr_Jours = " + demande.getNombreJours() + ", " +
+                "description = '" + demande.getDescription() + "', " +
+                "type = '" + demande.getType() + "', " +
+                "lien_supp = '" + demande.getLienSupplementaire() + "' " +
+                "WHERE id = " + demande.getId();
 
+        try (Statement stmt = cnx.createStatement()) {
+            int rowsUpdated = stmt.executeUpdate(sql);
+            if (rowsUpdated > 0) {
+                System.out.println("Demande avec ID " + demande.getId() + " modifiée avec succès.");
+            } else {
+                System.out.println("Aucune demande trouvée avec ID " + demande.getId());
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
     public void modifier(int id, Demande demande) throws SQLException {
         String sql = "UPDATE demande SET " +
@@ -71,7 +87,7 @@ public class DemandeService implements IServices<Demande>{
             Statement stmt = cnx.createStatement();
             int rowsUpdated = stmt.executeUpdate(sql);
             if (rowsUpdated > 0) {
-                System.out.println("Demande cette id " + id + " est ajouttée aveeeec succées");
+                System.out.println("Demande cette id " + id + " est modifier aveeeec succées");
             } else {
                 System.out.println("id non trouvée " + id);
             }
@@ -79,6 +95,29 @@ public class DemandeService implements IServices<Demande>{
             throw new RuntimeException(e);
         }
     }
+    public void modifierAdmin(int id, Demande demande) throws SQLException {
+        String sql = "UPDATE demande SET " +
+                "nbr_Jours = " + demande.getNombreJours() + ", " +
+                "description = '" + demande.getDescription() + "', " +
+                "type = '" + demande.getType() + "', " +
+                "lien_supp = '" + demande.getLienSupplementaire() + "', " +  // Ajout de la virgule
+                "statut = '" + demande.getStatut() + "' " +  // Ajout de la virgule
+                "WHERE id = " + id;
+
+        try {
+            Statement stmt = cnx.createStatement();
+            int rowsUpdated = stmt.executeUpdate(sql);
+            if (rowsUpdated > 0) {
+                System.out.println("Demande avec id " + id + " modifiée avec succès");
+            } else {
+                System.out.println("ID non trouvé : " + id);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 
 
     @Override
@@ -96,20 +135,17 @@ public class DemandeService implements IServices<Demande>{
             String type=rs.getString("type");
             String lienSupplementaire=rs.getString("lien_supp");
             String statut=rs.getString("statut");
-            if (statut == null) {
+          /*  if (statut == null) {
                 statut = "Inconnu";
-            }
-            String dateSoumission=rs.getString("date_soumission");
+            }*/
+            Date dateSoumission=rs.getDate("date_soumission");
 
-            Demande d = new Demande(id,userId,adminId,nombreJours,description,type,lienSupplementaire,dateSoumission);
+            Demande d = new Demande(id,userId,adminId,nombreJours,description,type,lienSupplementaire,statut,dateSoumission);
             demande.add(d);
         }
 
         return demande;
     }
-
-
-
 
     public List<Demande> recupererDemandesParClient(int clientId) throws SQLException {
         String sql = "SELECT * FROM demande WHERE user_id = ?";
@@ -130,9 +166,9 @@ public class DemandeService implements IServices<Demande>{
             if (statut == null) {
                 statut = "Inconnu";
             }
-            String dateSoumission = rs.getString("date_soumission");
+            Date dateSoumission = rs.getDate("date_soumission");
 
-            Demande d = new Demande(id, userId, adminId, nombreJours, description, type, lienSupplementaire, dateSoumission);
+            Demande d = new Demande(id, userId, adminId, nombreJours, description, type, lienSupplementaire, statut,dateSoumission);
             demandes.add(d);
         }
 

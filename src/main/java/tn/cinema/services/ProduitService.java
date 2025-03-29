@@ -16,7 +16,7 @@ public class ProduitService implements IServices<Produit>{
     }
 
     @Override
-    public void modifier(int id) {
+    public void modifier(Produit produit) {
 
     }
 
