@@ -1,7 +1,7 @@
-package tn.esprit.services;
+package tn.cinema.services;
 
-import tn.esprit.entities.User;
-import tn.esprit.tools.Mydatabase;
+import tn.cinema.entities.User;
+import tn.cinema.tools.Mydatabase;
 
 import java.sql.Connection;
 import java.util.List;
@@ -18,12 +18,12 @@ public class UserService implements IServices<User>{
     }
 
     @Override
-    public void supprimer(User u) {
+    public void supprimer(int id) {
 
     }
 
     @Override
-    public void modifier(int id) {
+    public void modifier(User user) {
 
     }
 
