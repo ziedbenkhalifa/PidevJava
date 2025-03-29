@@ -1,5 +1,4 @@
 package tn.cinema.entities;
-
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -31,7 +30,7 @@ public class Cour {
         this.dateFin = dateFin;
     }
 
-    // Getters et Setters
+
     public int getId() {
         return id;
     }
