@@ -66,4 +66,23 @@ public class ProjectionService implements IServices<Projection>{
         }
         return projections;
     }
+
+    public Projection recupererParId(int idProjection) throws SQLException {
+        String sql = "SELECT * FROM projection WHERE id = " + idProjection;
+        Statement ste = cnx.createStatement();
+        ResultSet rs = ste.executeQuery(sql);
+
+        if (rs.next()) { // If a projection with the given ID exists
+            int id = rs.getInt("id");
+            int capaciter = rs.getInt("capaciter");
+            LocalDate date_projection = rs.getDate("date_projection").toLocalDate();
+            float prix = rs.getFloat("prix");
+
+            return new Projection(id, capaciter, date_projection, prix);
+        }
+
+        return null; // If no projection is found
+    }
+
+
 }

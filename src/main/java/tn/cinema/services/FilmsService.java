@@ -67,4 +67,24 @@ public class FilmsService implements IServices<Films>{
         }
         return films;
     }
+
+    public Films recupererParId(int idFilm) throws SQLException {
+        String sql = "SELECT * FROM films WHERE id = " + idFilm;
+        Statement ste = cnx.createStatement();
+        ResultSet rs = ste.executeQuery(sql);
+
+        if (rs.next()) { // If a film with the given ID exists
+            int id = rs.getInt("id");
+            String nom_film = rs.getString("nom_film");
+            String realisateur = rs.getString("realisateur");
+            String genre = rs.getString("genre");
+            String img = rs.getString("img");
+            LocalDate date_production = rs.getDate("date_production").toLocalDate();
+
+            return new Films(id, nom_film, realisateur, genre, img, date_production);
+        }
+
+        return null; // If no film is found
+    }
+
 }
