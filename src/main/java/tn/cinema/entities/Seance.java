@@ -16,7 +16,11 @@ public class Seance {
     }
 
 
+<<<<<<< HEAD
     public Seance(LocalDate dateSeance, LocalTime duree, String objectifs) {
+=======
+    public Seance(LocalDate dateSeance, LocalTime duree, String objectifs,int idCour) {
+>>>>>>> Publicites
         this.dateSeance = dateSeance;
         this.duree = duree;
         this.objectifs = objectifs;
@@ -24,7 +28,11 @@ public class Seance {
     }
 
 
+<<<<<<< HEAD
     public Seance(int id, LocalDate dateSeance, LocalTime duree, String objectifs) {
+=======
+    public Seance(int id, LocalDate dateSeance, LocalTime duree, String objectifs, int idCour) {
+>>>>>>> Publicites
         this.id = id;
         this.dateSeance = dateSeance;
         this.duree = duree;
@@ -103,4 +111,8 @@ public class Seance {
     public int hashCode() {
         return Objects.hash(id, dateSeance, duree, objectifs, idCour);
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> Publicites

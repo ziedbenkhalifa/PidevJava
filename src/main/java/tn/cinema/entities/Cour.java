@@ -1,5 +1,8 @@
 package tn.cinema.entities;
+<<<<<<< HEAD
 
+=======
+>>>>>>> Publicites
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -31,7 +34,11 @@ public class Cour {
         this.dateFin = dateFin;
     }
 
+<<<<<<< HEAD
     // Getters et Setters
+=======
+
+>>>>>>> Publicites
     public int getId() {
         return id;
     }
