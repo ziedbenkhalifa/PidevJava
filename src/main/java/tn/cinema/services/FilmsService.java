@@ -16,7 +16,7 @@ public class FilmsService implements IServices<Films>{
     }
 
     @Override
-    public void modifier(int id) {
+    public void modifier(Films films) {
 
     }
 

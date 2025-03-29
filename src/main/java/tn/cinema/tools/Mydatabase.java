@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Mydatabase {
-    public final String URL="jdbc:mysql://localhost:3306/mabasedata";
+    public final String URL="jdbc:mysql://localhost:3306/baseddss40";
     public final String USER="root";
     public final String PWD="";
     private Connection cnx;

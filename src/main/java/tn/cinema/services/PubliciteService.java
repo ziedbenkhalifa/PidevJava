@@ -23,7 +23,7 @@ public class PubliciteService implements IServices<Publicite> {
     }
 
     @Override
-    public void modifier(int id) {
+    public void modifier(Publicite publicite) {
 
     }
 

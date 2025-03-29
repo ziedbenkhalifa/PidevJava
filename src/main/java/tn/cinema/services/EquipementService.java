@@ -16,7 +16,7 @@ public class EquipementService implements IServices<Equipement>{
     }
 
     @Override
-    public void modifier(int id) {
+    public void modifier(Equipement equipement) {
 
     }
 

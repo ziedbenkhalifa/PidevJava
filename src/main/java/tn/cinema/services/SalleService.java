@@ -16,7 +16,7 @@ public class SalleService implements IServices<Salle>{
     }
 
     @Override
-    public void modifier(int id) {
+    public void modifier(Salle salle) {
 
     }
 

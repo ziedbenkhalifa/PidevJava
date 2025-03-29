@@ -16,7 +16,7 @@ public class ProjectionService implements IServices<Projection>{
     }
 
     @Override
-    public void modifier(int id) {
+    public void modifier(Projection projection) {
 
     }
 

@@ -23,7 +23,7 @@ public class DemandeService implements IServices<Demande>{
     }
 
     @Override
-    public void modifier(int id) {
+    public void modifier(Demande demande) {
 
     }
 
