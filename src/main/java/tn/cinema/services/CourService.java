@@ -4,18 +4,18 @@ import tn.cinema.entities.Cour;
 
 import java.util.List;
 
-public class CourService implements IServices<Cour>{
-    @Override
+public abstract class CourService implements IServices<Cour>{
+
     public void ajouter(Cour cour) {
 
     }
 
-    @Override
+
     public void supprimer(int id) {
 
     }
 
-    @Override
+
     public void modifier(int id) {
 
     }

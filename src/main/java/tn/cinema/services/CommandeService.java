@@ -4,23 +4,23 @@ import tn.cinema.entities.Commande;
 
 import java.util.List;
 
-public class CommandeService implements IServices<Commande>{
+public abstract class CommandeService implements IServices<Commande>{
     @Override
     public void ajouter(Commande commande) {
 
     }
 
-    @Override
+
     public void supprimer(int id) {
 
     }
 
-    @Override
+
     public void modifier(int id) {
 
     }
 
-    @Override
+
     public List<Commande> recuperer() {
         return List.of();
     }

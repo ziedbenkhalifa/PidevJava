@@ -4,23 +4,23 @@ import tn.cinema.entities.Projection;
 
 import java.util.List;
 
-public class ProjectionService implements IServices<Projection>{
-    @Override
+public abstract class ProjectionService implements IServices<Projection>{
+
     public void ajouter(Projection projection) {
 
     }
 
-    @Override
+
     public void supprimer(int id) {
 
     }
 
-    @Override
+
     public void modifier(int id) {
 
     }
 
-    @Override
+
     public List<Projection> recuperer() {
         return List.of();
     }

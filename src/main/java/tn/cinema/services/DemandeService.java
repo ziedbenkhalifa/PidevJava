@@ -6,28 +6,28 @@ import tn.cinema.tools.Mydatabase;
 import java.sql.Connection;
 import java.util.List;
 
-public class DemandeService implements IServices<Demande>{
+public abstract class DemandeService implements IServices<Demande>{
     Connection cnx;
     public DemandeService(){
         cnx= Mydatabase.getInstance().getCnx();
     }
 
-    @Override
+
     public void ajouter(Demande demande) {
 
     }
 
-    @Override
+
     public void supprimer(int id) {
 
     }
 
-    @Override
+
     public void modifier(int id) {
 
     }
 
-    @Override
+
     public List<Demande> recuperer() {
         return List.of();
     }
