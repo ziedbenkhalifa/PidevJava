@@ -5,22 +5,22 @@ import java.util.Objects;
 public class Equipement {
 
 
-    private int id,id_salle;
+    private int id,salle_id;
     private String nom,type, etat;
 
-    public Equipement (int id, int id_salle, String nom, String type, String etat) {
+    public Equipement (int id, int salle_id, String nom, String type, String etat) {
         this.id = id;
         this.nom = nom;
         this.type = type;
         this.etat = etat;
-        this.id_salle = id_salle;
+        this.salle_id = salle_id;
     }
-    public Equipement (int id_salle, String nom, String type, String etat) {
+    public Equipement (int salle_id, String nom, String type, String etat) {
         this.id = id;
         this.nom = nom;
         this.type = type;
         this.etat = etat;
-        this.id_salle = id_salle;
+        this.salle_id = salle_id;
     }
     public Equipement () {}
 
@@ -38,11 +38,11 @@ public class Equipement {
         this.nom = nom;
     }
 
-    public int getId_salle() {
-        return id_salle;
+    public int getSalle_id() {
+        return salle_id;
     }
-    public void setId_salle(int id_salle) {
-        this.id_salle = id_salle;
+    public void setSalle_id(int salle_id) {
+        this.salle_id = salle_id;
     }
 
     public String getType() {
@@ -63,7 +63,7 @@ public class Equipement {
     public String toString() {
         return "equipement{" +
                 "id=" + id +
-                ", Id_salle=" + id_salle +
+                ", Id_salle=" + salle_id +
                 ", nom='" + nom + '\'' +
                 ", type='" + type + '\'' +
                 ", etat='" + etat + '\'' +
@@ -74,11 +74,11 @@ public class Equipement {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Equipement that = (Equipement) o;
-        return id == that.id && id_salle == that.id_salle && Objects.equals(nom, that.nom) && Objects.equals(type, that.type) && Objects.equals(etat, that.etat);
+        return id == that.id &&salle_id== that.salle_id && Objects.equals(nom, that.nom) && Objects.equals(type, that.type) && Objects.equals(etat, that.etat);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, id_salle, nom, type, etat);
+        return Objects.hash(id, salle_id, nom, type, etat);
     }
 }

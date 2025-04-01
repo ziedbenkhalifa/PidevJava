@@ -27,7 +27,7 @@ public class Main {
         try {
             //equipementService.ajouter(e1);
             //equipementService.supprimer(25);
-           equipementService.modifier(e1);
+           //equipementService.modifier(e1);
             System.out.println(equipementService.recuperer());
         } catch (SQLException E) {
             System.out.println(E.getMessage());
@@ -35,7 +35,7 @@ public class Main {
 
         try {
             //salleService.ajouter(s);
-             salleService.modifier(s);
+            // salleService.modifier(s);
            // salleService.supprimer(27);
             System.out.println(salleService.recuperer());
         } catch (SQLException E) {

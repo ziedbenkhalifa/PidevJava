@@ -17,12 +17,12 @@ public class EquipementService implements IServices<Equipement> {
 
 
         public void ajouter(Equipement equipement) throws SQLException {
-            String sql = "INSERT INTO equipement(nom, type, etat, id_salle) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO equipement(nom, type, etat, salle_id) VALUES (?, ?, ?, ?)";
             PreparedStatement ps = cnx.prepareStatement(sql);
             ps.setString(1, equipement.getNom());
             ps.setString(2, equipement.getType()); // Correction de l'ordre
             ps.setString(3, equipement.getEtat());
-            ps.setInt(4, equipement.getId_salle()); // Correction du type
+            ps.setInt(4, equipement.getSalle_id()); // Correction du type
             ps.executeUpdate();
             System.out.println("Équipement ajouté");
         }
@@ -74,7 +74,7 @@ public class EquipementService implements IServices<Equipement> {
                 e.setNom(rs.getString("nom"));
                 e.setType(rs.getString("type"));
                 e.setEtat(rs.getString("etat"));
-                e.setId_salle(rs.getInt("id_salle")); // Ajout de l'ID de la salle
+                e.setSalle_id(rs.getInt("salle_id")); // Ajout de l'ID de la salle
                 equipements.add(e);
             }
             return equipements;
