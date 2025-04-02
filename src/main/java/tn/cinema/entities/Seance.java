@@ -16,7 +16,7 @@ public class Seance {
     }
 
 
-    public Seance(LocalDate dateSeance, LocalTime duree, String objectifs) {
+    public Seance(LocalDate dateSeance, LocalTime duree, String objectifs,int idCour) {
         this.dateSeance = dateSeance;
         this.duree = duree;
         this.objectifs = objectifs;
@@ -24,7 +24,7 @@ public class Seance {
     }
 
 
-    public Seance(int id, LocalDate dateSeance, LocalTime duree, String objectifs) {
+    public Seance(int id, LocalDate dateSeance, LocalTime duree, String objectifs, int idCour) {
         this.id = id;
         this.dateSeance = dateSeance;
         this.duree = duree;

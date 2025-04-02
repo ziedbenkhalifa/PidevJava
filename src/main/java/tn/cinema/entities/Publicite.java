@@ -1,6 +1,6 @@
 package tn.cinema.entities;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.Objects;
 
 public class Publicite {
@@ -27,7 +27,7 @@ public class Publicite {
         this.demandeId = demandeId;
     }
 
-    public Date getDateDebut() {
+    public java.sql.Date getDateDebut() {
         return dateDebut;
     }
 
@@ -35,7 +35,7 @@ public class Publicite {
         this.dateDebut = dateDebut;
     }
 
-    public Date getDateFin() {
+    public java.sql.Date getDateFin() {
         return dateFin;
     }
 
@@ -51,8 +51,8 @@ public class Publicite {
         this.support = support;
     }
 
-    public double getMontant() {
-        return montant;
+    public float getMontant() {
+        return (float) montant;
     }
 
     public void setMontant(double montant) {
@@ -77,6 +77,7 @@ public class Publicite {
         this.montant=montant;
     }
     public Publicite(Date dateDebut,Date dateFin,String support,double montant){
+        this.id=id;
         this.demandeId=demandeId;
         this.dateDebut=dateDebut;
         this.dateFin=dateFin;

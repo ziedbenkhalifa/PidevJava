@@ -3,6 +3,8 @@ package tn.cinema.entities;
 import java.util.Date;
 import java.util.Objects;
 
+import static java.sql.Types.NULL;
+
 public class Demande {
     private int id;
     private int userId;
@@ -11,7 +13,7 @@ public class Demande {
     private String description;
     private String type;
     private String lienSupplementaire;
-    private String statut = "en_attente";
+    private String statut ;
     private Date dateSoumission;
     public int getId() {
         return id;
@@ -108,6 +110,40 @@ public class Demande {
         this.lienSupplementaire=lienSupplementaire;
         this.statut=statut;
         this.dateSoumission=new Date();
+
+    }
+    public Demande(int nombreJours,String description, String type,String lienSupplementaire,String statut){
+        this.userId=userId;
+        this.adminId=adminId;
+        this.nombreJours=nombreJours;
+        this.description=description;
+        this.type=type;
+        this.lienSupplementaire=lienSupplementaire;
+        this.statut=statut;
+        this.dateSoumission=new Date();
+
+    }
+    public Demande(int userId,int nombreJours,String description, String type,String lienSupplementaire){
+        this.userId=userId;
+        this.adminId=NULL;
+        this.nombreJours=nombreJours;
+        this.description=description;
+        this.type=type;
+        this.lienSupplementaire=lienSupplementaire;
+        this.statut=statut;
+        this.dateSoumission=new Date();
+
+    }
+    public Demande(int id,int userId,Integer adminId,int nombreJours,String description, String type,String lienSupplementaire,String statut,Date dateSoumission){
+        this.id=id;
+        this.userId=userId;
+        this.adminId=adminId;
+        this.nombreJours=nombreJours;
+        this.description=description;
+        this.type=type;
+        this.lienSupplementaire=lienSupplementaire;
+        this.statut=statut;
+        this.dateSoumission=dateSoumission;
 
     }
 

@@ -83,12 +83,12 @@ public class Produit {
         this.image = image;
     }
 
-    public Date getDateAjout() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDateAjout(Date dateAjout) {
-        this.date = dateAjout;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     // MÃ©thode toString pour afficher l'objet
@@ -101,7 +101,7 @@ public class Produit {
                 ", categorie='" + categorie + '\'' +
                 ", description='" + description + '\'' +
                 ", image='" + image + '\'' +
-                ", dateAjout=" + date +
+                ", date=" + date +
                 '}';
     }
 
