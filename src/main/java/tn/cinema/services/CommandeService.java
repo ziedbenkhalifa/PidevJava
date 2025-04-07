@@ -89,4 +89,15 @@ public class CommandeService implements IServices<Commande> {
         }
         return commandes;
     }
+    public void ajouterProduitACommande(int commandeId, int produitId) {
+        String sql = "INSERT INTO commande_produit (commande_id, produit_id) VALUES (?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, commandeId);
+            stmt.setInt(2, produitId);
+            stmt.executeUpdate();
+            System.out.println("✅ Produit ajouté à la commande !");
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur lors de l'ajout du produit à la commande : " + e.getMessage());
+        }
+    }
 }

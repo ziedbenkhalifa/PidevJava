@@ -83,5 +83,9 @@ public class Main {
         for (Commande commande : commandes) {
             System.out.println(commande);
         }
+
+        // Associer produit et commande (id fictifs)
+        commandeService.ajouterProduitACommande(2, 10);
+        commandeService.ajouterProduitACommande(2, 11); 
     }
 }
