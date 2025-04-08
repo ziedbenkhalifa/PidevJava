@@ -27,6 +27,8 @@ public class MainFilms {
             System.out.println(ps.recupererParId(7));
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            System.out.println("helloword");
         }
     }
+
 }
