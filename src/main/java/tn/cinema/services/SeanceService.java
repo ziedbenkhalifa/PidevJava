@@ -46,9 +46,19 @@ public class SeanceService implements IServices<Seance> {
     }
 
     @Override
-    public void modifier(Seance seance ) {
+    public void modifier(Seance seance) throws SQLException {
+        sql = "UPDATE seance SET " +
+                "cour_id = " + seance.getIdCour() + ", " +
+                "date_seance = '" + seance.getDateSeance() + "', " +
+                "duree = '" + seance.getDuree() + "', " +
+                "objectifs = '" + seance.getObjectifs() + "' " +
+                "WHERE id = " + seance.getId();
 
+        st = cnx.createStatement();
+        st.executeUpdate(sql);
+        System.out.println("Séance modifiée ");
     }
+
 
     @Override
     public List<Seance> recuperer() throws SQLException {

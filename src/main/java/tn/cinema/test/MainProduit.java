@@ -5,6 +5,7 @@ import tn.cinema.services.ProduitService;
 import tn.cinema.entities.Produit;
 import tn.cinema.entities.Commande;
 import tn.cinema.services.CommandeService;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class MainProduit {
@@ -14,7 +15,9 @@ public class MainProduit {
         ProduitService produitService = new ProduitService();
 
         // Test de l'ajout d'un produit
-        Produit produit2 = new Produit("Produit 2", 20.0, "Categorie 2", "Description produit 1", "image1.jpg", new java.util.Date());
+
+        Produit produit2 = new Produit("Produit 2", 20.0, "Categorie 2", "Description produit 1", "image1.jpg", LocalDateTime.now());
+
         produitService.ajouter(produit2);
 
         // Test de la récupération de tous les produits
@@ -25,7 +28,7 @@ public class MainProduit {
         }
 
         // Test de la modification d'un produit (on suppose que l'ID du produit à modifier est 1)
-        Produit produitModifie = new Produit(1, "Produit Modifié", 25.0, "Categorie Modifiée", "Description modifiée", "image_modifie.jpg", new java.util.Date());
+        Produit produitModifie = new Produit(1, "Produit Modifié", 25.0, "Categorie Modifiée", "Description modifiée", "image_modifie.jpg", LocalDateTime.now());
         produitService.modifier(produitModifie);
 
         // Test de la récupération après modification
@@ -80,5 +83,9 @@ public class MainProduit {
         for (Commande commande : commandes) {
             System.out.println(commande);
         }
+
+        // Associer produit et commande (id fictifs)
+        commandeService.ajouterProduitACommande(2, 10);
+        commandeService.ajouterProduitACommande(2, 11);
     }
 }

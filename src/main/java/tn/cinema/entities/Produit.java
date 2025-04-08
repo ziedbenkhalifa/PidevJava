@@ -1,6 +1,6 @@
 package tn.cinema.entities;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Produit {
@@ -10,13 +10,13 @@ public class Produit {
     private String categorie;
     private String description;
     private String image;
-    private Date date;
+    private LocalDateTime date;
 
     // Constructeur
     public Produit() {
     }
 
-    public Produit(String nom, double prix, String categorie, String description, String image, Date date) {
+    public Produit(String nom, double prix, String categorie, String description, String image, LocalDateTime date) {
         this.nom = nom;
         this.prix = prix;
         this.categorie = categorie;
@@ -24,7 +24,7 @@ public class Produit {
         this.image = image;
         this.date = date;
     }
-    public Produit(int id, String nom, double prix, String categorie, String description, String image, Date date) {
+    public Produit(int id, String nom, double prix, String categorie, String description, String image, LocalDateTime date) {
         this.id = id;
         this.nom = nom;
         this.prix = prix;
@@ -83,15 +83,15 @@ public class Produit {
         this.image = image;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
-    // MÃ©thode toString pour afficher l'objet
+    // Méthode toString pour afficher l'objet
     @Override
     public String toString() {
         return "Produit{" +

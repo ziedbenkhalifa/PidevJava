@@ -4,6 +4,8 @@ import tn.cinema.entities.Produit;
 import tn.cinema.tools.Mydatabase;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +25,7 @@ public class ProduitService implements IServices<Produit> {
             stmt.setString(3, produit.getCategorie());
             stmt.setString(4, produit.getDescription());
             stmt.setString(5, produit.getImage());
-            stmt.setDate(6, new java.sql.Date(produit.getDate().getTime()));
+            stmt.setTimestamp(6, Timestamp.valueOf(produit.getDate()));
 
             stmt.executeUpdate();
             System.out.println("✅ Produit ajouté avec succès !");
@@ -57,7 +59,7 @@ public class ProduitService implements IServices<Produit> {
             stmt.setString(3, produit.getCategorie());
             stmt.setString(4, produit.getDescription());
             stmt.setString(5, produit.getImage());
-            stmt.setDate(6, new java.sql.Date(produit.getDate().getTime()));
+            stmt.setTimestamp(6, Timestamp.valueOf(produit.getDate()));
             stmt.setInt(7, produit.getId());
 
             int rows = stmt.executeUpdate();
@@ -85,7 +87,7 @@ public class ProduitService implements IServices<Produit> {
                         rs.getString("categorie"),
                         rs.getString("description"),
                         rs.getString("image"),
-                        rs.getDate("date")  // Changer le nom de la colonne "date" à "dateAjout"
+                        rs.getTimestamp("date").toLocalDateTime()
                 );
                 produits.add(produit);
             }
@@ -94,5 +96,4 @@ public class ProduitService implements IServices<Produit> {
         }
         return produits;
     }
-
 }
