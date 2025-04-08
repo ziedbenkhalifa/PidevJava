@@ -4,6 +4,7 @@ import tn.cinema.entities.Commande;
 import tn.cinema.tools.Mydatabase;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class CommandeService implements IServices<Commande> {
         String query = "INSERT INTO commande (user_id, datecommande, montantpaye, etat) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, commande.getUserId());
-            stmt.setDate(2, new java.sql.Date(commande.getDateCommande().getTime()));
+            stmt.setTimestamp(2, Timestamp.valueOf(commande.getDateCommande()));
             stmt.setDouble(3, commande.getMontantPaye());
             stmt.setString(4, commande.getEtat());
 
@@ -51,7 +52,7 @@ public class CommandeService implements IServices<Commande> {
         String query = "UPDATE commande SET user_id=?, datecommande=?, montantpaye=?, etat=? WHERE id=?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, commande.getUserId());
-            stmt.setDate(2, new java.sql.Date(commande.getDateCommande().getTime()));
+            stmt.setTimestamp(2, Timestamp.valueOf(commande.getDateCommande()));
             stmt.setDouble(3, commande.getMontantPaye());
             stmt.setString(4, commande.getEtat());
             stmt.setInt(5, commande.getId());
@@ -77,7 +78,7 @@ public class CommandeService implements IServices<Commande> {
                 Commande commande = new Commande(
                         rs.getInt("id"),
                         rs.getInt("user_id"),
-                        rs.getDate("datecommande"),
+                        rs.getTimestamp("datecommande").toLocalDateTime(),
                         rs.getDouble("montantpaye"),
                         rs.getString("etat")
                 );
@@ -87,5 +88,16 @@ public class CommandeService implements IServices<Commande> {
             System.err.println("❌ Erreur lors de la récupération : " + e.getMessage());
         }
         return commandes;
+    }
+    public void ajouterProduitACommande(int commandeId, int produitId) {
+        String sql = "INSERT INTO commande_produit (commande_id, produit_id) VALUES (?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, commandeId);
+            stmt.setInt(2, produitId);
+            stmt.executeUpdate();
+            System.out.println("✅ Produit ajouté à la commande !");
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur lors de l'ajout du produit à la commande : " + e.getMessage());
+        }
     }
 }
