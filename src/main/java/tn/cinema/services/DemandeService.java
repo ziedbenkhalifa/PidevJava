@@ -3,16 +3,11 @@ package tn.cinema.services;
 import tn.cinema.entities.Demande;
 import tn.cinema.tools.Mydatabase;
 
-<<<<<<< HEAD
-import java.sql.Connection;
-import java.util.List;
-=======
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
->>>>>>> Publicites
 
 public class DemandeService implements IServices<Demande>{
     Connection cnx;
@@ -21,9 +16,6 @@ public class DemandeService implements IServices<Demande>{
     }
 
     @Override
-<<<<<<< HEAD
-    public void ajouter(Demande demande) {
-=======
     public void ajouter(Demande demande) throws SQLException {
         String sql="INSERT INTO demande(int id,user_id,nbr_Jours,description,type,lien_supp) "+"VALUES(?,?,?,?,?)";
         try {
@@ -38,26 +30,10 @@ public class DemandeService implements IServices<Demande>{
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
->>>>>>> Publicites
 
     }
 
     @Override
-<<<<<<< HEAD
-    public void supprimer(int id) {
-
-    }
-
-    @Override
-    public void modifier(int id) {
-
-    }
-
-    @Override
-    public List<Demande> recuperer() {
-        return List.of();
-    }
-=======
     public void supprimer(int id) throws SQLException {
         String sql = "DELETE FROM demande WHERE id = ?"; // Correction de la requête SQL
         try {
@@ -201,5 +177,4 @@ public class DemandeService implements IServices<Demande>{
 
 
 
->>>>>>> Publicites
 }

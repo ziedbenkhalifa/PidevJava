@@ -1,32 +1,6 @@
 package tn.cinema.services;
 
 import tn.cinema.entities.Equipement;
-<<<<<<< HEAD
-
-import java.util.List;
-
-public class EquipementService implements IServices<Equipement>{
-    @Override
-    public void ajouter(Equipement equipement) {
-
-    }
-
-    @Override
-    public void supprimer(int id) {
-
-    }
-
-    @Override
-    public void modifier(int id) {
-
-    }
-
-    @Override
-    public List<Equipement> recuperer() {
-        return List.of();
-    }
-}
-=======
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,5 +80,3 @@ public class EquipementService implements IServices<Equipement> {
         return equipements;
     }
 }
-
->>>>>>> Publicites

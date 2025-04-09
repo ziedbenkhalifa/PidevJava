@@ -77,10 +77,7 @@ public class Publicite {
         this.montant=montant;
     }
     public Publicite(Date dateDebut,Date dateFin,String support,double montant){
-<<<<<<< HEAD
-=======
         this.id=id;
->>>>>>> Publicites
         this.demandeId=demandeId;
         this.dateDebut=dateDebut;
         this.dateFin=dateFin;

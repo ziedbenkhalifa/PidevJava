@@ -1,15 +1,6 @@
 package tn.cinema.services;
 
 import tn.cinema.entities.Produit;
-<<<<<<< HEAD
-
-import java.util.List;
-
-public class ProduitService implements IServices<Produit>{
-    @Override
-    public void ajouter(Produit produit) {
-
-=======
 import tn.cinema.tools.Mydatabase;
 
 import java.sql.*;
@@ -39,19 +30,10 @@ public class ProduitService implements IServices<Produit> {
         } catch (SQLException e) {
             System.err.println("❌ Erreur lors de l'ajout : " + e.getMessage());
         }
->>>>>>> Publicites
     }
 
     @Override
     public void supprimer(int id) {
-<<<<<<< HEAD
-
-    }
-
-    @Override
-    public void modifier(int id) {
-
-=======
         String query = "DELETE FROM produit WHERE id=?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, id);
@@ -87,16 +69,10 @@ public class ProduitService implements IServices<Produit> {
         } catch (SQLException e) {
             System.err.println("❌ Erreur lors de la modification : " + e.getMessage());
         }
->>>>>>> Publicites
     }
 
     @Override
     public List<Produit> recuperer() {
-<<<<<<< HEAD
-        return List.of();
-    }
-}
-=======
         List<Produit> produits = new ArrayList<>();
         String query = "SELECT * FROM produit";
         try (Statement stmt = connection.createStatement();
@@ -120,4 +96,3 @@ public class ProduitService implements IServices<Produit> {
     }
 
 }
->>>>>>> Publicites

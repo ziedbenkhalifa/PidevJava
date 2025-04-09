@@ -1,14 +1,5 @@
 package tn.cinema.services;
 
-<<<<<<< HEAD
-import tn.cinema.entities.Projection;
-
-import java.util.List;
-
-public class ProjectionService implements IServices<Projection>{
-    @Override
-    public void ajouter(Projection projection) {
-=======
 import tn.cinema.entities.Films;
 import tn.cinema.entities.Projection;
 import tn.cinema.tools.Mydatabase;
@@ -44,27 +35,10 @@ public class ProjectionService implements IServices<Projection>{
         ps.setInt(1, id);
         ps.executeUpdate();
         System.out.println("Projection deleted");
->>>>>>> Publicites
 
     }
 
     @Override
-<<<<<<< HEAD
-    public void supprimer(int id) {
-
-    }
-
-    @Override
-    public void modifier(int id) {
-
-    }
-
-    @Override
-    public List<Projection> recuperer() {
-        return List.of();
-    }
-}
-=======
     public void modifier(Projection projection) throws SQLException {
 
     }
@@ -112,4 +86,3 @@ public class ProjectionService implements IServices<Projection>{
 
 
 }
->>>>>>> Publicites

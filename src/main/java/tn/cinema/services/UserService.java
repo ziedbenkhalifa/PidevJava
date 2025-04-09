@@ -3,15 +3,6 @@ package tn.cinema.services;
 import tn.cinema.entities.User;
 import tn.cinema.tools.Mydatabase;
 
-<<<<<<< HEAD
-import java.sql.Connection;
-import java.util.List;
-
-public class UserService implements IServices<User>{
-    Connection cnx;
-    public UserService(){
-        cnx= Mydatabase.getInstance().getCnx();
-=======
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,14 +15,10 @@ public class UserService implements IServices<User> {
         if (cnx == null) {
             System.out.println("Database connection failed!");
         }
->>>>>>> Publicites
     }
 
     @Override
     public void ajouter(User u) {
-<<<<<<< HEAD
-
-=======
         String query = "INSERT INTO user (nom, date_de_naissance, email, role, mot_de_passe, photo, face_token) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pst = cnx.prepareStatement(query)) {
             pst.setString(1, u.getNom());
@@ -46,26 +33,10 @@ public class UserService implements IServices<User> {
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'ajout : " + e.getMessage());
         }
->>>>>>> Publicites
     }
 
     @Override
     public void supprimer(int id) {
-<<<<<<< HEAD
-
-    }
-
-    @Override
-    public void modifier(int id) {
-
-    }
-
-    @Override
-    public List<User> recuperer() {
-        return List.of();
-    }
-}
-=======
         String query = "DELETE FROM user WHERE id = ?";
         try (PreparedStatement pst = cnx.prepareStatement(query)) {
             pst.setInt(1, id);
@@ -134,4 +105,3 @@ public class UserService implements IServices<User> {
         return users;
     }
 }
->>>>>>> Publicites

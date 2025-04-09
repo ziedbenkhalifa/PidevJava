@@ -1,15 +1,6 @@
 package tn.cinema.services;
 
 import tn.cinema.entities.Commande;
-<<<<<<< HEAD
-
-import java.util.List;
-
-public class CommandeService implements IServices<Commande>{
-    @Override
-    public void ajouter(Commande commande) {
-
-=======
 import tn.cinema.tools.Mydatabase;
 
 import java.sql.*;
@@ -37,19 +28,10 @@ public class CommandeService implements IServices<Commande> {
         } catch (SQLException e) {
             System.err.println("❌ Erreur lors de l'ajout : " + e.getMessage());
         }
->>>>>>> Publicites
     }
 
     @Override
     public void supprimer(int id) {
-<<<<<<< HEAD
-
-    }
-
-    @Override
-    public void modifier(int id) {
-
-=======
         String query = "DELETE FROM commande WHERE id=?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, id);
@@ -83,16 +65,10 @@ public class CommandeService implements IServices<Commande> {
         } catch (SQLException e) {
             System.err.println("❌ Erreur lors de la modification : " + e.getMessage());
         }
->>>>>>> Publicites
     }
 
     @Override
     public List<Commande> recuperer() {
-<<<<<<< HEAD
-        return List.of();
-    }
-}
-=======
         List<Commande> commandes = new ArrayList<>();
         String query = "SELECT * FROM commande";
         try (Statement stmt = connection.createStatement();
@@ -113,4 +89,3 @@ public class CommandeService implements IServices<Commande> {
         return commandes;
     }
 }
->>>>>>> Publicites

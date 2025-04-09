@@ -1,30 +1,6 @@
 package tn.cinema.services;
 
 import tn.cinema.entities.Salle;
-<<<<<<< HEAD
-
-import java.util.List;
-
-public class SalleService implements IServices<Salle>{
-    @Override
-    public void ajouter(Salle salle) {
-
-    }
-
-    @Override
-    public void supprimer(int id) {
-
-    }
-
-    @Override
-    public void modifier(int id) {
-
-    }
-
-    @Override
-    public List<Salle> recuperer() {
-        return List.of();
-=======
 import tn.cinema.tools.Mydatabase;
 
 import java.sql.*;
@@ -100,6 +76,5 @@ public class SalleService implements IServices<Salle> {
             salles.add(s);
         }
         return salles;
->>>>>>> Publicites
     }
 }

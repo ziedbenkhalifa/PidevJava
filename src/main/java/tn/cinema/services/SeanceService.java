@@ -1,14 +1,6 @@
 package tn.cinema.services;
 
 import tn.cinema.entities.Seance;
-<<<<<<< HEAD
-
-import java.util.List;
-
-public class SeanceService implements IServices<Seance>{
-    @Override
-    public void ajouter(Seance seance) {
-=======
 import tn.cinema.tools.Mydatabase;
 
 import java.sql.*;
@@ -55,25 +47,10 @@ public class SeanceService implements IServices<Seance> {
 
     @Override
     public void modifier(Seance seance ) {
->>>>>>> Publicites
 
     }
 
     @Override
-<<<<<<< HEAD
-    public void supprimer(int id) {
-
-    }
-
-    @Override
-    public void modifier(int id) {
-
-    }
-
-    @Override
-    public List<Seance> recuperer() {
-        return List.of();
-=======
     public List<Seance> recuperer() throws SQLException {
         sql = "SELECT * FROM seance";
 
@@ -96,6 +73,5 @@ public class SeanceService implements IServices<Seance> {
 
         }
         return seances;
->>>>>>> Publicites
     }
 }

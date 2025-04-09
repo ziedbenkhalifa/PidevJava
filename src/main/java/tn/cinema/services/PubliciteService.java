@@ -1,11 +1,5 @@
 package tn.cinema.services;
 
-<<<<<<< HEAD
-import tn.cinema.entities.Publicite;
-import tn.cinema.tools.Mydatabase;
-
-import java.sql.Connection;
-=======
 import tn.cinema.entities.Demande;
 import tn.cinema.entities.Publicite;
 import tn.cinema.tools.Mydatabase;
@@ -14,7 +8,6 @@ import java.sql.*;
 import java.util.ArrayList;
 //import java.util.Date;
 import java.sql.Date;
->>>>>>> Publicites
 import java.util.List;
 
 public class PubliciteService implements IServices<Publicite> {
@@ -27,8 +20,6 @@ public class PubliciteService implements IServices<Publicite> {
     public void ajouter(Publicite publicite) {
 
     }
-<<<<<<< HEAD
-=======
     public void ajouterpub(Publicite publicite) throws SQLException {
         String sql = "INSERT INTO publicite(demande_id, date_debut, date_fin, support, montant) VALUES(?,?,?,?,?)";
         try {
@@ -45,25 +36,11 @@ public class PubliciteService implements IServices<Publicite> {
         }
     }
 
->>>>>>> Publicites
 
     @Override
     public void supprimer(int id) {
 
     }
-<<<<<<< HEAD
-
-    @Override
-    public void modifier(int id) {
-
-    }
-
-    @Override
-    public List<Publicite> recuperer() {
-        return List.of();
-    }
-}
-=======
     public void supprimerpub(int id){
         String sql = "DELETE FROM publicite WHERE id = ?"; // Correction de la requête SQL
         try {
@@ -113,21 +90,21 @@ public class PubliciteService implements IServices<Publicite> {
     }
 
     public List<Publicite> recupererpub() throws SQLException{
-    String sql="SELECT * FROM publicite";
-    Statement ste= cnx.createStatement();
-    ResultSet rs = ste.executeQuery(sql);
-    List<Publicite> publicite = new ArrayList<>();
+        String sql="SELECT * FROM publicite";
+        Statement ste= cnx.createStatement();
+        ResultSet rs = ste.executeQuery(sql);
+        List<Publicite> publicite = new ArrayList<>();
         while ( rs.next()){
-        int id = rs.getInt(1);
-        int demandeId=rs.getInt(2);
-        Date dateDebut=rs.getDate(3);
-        Date dateFin=rs.getDate(4);
-        String support=rs.getString(5);
-        Float montant=rs.getFloat(6);
+            int id = rs.getInt(1);
+            int demandeId=rs.getInt(2);
+            Date dateDebut=rs.getDate(3);
+            Date dateFin=rs.getDate(4);
+            String support=rs.getString(5);
+            Float montant=rs.getFloat(6);
 
-        Publicite p = new Publicite(id,demandeId,dateDebut,dateFin,support,montant);
-        publicite.add(p);
-    }
+            Publicite p = new Publicite(id,demandeId,dateDebut,dateFin,support,montant);
+            publicite.add(p);
+        }
         return publicite;
     }
 
@@ -156,5 +133,3 @@ public class PubliciteService implements IServices<Publicite> {
     }
 
 }
-
->>>>>>> Publicites
