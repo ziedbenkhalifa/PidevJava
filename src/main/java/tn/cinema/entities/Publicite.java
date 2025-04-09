@@ -1,4 +1,4 @@
-package tn.cinema.entities;
+/*package tn.cinema.entities;
 
 import java.util.Date;
 import java.util.Objects;
@@ -109,3 +109,4 @@ public class Publicite {
         return Objects.hash(id, demandeId, dateDebut, dateFin, support, montant);
     }
 }
+*/

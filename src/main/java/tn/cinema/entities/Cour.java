@@ -1,4 +1,4 @@
-package tn.cinema.entities;
+/*package tn.cinema.entities;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -96,3 +96,5 @@ public class Cour {
         return Objects.hash(id, typeCour, cout, dateDebut, dateFin);
     }
 }
+
+ */

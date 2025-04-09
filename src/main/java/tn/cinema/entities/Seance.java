@@ -1,4 +1,4 @@
-package tn.cinema.entities;
+/*package tn.cinema.entities;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -104,3 +104,4 @@ public class Seance {
         return Objects.hash(id, dateSeance, duree, objectifs, idCour);
     }
 }
+*/

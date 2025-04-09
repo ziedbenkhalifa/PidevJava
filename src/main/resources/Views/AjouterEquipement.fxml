@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.cinema.Controllers.Views"
+            prefHeight="700.0" prefWidth="1000.0">
+
+    <VBox spacing="10" alignment="TOP_CENTER" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+
+        <!-- Header avec les boutons -->
+        <HBox spacing="10" alignment="CENTER_LEFT" padding="Insets(10)">
+            <Button text="← Retour" fx:id="btnRetour"/>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button text="Ajouter un équipement" fx:id="btnAjouter"/>
+        </HBox>
+
+        <!-- Titre -->
+        <Label text="Table des équipements">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </Label>
+
+        <!-- Formulaire de recherche -->
+        <HBox spacing="10" alignment="CENTER" padding="Insets(10)">
+            <TextField fx:id="searchField" promptText="Rechercher un équipement par ID..." />
+            <ComboBox fx:id="etatFilter">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Filtrer par état"/>
+                        <String fx:value="En service"/>
+                        <String fx:value="Hors service"/>
+                        <String fx:value="Endommagé"/>
+                    </FXCollections>
+                </items>
+            </ComboBox>
+            <Button text="Rechercher" fx:id="btnSearch"/>
+        </HBox>
+
+        <!-- TableView -->
+        <TableView fx:id="equipementTable" prefHeight="400">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" />
+                <TableColumn fx:id="colNom" text="Nom" />
+                <TableColumn fx:id="colType" text="Type" />
+                <TableColumn fx:id="colEtat" text="État" />
+                <TableColumn fx:id="colSalle" text="Salle" />
+                <TableColumn fx:id="colActions" text="Actions" />
+            </columns>
+        </TableView>
+
+        <!-- Pagination (à gérer côté Java) -->
+        <Pagination fx:id="pagination" maxPageIndicatorCount="10" />
+    </VBox>
+</AnchorPane>

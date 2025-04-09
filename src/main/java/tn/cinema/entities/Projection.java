@@ -1,4 +1,4 @@
-package tn.cinema.entities;
+/*package tn.cinema.entities;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -63,3 +63,4 @@ public class Projection {
         return Objects.hash(id, capaciter, date_projection, prix);
     }
 }
+*/

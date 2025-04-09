@@ -1,4 +1,4 @@
-package tn.cinema.entities;
+/*package tn.cinema.entities;
 
 import java.util.Date;
 import java.util.Objects;
@@ -138,3 +138,4 @@ public class Demande {
         return Objects.hash(id, userId, adminId, nombreJours, description, type, lienSupplementaire, statut, dateSoumission);
     }
 }
+*/

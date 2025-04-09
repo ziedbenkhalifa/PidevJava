@@ -20,13 +20,13 @@ public class Main {
         s.setNom_salle("salleee");
        // Equipement e = new Equipement( 22, "cadre", "Vidéo", "Fonctionnel?");
         Equipement e1 = new Equipement( 22, "imprimante", "Vidéo", "Fonctionnel?");
-        Equipement e4 = new Equipement( 22, "korsi", "Vidéo", "mediocre");
+        Equipement e5 = new Equipement( 22, "korsi", "Vidéo", "mediocre");
         e1.setId(50);
         e1.setNom("BHHH");
 
         try {
-            //equipementService.ajouter(e1);
-            //equipementService.supprimer(25);
+            //equipementService.ajouter(e5);
+            //equipementService.supprimer(26);
            //equipementService.modifier(e1);
             System.out.println(equipementService.recuperer());
         } catch (SQLException E) {
