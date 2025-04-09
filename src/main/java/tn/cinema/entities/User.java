@@ -1,11 +1,12 @@
 package tn.cinema.entities;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 
 public class User {
     private int id;
     private String nom;
-    private Date dateDeNaissance;
+    private LocalDate dateDeNaissance;
     private String email;
     private String role;
     private String motDePasse;
@@ -28,11 +29,11 @@ public class User {
         this.nom = nom;
     }
 
-    public Date getDateDeNaissance() {
+    public LocalDate getDateDeNaissance() {
         return dateDeNaissance;
     }
 
-    public void setDateDeNaissance(Date dateDeNaissance) {
+    public void setDateDeNaissance(LocalDate dateDeNaissance) {
         this.dateDeNaissance = dateDeNaissance;
     }
 
@@ -78,7 +79,7 @@ public class User {
 
     public User() {
     }
-    public User(String nom,Date dateDeNaissance,String email,String role,String motDePasse,String photo,String faceToken) {
+    public User(String nom,LocalDate dateDeNaissance,String email,String role,String motDePasse,String photo,String faceToken) {
         this.nom=nom;
         this.dateDeNaissance=dateDeNaissance;
         this.email=email;
@@ -87,7 +88,7 @@ public class User {
         this.photo=photo;
         this.faceToken=faceToken;
     }
-    public User(int id,String nom,Date dateDeNaissance,String email,String role,String motDePasse,String photo,String faceToken) {
+    public User(int id,String nom,LocalDate dateDeNaissance,String email,String role,String motDePasse,String photo,String faceToken) {
         this.id=id;
         this.nom=nom;
         this.dateDeNaissance=dateDeNaissance;

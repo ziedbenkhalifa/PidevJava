@@ -5,6 +5,7 @@ import tn.cinema.tools.Mydatabase;
 import tn.cinema.services.UserService;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public class Main {
@@ -12,26 +13,26 @@ public class Main {
         Mydatabase connexion = Mydatabase.getInstance();
         UserService us = new UserService();
         User u = new User(
-                "Ali Ben Salem",                        // Nom
-                new Date(95, 4, 23),                    // Date de naissance (23 mai 1995)
-                "ali.bensalem@example.com",             // Email
-                "Admin",                                // Rôle
-                "MotDePasse123!",                       // Mot de passe
-                "photo_profil.jpg",                     // Photo (nom du fichier)
-                "face_token_123456"                     // Face Token (exemple)
+                "Eden",
+                LocalDate.of(1990, 2, 23),  // Year 1990, February (month 2), day 23
+                "eden.bensalem@example.com",
+                "Admin",
+                "MotDePasse123!",
+                "photo_profil.jpg",
+                "face_token_123456"
         );
     //us.ajouter(u);
     //us.supprimer(36);
         // Appel de la méthode pour modifier l'utilisateur avec id=3
         us.modifier(
-                42,
-                "Hammmmmmouda Ben Salem",
-                new Date(95, 4, 23),
-                "hammouda.bensalem@example.com",
+                54,
+                "Hazard",
+                LocalDate.of(1997, 6, 23),
+                "hazard.bensalem@example.com",
                 "Client",
-                "NouveauMotDePasse!",
-                "nouvelle_photo.jpg",
-                "new_face_token"
+                "NouveauMotDePasseeee!",
+                "new.jpg",
+                "58556"
         );
 
         /*List<User> users = us.recuperer(); // Appel de la méthode recuperer()
