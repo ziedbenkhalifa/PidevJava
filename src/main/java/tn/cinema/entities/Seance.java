@@ -16,6 +16,7 @@ public class Seance {
     }
 
 
+    
     public Seance(LocalDate dateSeance, LocalTime duree, String objectifs,int idCour) {
         this.dateSeance = dateSeance;
         this.duree = duree;
