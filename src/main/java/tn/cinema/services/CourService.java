@@ -30,7 +30,8 @@ public class CourService implements IServices<Cour>{
             ps.setTimestamp(3, Timestamp.valueOf(cour.getDateDebut()));
             ps.setTimestamp(4, Timestamp.valueOf(cour.getDateFin()));
             ps.executeUpdate();
-            System.out.println("Cour ajoutée");
+            System.out.println("Cour ajouté");
+
     }
 
     @Override

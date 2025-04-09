@@ -14,34 +14,34 @@ import java.util.List;
 public class MainCour {
     public static void main(String[] args) throws SQLException {
        CourService cs = new CourService();
-        SeanceService ss = new SeanceService();
+       SeanceService ss = new SeanceService();
 
-        //LocalDateTime dateDebut = LocalDateTime.now();
-        //LocalDateTime dateFin= LocalDateTime.of(2025, 3, 30, 16, 30);
+        LocalDateTime dateDebut = LocalDateTime.now();
+        LocalDateTime dateFin= LocalDateTime.of(2025, 3, 30, 16, 30);
         LocalDate dateSeance = LocalDate.now();
-        LocalTime duree = LocalTime.of(2, 30); // Durée de 2 heures et 30 minutes
+        LocalTime duree = LocalTime.of(2, 30);
 
-       //Cour c = new Cour("cinema", 100, dateDebut, dateFin);
-       //Cour c = new Cour(38, "cinema", 250.000,LocalDateTime.now(), LocalDateTime.of(2025, 4, 30, 16, 30));
-        Seance s = new Seance(19,dateSeance, duree,"Histoire du Cinéma",33);
-       //try {
-           //cs.ajouter(c);
+       Cour c = new Cour("cinema", 100, dateDebut, dateFin);
+      // Cour c = new Cour(38, "cinema", 250.000,LocalDateTime.now(), LocalDateTime.of(2025, 4, 30, 16, 30));
+        Seance s = new Seance(19,dateSeance, duree,"Histoire du Cinéma",c);
+     // try {
+       //    cs.ajouter(c);
            //cs.supprimer(34);
               //for (Cour cour : cs.recuperer()) {
                 //   System.out.println(cour);
            //cs.modifier(c);
-          //     } catch (SQLException e) {
-        //System.out.println(e.getMessage());
-      // }
+         //   } catch (SQLException e) {
+       // System.out.println(e.getMessage());
+       //}
 
         try {
-           // ss.ajouter(s);
+           //ss.ajouter(s);
             //ss.supprimer(17);
-            ss.modifier(s);
+            //ss.modifier(s);
 
-            //for (Seance seance: ss.recuperer()){ ;
-            //System.out.println(seance);
-        } catch (SQLException e) {
+           for (Seance seance: ss.recuperer()){ ;
+            System.out.println(seance);
+        }} catch (SQLException e) {
             System.out.println(e.getMessage());
         }
 

@@ -1,5 +1,8 @@
 package tn.cinema.entities;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Cour {
@@ -8,9 +11,11 @@ public class Cour {
     private double cout;
     private LocalDateTime dateDebut;
     private LocalDateTime dateFin;
+    private List<Seance> seances;
 
 
     public Cour() {
+        this.seances = new ArrayList<>();
     }
 
 
@@ -19,6 +24,7 @@ public class Cour {
         this.cout = cout;
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
+        this.seances = new ArrayList<>();
     }
 
 
@@ -28,9 +34,10 @@ public class Cour {
         this.cout = cout;
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
+        this.seances = new ArrayList<>();
     }
 
-
+    // Getters et setters
     public int getId() {
         return id;
     }
@@ -71,6 +78,8 @@ public class Cour {
         this.dateFin = dateFin;
     }
 
+
+
     @Override
     public String toString() {
         return "Cour{" +
@@ -87,11 +96,11 @@ public class Cour {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Cour cour = (Cour) o;
-        return id == cour.id && Double.compare(cout, cour.cout) == 0 && Objects.equals(typeCour, cour.typeCour) && Objects.equals(dateDebut, cour.dateDebut) && Objects.equals(dateFin, cour.dateFin);
+        return id == cour.id && Double.compare(cout, cour.cout) == 0 && Objects.equals(typeCour, cour.typeCour) && Objects.equals(dateDebut, cour.dateDebut) && Objects.equals(dateFin, cour.dateFin) && Objects.equals(seances, cour.seances);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, typeCour, cout, dateDebut, dateFin);
+        return Objects.hash(id, typeCour, cout, dateDebut, dateFin, seances);
     }
 }

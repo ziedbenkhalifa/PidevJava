@@ -9,37 +9,31 @@ public class Seance {
     private LocalDate dateSeance;
     private LocalTime duree;
     private String objectifs;
-    private int idCour;
-
+    private Cour cour;
 
     public Seance() {
     }
 
-
-    
-    public Seance(LocalDate dateSeance, LocalTime duree, String objectifs,int idCour) {
+    public Seance(LocalDate dateSeance, LocalTime duree, String objectifs, Cour cour) {
         this.dateSeance = dateSeance;
         this.duree = duree;
         this.objectifs = objectifs;
-        this.idCour = idCour;
+        this.cour = cour;
     }
 
-
-    public Seance(int id, LocalDate dateSeance, LocalTime duree, String objectifs, int idCour) {
+    public Seance(int id, LocalDate dateSeance, LocalTime duree, String objectifs, Cour cour) {
         this.id = id;
         this.dateSeance = dateSeance;
         this.duree = duree;
         this.objectifs = objectifs;
-        this.idCour = idCour;
-
+        this.cour = cour;
     }
-    public Seance(LocalTime duree, String objectifs) {
-        this.dateSeance = dateSeance;
+
+    public Seance(LocalTime duree, String objectifs, Cour cour) {
         this.duree = duree;
         this.objectifs = objectifs;
-        this.idCour = idCour;
+        this.cour = cour;
     }
-
 
     public int getId() {
         return id;
@@ -73,12 +67,12 @@ public class Seance {
         this.objectifs = objectifs;
     }
 
-    public int getIdCour() {
-        return idCour;
+    public Cour getCour() {
+        return cour; // Getter pour l'objet Cour
     }
 
-    public void setIdCour(int idCour) {
-        this.idCour = idCour;
+    public void setCour(Cour cour) {
+        this.cour = cour;
     }
 
     @Override
@@ -88,7 +82,7 @@ public class Seance {
                 ", dateSeance=" + dateSeance +
                 ", duree=" + duree +
                 ", objectifs='" + objectifs + '\'' +
-                ", idCour=" + idCour +
+                ", courId=" + (cour != null ? cour.getId() : "null") +
                 '}';
     }
 
@@ -97,11 +91,11 @@ public class Seance {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Seance seance = (Seance) o;
-        return id == seance.id && idCour == seance.idCour && Objects.equals(dateSeance, seance.dateSeance) && Objects.equals(duree, seance.duree) && Objects.equals(objectifs, seance.objectifs);
+        return id == seance.id && Objects.equals(dateSeance, seance.dateSeance) && Objects.equals(duree, seance.duree) && Objects.equals(objectifs, seance.objectifs) && Objects.equals(cour, seance.cour);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, dateSeance, duree, objectifs, idCour);
+        return Objects.hash(id, dateSeance, duree, objectifs, cour);
     }
 }
