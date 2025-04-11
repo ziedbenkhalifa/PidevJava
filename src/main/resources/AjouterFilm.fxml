@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.AjouterFilm">
+   <children>
+      <TextField fx:id="nomFilm" layoutX="300.0" layoutY="76.0" />
+      <TextField fx:id="realisateur" layoutX="302.0" layoutY="175.0" />
+      <TextField fx:id="genre" layoutX="303.0" layoutY="223.0" />
+      <TextField fx:id="img" layoutX="304.0" layoutY="273.0" />
+      <Label layoutX="87.0" layoutY="80.0" text="Nom Film" />
+      <Label layoutX="87.0" layoutY="130.0" text="Date de Production" />
+      <Label layoutX="87.0" layoutY="179.0" text="Réalisateur" />
+      <Label layoutX="87.0" layoutY="227.0" text="Genre" />
+      <Label layoutX="87.0" layoutY="277.0" text="Image" />
+      <Button layoutX="254.0" layoutY="325.0" mnemonicParsing="false" onAction="#ajout" prefHeight="39.0" prefWidth="92.0" text="Ajouter" />
+      <DatePicker fx:id="dateFilm" layoutX="292.0" layoutY="126.0" />
+   </children>
+</AnchorPane>
