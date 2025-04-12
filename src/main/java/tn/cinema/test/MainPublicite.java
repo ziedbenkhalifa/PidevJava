@@ -11,7 +11,7 @@ import java.util.List;
 
 public class MainPublicite {
     public static void main(String[] args){
-     //   Mydatabase connexion = Mydatabase.getInstance();
+        //   Mydatabase connexion = Mydatabase.getInstance();
         DemandeService ps = new DemandeService();
         PubliciteService publiciteService = new PubliciteService();
         try {
@@ -151,7 +151,7 @@ public class MainPublicite {
     }
 
 
-    }
+}
 
 
 

@@ -17,12 +17,12 @@ public class DemandeService implements IServices<Demande>{
 
     @Override
     public void ajouter(Demande demande) throws SQLException {
-        String sql="INSERT INTO demande(int id,user_id,nbr_Jours,description,type,lien_supp) "+"VALUES(?,?,?,?,?)";
+        String sql = "INSERT INTO demande(user_id, nbr_Jours, description, type, lien_supp) VALUES(?,?,?,?,?)";
         try {
-            PreparedStatement ps= cnx.prepareStatement(sql);
-            ps.setInt(1,3);
-            ps.setInt(2,demande.getNombreJours());
-            ps.setString(3,demande.getDescription());
+            PreparedStatement ps = cnx.prepareStatement(sql);
+            ps.setInt(1, 3);  // Remplacez "3" par l'ID de l'utilisateur actuel
+            ps.setInt(2, demande.getNombreJours());
+            ps.setString(3, demande.getDescription());
             ps.setString(4, demande.getType());
             ps.setString(5, demande.getLienSupplementaire());
             ps.executeUpdate();
@@ -30,8 +30,8 @@ public class DemandeService implements IServices<Demande>{
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
+
 
     @Override
     public void supprimer(int id) throws SQLException {
