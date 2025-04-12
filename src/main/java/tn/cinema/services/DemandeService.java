@@ -110,24 +110,29 @@ public class DemandeService implements IServices<Demande>{
         }
     }
     public void modifierAdmin(int id, Demande demande) throws SQLException {
-        String sql = "UPDATE demande SET " +
-                "nbr_Jours = " + demande.getNombreJours() + ", " +
-                "description = '" + demande.getDescription() + "', " +
-                "type = '" + demande.getType() + "', " +
-                "lien_supp = '" + demande.getLienSupplementaire() + "', " +  // Ajout de la virgule
-                "statut = '" + demande.getStatut() + "' " +  // Ajout de la virgule
-                "WHERE id = " + id;
-
+        String sql = "UPDATE demande SET nbr_Jours = ?, description = ?, type = ?, lien_supp = ?, statut = ? WHERE id = ?";
+        PreparedStatement ps = null;
         try {
-            Statement stmt = cnx.createStatement();
-            int rowsUpdated = stmt.executeUpdate(sql);
+            ps = cnx.prepareStatement(sql);
+            ps.setInt(1, demande.getNombreJours());
+            ps.setString(2, demande.getDescription());
+            ps.setString(3, demande.getType());
+            ps.setString(4, demande.getLienSupplementaire());
+            ps.setString(5, demande.getStatut());
+            ps.setInt(6, id);
+
+            int rowsUpdated = ps.executeUpdate();
             if (rowsUpdated > 0) {
                 System.out.println("Demande avec id " + id + " modifiée avec succès");
             } else {
                 System.out.println("ID non trouvé : " + id);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new SQLException("Erreur lors de la modification de la demande : " + e.getMessage(), e);
+        } finally {
+            if (ps != null) {
+                ps.close();
+            }
         }
     }
 

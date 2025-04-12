@@ -50,7 +50,7 @@
             </ImageView>
             <Button layoutX="73.0" layoutY="154.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="119.0" style="-fx-background-color: #294478;" text="Gestion User" textFill="#d7d7d9" />
             <Button layoutX="85.0" layoutY="211.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Film" textFill="#d7d7d9" />
-            <Button layoutX="84.0" layoutY="260.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Pub" textFill="#d7d7d9" />
+            <Button fx:id="gestionPubButton" layoutX="84.0" layoutY="260.0" mnemonicParsing="false" onAction="#goToInterfaceChoixGP" style="-fx-background-color: #294478;" text="Gestion Pub" textFill="#d7d7d9" />
             <Button layoutX="82.0" layoutY="319.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Cour" textFill="#d7d7d9" />
             <Button layoutX="82.0" layoutY="372.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Produit" textFill="#d7d7d9" />
             <Button layoutX="84.0" layoutY="428.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Salle" textFill="#d7d7d9" />

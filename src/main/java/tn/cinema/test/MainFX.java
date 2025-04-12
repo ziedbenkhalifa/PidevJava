@@ -6,9 +6,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class MainFX extends Application{
+public class MainFX extends Application {
 
-    @Override
+  /*  @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader=new FXMLLoader(getClass().getResource("/AjouterDemandes.fxml"));
         Parent root = loader.load();
@@ -19,5 +19,38 @@ public class MainFX extends Application{
     }
     public static void main(String[] args){
         launch(args);
+    }*/
+
+ /*   @Override
+    public void start(Stage primaryStage) throws Exception {
+        // Adjust the path to match your FXML file location
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/InterfaceDemandes.fxml"));
+        Scene scene = new Scene(loader.load());
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Showtime Dashboard");
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }*/
+
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        // Load Dashboard.fxml as the initial scene
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Dashboard.fxml"));
+        Parent root = loader.load();
+
+        // Set up the scene and stage
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Showtime Dashboard");
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+
     }
 }
