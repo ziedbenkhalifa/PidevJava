@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="demande" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterDemandes">
+   <children>
+      <TextField fx:id="nbrjours" layoutX="38.0" layoutY="42.0" promptText="nombre jours" />
+      <TextArea fx:id="description" layoutX="38.0" layoutY="76.0" prefHeight="147.0" prefWidth="171.0" promptText="description" />
+      <TextField fx:id="type" layoutX="38.0" layoutY="248.0" promptText="type" />
+      <TextField fx:id="liensupp" layoutX="38.0" layoutY="289.0" promptText="lien support" />
+      <Button layoutX="227.0" layoutY="321.0" mnemonicParsing="false" onAction="#save" prefHeight="30.0" prefWidth="103.0" text="enregistrer" />
+   </children>
+</AnchorPane>
