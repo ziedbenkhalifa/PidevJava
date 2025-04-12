@@ -13,7 +13,7 @@ public class MainFXFilms extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/DashBoard.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
-        stage.setTitle("Ajouter Films");
+        stage.setTitle("ShowTime");
         stage.setScene(scene);
         stage.show();
 

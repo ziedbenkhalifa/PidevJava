@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #162c4f;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.DashBoard">
+<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #162c4f;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.GestionFilms">
     <children>
         <AnchorPane prefHeight="651.0" prefWidth="200.0" style="-fx-background-color: #294478; -fx-background-radius: 10;">
             <children>
@@ -49,7 +49,7 @@
                     </image>
                 </ImageView>
                 <Button layoutX="73.0" layoutY="154.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="119.0" style="-fx-background-color: #294478;" text="Gestion User" textFill="#d7d7d9" />
-                <Button layoutX="85.0" layoutY="211.0" mnemonicParsing="false" onAction="#gestionFilm" style="-fx-background-color: #294478;" text="Gestion Film" textFill="#d7d7d9" />
+                <Button layoutX="85.0" layoutY="211.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Film" textFill="#d7d7d9" />
                 <Button layoutX="84.0" layoutY="260.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Pub" textFill="#d7d7d9" />
                 <Button layoutX="82.0" layoutY="319.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Cour" textFill="#d7d7d9" />
                 <Button layoutX="82.0" layoutY="372.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Produit" textFill="#d7d7d9" />
@@ -85,6 +85,24 @@
                 </TextField>
             </children>
         </Pane>
-        <AnchorPane layoutX="215.0" layoutY="89.0" prefHeight="554.0" prefWidth="1068.0" style="-fx-background-color: #c5cbd9; -fx-background-radius: 20;" />
+        <AnchorPane layoutX="215.0" layoutY="89.0" prefHeight="554.0" prefWidth="1068.0" style="-fx-background-color: #c5cbd9; -fx-background-radius: 20;">
+         <children>
+            <Pane layoutX="61.0" layoutY="48.0" prefHeight="458.0" prefWidth="946.0" style="-fx-background-color: #4664de;">
+               <children>
+                  <ImageView fitHeight="170.0" fitWidth="191.0" layoutX="193.0" layoutY="85.0">
+                     <image>
+                        <Image url="@images/icons8-film-48.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="170.0" fitWidth="191.0" layoutX="580.0" layoutY="85.0">
+                     <image>
+                        <Image url="@images/icons8-video-camera-48.png" />
+                     </image>
+                  </ImageView>
+                  <Button layoutX="210.0" layoutY="323.0" mnemonicParsing="false" onAction="#afficherFilm" prefHeight="38.0" prefWidth="157.0" style="-fx-background-radius: 10; -fx-background-color: #f0653c;" text="Gestion Film" textFill="WHITE" />
+                  <Button layoutX="597.0" layoutY="323.0" mnemonicParsing="false" onAction="#afficherProjection" prefHeight="38.0" prefWidth="157.0" style="-fx-background-radius: 10; -fx-background-color: #f0653c;" text="Gestion Projection" textFill="#f2f2f2" />
+               </children>
+            </Pane>
+         </children></AnchorPane>
     </children>
 </AnchorPane>

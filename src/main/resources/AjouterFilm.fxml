@@ -5,19 +5,43 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.AjouterFilm">
+<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #c5cbd9; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.AjouterFilm">
    <children>
-      <TextField fx:id="nomFilm" layoutX="300.0" layoutY="76.0" />
-      <TextField fx:id="realisateur" layoutX="302.0" layoutY="175.0" />
-      <TextField fx:id="genre" layoutX="303.0" layoutY="223.0" />
-      <TextField fx:id="img" layoutX="304.0" layoutY="273.0" />
-      <Label layoutX="87.0" layoutY="80.0" text="Nom Film" />
-      <Label layoutX="87.0" layoutY="130.0" text="Date de Production" />
-      <Label layoutX="87.0" layoutY="179.0" text="Réalisateur" />
-      <Label layoutX="87.0" layoutY="227.0" text="Genre" />
-      <Label layoutX="87.0" layoutY="277.0" text="Image" />
-      <Button layoutX="254.0" layoutY="325.0" mnemonicParsing="false" onAction="#ajout" prefHeight="39.0" prefWidth="92.0" text="Ajouter" />
-      <DatePicker fx:id="dateFilm" layoutX="292.0" layoutY="126.0" />
+      <!-- Form Panel -->
+      <AnchorPane layoutX="300.0" layoutY="100.0" prefHeight="450.0" prefWidth="700.0" style="-fx-background-color: #ffffff; -fx-background-radius: 20;">
+         <children>
+            <Label layoutX="87.0" layoutY="80.0" text="Nom Film" />
+            <TextField fx:id="nomFilm" layoutX="300.0" layoutY="76.0" prefWidth="350.0" />
+
+            <Label layoutX="87.0" layoutY="130.0" text="Date de Production" />
+            <DatePicker fx:id="dateFilm" layoutX="300.0" layoutY="126.0" prefWidth="350.0" />
+
+            <Label layoutX="87.0" layoutY="179.0" text="Réalisateur" />
+            <TextField fx:id="realisateur" layoutX="300.0" layoutY="175.0" prefWidth="350.0" />
+
+            <Label layoutX="87.0" layoutY="227.0" text="Genre" />
+            <TextField fx:id="genre" layoutX="300.0" layoutY="223.0" prefWidth="350.0" />
+
+            <Label layoutX="87.0" layoutY="277.0" text="Image" />
+            <TextField fx:id="img" layoutX="300.0" layoutY="273.0" prefWidth="350.0" />
+
+            <!-- Buttons -->
+            <Button layoutX="144.0" layoutY="322.0" mnemonicParsing="false" onAction="#ajout" prefHeight="39.0" prefWidth="92.0" text="Ajouter" />
+            <Button layoutX="334.0" layoutY="322.0" mnemonicParsing="false" onAction="#edit" prefHeight="39.0" prefWidth="92.0" text="Modifier" />
+         </children>
+      </AnchorPane>
+
+      <!-- Header with title -->
+      <AnchorPane layoutX="215.0" layoutY="14.0" prefHeight="67.0" prefWidth="1076.0" style="-fx-background-color: #ebedeb; -fx-background-radius: 30;">
+         <children>
+            <Label layoutX="41.0" layoutY="18.0" prefHeight="31.0" prefWidth="148.0" text="Ajouter Film" textFill="#791d1d" textOverrun="CENTER_WORD_ELLIPSIS">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

@@ -1,6 +1,6 @@
 package tn.cinema.services;
 
-import tn.cinema.entities.Films;
+
 import tn.cinema.entities.Projection;
 import tn.cinema.tools.Mydatabase;
 
@@ -40,15 +40,22 @@ public class ProjectionService implements IServices<Projection>{
 
     @Override
     public void modifier(Projection projection) throws SQLException {
-
+        String req = "UPDATE projection SET date_projection = ?, capaciter = ?, prix = ? WHERE id = ?";
+        PreparedStatement ps = cnx.prepareStatement(req);
+        ps.setDate(1, java.sql.Date.valueOf(projection.getDate_projection()));
+        ps.setInt(2, projection.getCapaciter());
+        ps.setFloat(3, projection.getPrix());
+        ps.setInt(4, projection.getId());
+        ps.executeUpdate();
     }
 
-    public void modifier(int id,float prix) throws SQLException {
+
+   /* public void modifier(int id,float prix) throws SQLException {
         String sql = "UPDATE projection SET prix = '" + prix + "' WHERE id = " + id;
         Statement ste = cnx.createStatement();
         ste.executeUpdate(sql);
         System.out.println("Projection modified successfully");
-    }
+    }*/
 
     @Override
     public List<Projection> recuperer() throws SQLException {

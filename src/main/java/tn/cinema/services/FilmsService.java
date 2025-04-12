@@ -38,16 +38,26 @@ public class FilmsService implements IServices<Films>{
     }
 
     @Override
-    public void modifier(Films films) throws SQLException {
-
+    public void modifier(Films film) throws SQLException {
+        String req = "UPDATE films SET nom_film = ?, realisateur = ?, genre = ?, img = ?, date_production = ? WHERE id = ?";
+        PreparedStatement ps = cnx.prepareStatement(req);
+        ps.setString(1, film.getNom_film());
+        ps.setString(2, film.getRealisateur());
+        ps.setString(3, film.getGenre());
+        ps.setString(4, film.getImg());
+        ps.setDate(5, java.sql.Date.valueOf(film.getDate_production()));
+        ps.setInt(6, film.getId());
+        ps.executeUpdate();
     }
 
-    public void modifier(int id,String nom_film) throws SQLException {
+
+ /*   public void modifier(int id,String nom_film) throws SQLException {
         String sql = "UPDATE films SET nom_film = '" + nom_film + "' WHERE id = " + id;
         Statement ste = cnx.createStatement();
         ste.executeUpdate(sql);
         System.out.println("Film modified successfully");
-    }
+    }*/
+
 
     @Override
     public List<Films> recuperer() throws SQLException {

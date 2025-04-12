@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #c5cbd9; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.AjouterProjection">
+    <children>
+        <!-- Form Panel -->
+        <AnchorPane layoutX="300.0" layoutY="100.0" prefHeight="450.0" prefWidth="700.0" style="-fx-background-color: #ffffff; -fx-background-radius: 20;">
+            <children>
+
+                <!-- Date of Projection -->
+                <Label layoutX="91.0" layoutY="84.0" text="Date de Projection" />
+                <DatePicker fx:id="dateProjection" layoutX="300.0" layoutY="80.0" prefWidth="350.0" />
+
+                <!-- Buttons -->
+                <Button layoutX="144.0" layoutY="322.0" mnemonicParsing="false" onAction="#ajouterProjection" prefHeight="39.0" prefWidth="92.0" text="Ajouter" />
+                <Button layoutX="334.0" layoutY="322.0" mnemonicParsing="false" onAction="#modifierProjection" prefHeight="39.0" prefWidth="92.0" text="Modifier" />
+            <Label layoutX="115.0" layoutY="172.0" text="Capaciter" />
+            <TextField fx:id="capaciter" layoutX="400.0" layoutY="168.0" />
+            <Label layoutX="126.0" layoutY="249.0" text="Prix" />
+            <TextField fx:id="prix" layoutX="401.0" layoutY="245.0" />
+            </children>
+        </AnchorPane>
+
+        <!-- Header with title -->
+        <AnchorPane layoutX="215.0" layoutY="14.0" prefHeight="67.0" prefWidth="1076.0" style="-fx-background-color: #ebedeb; -fx-background-radius: 30;">
+            <children>
+                <Label layoutX="41.0" layoutY="18.0" prefHeight="31.0" prefWidth="148.0" text="Ajouter Projection" textFill="#791d1d" textOverrun="CENTER_WORD_ELLIPSIS">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Label>
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>
