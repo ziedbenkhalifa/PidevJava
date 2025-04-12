@@ -20,7 +20,7 @@ public class DemandeService implements IServices<Demande>{
         String sql = "INSERT INTO demande(user_id, nbr_Jours, description, type, lien_supp) VALUES(?,?,?,?,?)";
         try {
             PreparedStatement ps = cnx.prepareStatement(sql);
-            ps.setInt(1, 3);  // Remplacez "3" par l'ID de l'utilisateur actuel
+            ps.setInt(1, 3);
             ps.setInt(2, demande.getNombreJours());
             ps.setString(3, demande.getDescription());
             ps.setString(4, demande.getType());
@@ -32,7 +32,21 @@ public class DemandeService implements IServices<Demande>{
         }
     }
 
-
+    public void ajouterDemande(Demande demande) throws SQLException {
+        String sql = "INSERT INTO demande(user_id, nbr_Jours, description, type, lien_supp) VALUES(?,?,?,?,?)";
+        try {
+            PreparedStatement ps = cnx.prepareStatement(sql);
+            ps.setInt(1, demande.getUserId());
+            ps.setInt(2, demande.getNombreJours());
+            ps.setString(3, demande.getDescription());
+            ps.setString(4, demande.getType());
+            ps.setString(5, demande.getLienSupplementaire());
+            ps.executeUpdate();
+            System.out.println("Demande ajoutée");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
     @Override
     public void supprimer(int id) throws SQLException {
         String sql = "DELETE FROM demande WHERE id = ?"; // Correction de la requête SQL
