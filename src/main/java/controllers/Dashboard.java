@@ -81,7 +81,22 @@ public class Dashboard {
         }
     }
 
-
+    @FXML
+    private Button backButton;
+    public void goBackToLogin(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Dashboard.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) backButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Dashboard");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error loading Dashboard.fxml: " + e.getMessage());
+        }
+    }
 }
 
 
