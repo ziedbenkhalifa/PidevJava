@@ -9,52 +9,22 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #162c4f;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Dashboard">
+<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #0b0f29;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Dashboard">
    <children>
-      <AnchorPane prefHeight="651.0" prefWidth="200.0" style="-fx-background-color: #294478; -fx-background-radius: 10;">
+      <AnchorPane layoutY="-7.0" prefHeight="670.0" prefWidth="200.0" style="-fx-background-color: #021b50; -fx-background-radius: 10;">
          <children>
-            <ImageView layoutX="12.0" layoutY="31.0">
+            <ImageView layoutX="11.0" layoutY="23.0">
                <image>
                   <Image url="@images/icons8-user-64.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="26.0" layoutY="204.0">
-               <image>
-                  <Image url="@images/icons8-movies-folder-100.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="38.0" fitWidth="40.0" layoutX="24.0" layoutY="421.0">
-               <image>
-                  <Image url="@images/icons8-movie-theater-48.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="26.0" layoutY="253.0">
-               <image>
-                  <Image url="@images/icons8-publicity-64.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="38.0" fitWidth="40.0" layoutX="24.0" layoutY="365.0">
-               <image>
-                  <Image url="@images/icons8-shopping-cart-40.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="38.0" fitWidth="40.0" layoutX="24.0" layoutY="312.0">
-               <image>
-                  <Image url="@images/icons8-bookmark-48.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="26.0" layoutY="147.0">
-               <image>
-                  <Image url="@images/icons8-people-64.png" />
-               </image>
-            </ImageView>
-            <Button layoutX="73.0" layoutY="154.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="119.0" style="-fx-background-color: #294478;" text="Gestion User" textFill="#d7d7d9" />
-            <Button layoutX="85.0" layoutY="211.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Film" textFill="#d7d7d9" />
-            <Button fx:id="gestionPubButton" layoutX="84.0" layoutY="260.0" mnemonicParsing="false" onAction="#goToInterfaceChoixGP" style="-fx-background-color: #294478;" text="Gestion Pub" textFill="#d7d7d9" />
-            <Button layoutX="82.0" layoutY="319.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Cour" textFill="#d7d7d9" />
-            <Button layoutX="82.0" layoutY="372.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Produit" textFill="#d7d7d9" />
-            <Button layoutX="84.0" layoutY="428.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Salle" textFill="#d7d7d9" />
-            <Button layoutX="74.0" layoutY="31.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="126.0" style="-fx-background-color: #294478;" text="Mon Compte" textFill="#d7d7d9">
+            <Button layoutX="58.0" layoutY="178.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="119.0" style="-fx-background-color: #3e2063;" text="Gestion User" textFill="#d7d7d9" />
+            <Button layoutX="58.0" layoutY="233.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="119.0" style="-fx-background-color: #3e2063;" text="Gestion Film" textFill="#d7d7d9" />
+            <Button fx:id="gestionPubButton" layoutX="56.0" layoutY="348.0" mnemonicParsing="false" onAction="#goToInterfaceChoixGP" prefHeight="24.0" prefWidth="119.0" style="-fx-background-color: #3e2063;" text="Gestion Pub" textFill="#d7d7d9" />
+            <Button layoutX="57.0" layoutY="403.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="119.0" style="-fx-background-color: #3e2063;" text="Gestion Cour" textFill="#d7d7d9" />
+            <Button layoutX="58.0" layoutY="286.0" mnemonicParsing="false" style="-fx-background-color: #3e2063;" text="Gestion Produit" textFill="#d7d7d9" />
+            <Button layoutX="58.0" layoutY="455.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="119.0" style="-fx-background-color: #3e2063;" text="Gestion Salle" textFill="#d7d7d9" />
+            <Button layoutX="74.0" layoutY="24.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="126.0" style="-fx-background-color: #021b50;" text="Mon Compte" textFill="#d7d7d9">
                <font>
                   <Font size="16.0" />
                </font>
@@ -64,11 +34,21 @@
                   <Image url="@images/showtime-removebg-preview.png" />
                </image>
             </ImageView>
+            <ImageView fitHeight="31.0" fitWidth="29.0" layoutX="17.0" layoutY="173.0">
+               <image>
+                  <Image url="@images/usermodifier.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="31.0" fitWidth="36.0" layoutX="13.0" layoutY="282.0">
+               <image>
+                  <Image url="@images/new-product.png" />
+               </image>
+            </ImageView>
          </children>
       </AnchorPane>
-      <Pane layoutX="215.0" layoutY="14.0" prefHeight="67.0" prefWidth="1076.0" style="-fx-background-color: #ebedeb; -fx-background-radius: 30;">
+      <Pane layoutX="215.0" layoutY="14.0" prefHeight="67.0" prefWidth="1076.0" style="-fx-background-color: #021b50; -fx-background-radius: 30;">
          <children>
-            <Label layoutX="41.0" layoutY="18.0" prefHeight="31.0" prefWidth="148.0" text="SHOWTIME" textFill="#791d1d" textOverrun="CENTER_WORD_ELLIPSIS">
+            <Label layoutX="41.0" layoutY="18.0" prefHeight="31.0" prefWidth="148.0" text="SHOWTIME" textFill="WHITE" textOverrun="CENTER_WORD_ELLIPSIS">
                <font>
                   <Font size="24.0" />
                </font>
@@ -85,44 +65,59 @@
             </TextField>
          </children>
       </Pane>
-      <AnchorPane layoutX="215.0" layoutY="89.0" prefHeight="554.0" prefWidth="1068.0" style="-fx-background-color: #c5cbd9; -fx-background-radius: 20;">
+      <AnchorPane layoutX="217.0" layoutY="89.0" prefHeight="544.0" prefWidth="1072.0" style="-fx-background-color: black; -fx-background-radius: 20;">
          <children>
-            <AnchorPane layoutX="110.0" layoutY="85.0" prefHeight="399.0" prefWidth="837.0" style="-fx-background-color: #294478; -fx-background-radius: 20;">
+            <ImageView fitHeight="549.0" fitWidth="1072.0" layoutY="32.0" opacity="0.38">
+               <image>
+                  <Image url="@images/cinemaback.jpg" />
+               </image>
+            </ImageView>
+            <AnchorPane layoutX="191.0" layoutY="138.0" prefHeight="291.0" prefWidth="667.0" style="-fx-background-color: #0b0f29;">
                <children>
-                  <ImageView fitHeight="73.0" fitWidth="64.0" layoutX="543.0" layoutY="103.0">
-                     <image>
-                        <Image url="@images/pubpublivites.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="67.0" fitWidth="64.0" layoutX="157.0" layoutY="106.0">
-                     <image>
-                        <Image url="@images/demande.png" />
-                     </image>
-                  </ImageView>
-                  <Button fx:id="gererDemandesButton" layoutX="72.0" layoutY="200.0" mnemonicParsing="false" onAction="#goToInterfaceDemandes" prefHeight="56.0" prefWidth="256.0" style="-fx-background-color: #b05457; -fx-background-radius: 20;" text="Gerer demandes clients" textFill="#d7d7d9">
+                  <!-- Added Back Button -->
+                  <Button fx:id="backButton" layoutX="3.0" layoutY="4.0" mnemonicParsing="false" onAction="#goBackToLogin" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #3e2063; -fx-background-radius: 10;" text="Back" textFill="#d7d7d9">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="gererDemandesButton" layoutX="62.0" layoutY="178.0" mnemonicParsing="false" onAction="#goToInterfaceDemandes" prefHeight="33.0" prefWidth="278.0" style="-fx-background-color: #3e2063; -fx-background-radius: 20;" text="Gerer demandes clients" textFill="#d7d7d9">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Button>
-                  <Button fx:id="gererPublictesButton" layoutX="459.0" layoutY="200.0" mnemonicParsing="false" onAction="#goToInterfacePublictes" prefHeight="56.0" prefWidth="256.0" style="-fx-background-color: #b05457; -fx-background-radius: 20;" text="Gerer Publicités clients" textFill="#d7d7d9">
+                  <Button fx:id="gererPublictesButton" layoutX="383.0" layoutY="177.0" mnemonicParsing="false" onAction="#goToInterfacePublictes" prefHeight="33.0" prefWidth="263.0" style="-fx-background-color: #3e2063; -fx-background-radius: 20;" text="Gerer Publicités clients" textFill="#d7d7d9">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Button>
                </children>
             </AnchorPane>
-            <Label graphicTextGap="7.0" layoutX="58.0" layoutY="19.0" prefHeight="31.0" prefWidth="263.0" text="Gestion Publictités" textFill="#064625" textOverrun="CENTER_WORD_ELLIPSIS">
+            <Label graphicTextGap="7.0" layoutX="39.0" layoutY="36.0" prefHeight="31.0" prefWidth="263.0" text="Gestion Publictités" textFill="#064625" textOverrun="CENTER_WORD_ELLIPSIS">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <!-- Added Back Button -->
-            <Button fx:id="backButton" layoutX="933.0" layoutY="19.0" mnemonicParsing="false" onAction="#goBackToLogin" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #294478; -fx-background-radius: 10;" text="Back" textFill="#d7d7d9">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
          </children>
       </AnchorPane>
+      <ImageView fitWidth="29.0" layoutX="17.0" layoutY="227.0">
+         <image>
+            <Image url="@images/film-slate.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="13.0" layoutY="335.0">
+         <image>
+            <Image url="@images/mmmmmm.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="12.0" layoutY="391.0">
+         <image>
+            <Image url="@images/gggggggggggggggggggggggg.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="31.0" fitWidth="29.0" layoutX="17.0" layoutY="448.0">
+         <image>
+            <Image url="@images/cinema.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>
