@@ -113,6 +113,7 @@ public class PubliciteService implements IServices<Publicite> {
         return publicite;
     }
 
+
     public List<Publicite> recupererPublicitesParClient(int clientId) throws SQLException {
         if (cnx == null) {
             throw new SQLException("Database connection is null, cannot retrieve Publicites.");
@@ -136,6 +137,33 @@ public class PubliciteService implements IServices<Publicite> {
         }
         return publicites;
     }
+
+    public List<Publicite> recuperePublicitesParClient() throws SQLException {
+        if (cnx == null) {
+            throw new SQLException("Database connection is null, cannot retrieve Publicites.");
+        }
+        String sql = "SELECT p.* FROM publicite p " +
+                "JOIN demande d ON p.demande_id = d.id " +
+                "WHERE d.user_id = ?";
+        PreparedStatement pstmt = cnx.prepareStatement(sql);
+        pstmt.setInt(1, 3); // user_id statique
+        ResultSet rs = pstmt.executeQuery();
+
+        List<Publicite> publicites = new ArrayList<>();
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            int demandeId = rs.getInt("demande_id");
+            Date dateDebut = rs.getDate("date_debut");
+            Date dateFin = rs.getDate("date_fin");
+            String support = rs.getString("support");
+            Float montant = rs.getFloat("montant");
+            Publicite p = new Publicite(id, demandeId, dateDebut, dateFin, support, montant);
+            publicites.add(p);
+        }
+
+        return publicites;
+    }
+
 
     public boolean existsByDemandeId(int demandeId) throws SQLException {
         if (cnx == null) {
