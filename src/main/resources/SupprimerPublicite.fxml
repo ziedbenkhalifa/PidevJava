@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="200.0" prefWidth="400.0" spacing="20" style="-fx-background-color: #f5f7fa; -fx-padding: 20;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SupprimerPublicite">
+    <children>
+        <Label text="Supprimer une Publicité" style="-fx-text-fill: #064625;">
+            <font>
+                <Font size="20.0" />
+            </font>
+        </Label>
+        <Label fx:id="confirmationLabel" text="Êtes-vous sûr de vouloir supprimer cette publicité ?" style="-fx-font-size: 14; -fx-fill: #37474f;" />
+        <Button fx:id="supprimerButton" onAction="#supprimerPublicite" text="Supprimer" style="-fx-background-color: #ff4444; -fx-text-fill: #ffffff; -fx-background-radius: 8; -fx-font-size: 14; -fx-padding: 5 15;" />
+    </children>
+</VBox>
