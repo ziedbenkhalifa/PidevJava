@@ -47,6 +47,22 @@ public class DemandeService implements IServices<Demande>{
             throw new RuntimeException(e);
         }
     }
+    public void ajoutDemande(Demande demande) throws SQLException {
+        String sql = "INSERT INTO demande(user_id, nbr_Jours, description, type, lien_supp) VALUES(?,?,?,?,?)";
+        try {
+            PreparedStatement ps = cnx.prepareStatement(sql);
+            ps.setInt(1, 3); // user_id statique
+            ps.setInt(2, demande.getNombreJours());
+            ps.setString(3, demande.getDescription());
+            ps.setString(4, demande.getType());
+            ps.setString(5, demande.getLienSupplementaire());
+            ps.executeUpdate();
+            System.out.println("Demande ajoutée");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void supprimer(int id) throws SQLException {
         String sql = "DELETE FROM demande WHERE id = ?"; // Correction de la requête SQL
@@ -194,6 +210,33 @@ public class DemandeService implements IServices<Demande>{
         return demandes;
     }
 
+    public List<Demande> recupereDemandesParClient() throws SQLException {
+        String sql = "SELECT * FROM demande WHERE user_id = ?";
+        PreparedStatement pstmt = cnx.prepareStatement(sql);
+        pstmt.setInt(1, 3); // user_id statique
+        ResultSet rs = pstmt.executeQuery();
+        List<Demande> demandes = new ArrayList<>();
+
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            int userId = rs.getInt("user_id");
+            int adminId = rs.getInt("admin_id");
+            int nombreJours = rs.getInt("nbr_jours");
+            String description = rs.getString("description");
+            String type = rs.getString("type");
+            String lienSupplementaire = rs.getString("lien_supp");
+            String statut = rs.getString("statut");
+            if (statut == null) {
+                statut = "Inconnu";
+            }
+            Date dateSoumission = rs.getDate("date_soumission");
+
+            Demande d = new Demande(id, userId, adminId, nombreJours, description, type, lienSupplementaire, statut, dateSoumission);
+            demandes.add(d);
+        }
+
+        return demandes;
+    }
 
 
 }
