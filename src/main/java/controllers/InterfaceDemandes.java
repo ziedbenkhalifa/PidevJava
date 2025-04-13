@@ -18,7 +18,6 @@ import tn.cinema.services.DemandeService;
 
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.ResourceBundle;
 
 public class InterfaceDemandes implements Initializable {
@@ -27,6 +26,9 @@ public class InterfaceDemandes implements Initializable {
 
     @FXML
     private Button ajouterDemandeButton;
+
+    @FXML
+    private Button backButton; // Added field for the Back button
 
     private DemandeService demandeService = new DemandeService();
 
@@ -224,6 +226,22 @@ public class InterfaceDemandes implements Initializable {
                 return "Rejetée";
             default:
                 return statut; // Fallback to the raw value if unknown
+        }
+    }
+
+    @FXML
+    private void goBackToInterfaceChoixGP() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/InterfaceChoixGP.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) backButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Gestion Publicités");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error loading InterfaceChoixGP.fxml: " + e.getMessage());
         }
     }
 }

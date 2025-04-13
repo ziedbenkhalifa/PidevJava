@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="400.0" prefWidth="600.0" spacing="20" style="-fx-background-color: #f5f7fa; -fx-padding: 20;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterPublicite">
+    <children>
+        <Label text="Ajouter une Publicité" style="-fx-text-fill: #064625;">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Label>
+        <Label text="Demande ID:" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-fill: #37474f;" />
+        <TextField fx:id="demandeIdField" promptText="Entrez l'ID de la demande" style="-fx-background-radius: 5;" />
+        <Label text="Date Début (yyyy-MM-dd):" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-fill: #37474f;" />
+        <TextField fx:id="dateDebutField" promptText="Entrez la date de début" style="-fx-background-radius: 5;" />
+        <Label text="Date Fin (yyyy-MM-dd):" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-fill: #37474f;" />
+        <TextField fx:id="dateFinField" promptText="Entrez la date de fin" style="-fx-background-radius: 5;" />
+        <Label text="Support:" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-fill: #37474f;" />
+        <TextField fx:id="supportField" promptText="Entrez le support" style="-fx-background-radius: 5;" />
+        <Label text="Montant:" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-fill: #37474f;" />
+        <TextField fx:id="montantField" promptText="Entrez le montant" style="-fx-background-radius: 5;" />
+        <Button fx:id="ajouterButton" onAction="#ajouterPublicite" text="Ajouter" style="-fx-background-color: #294478; -fx-text-fill: #d7d7d9; -fx-background-radius: 8; -fx-font-size: 14; -fx-padding: 5 15;" />
+    </children>
+</VBox>
