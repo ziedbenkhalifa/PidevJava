@@ -2,59 +2,32 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #162c4f;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Dashboard">
+<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #0b0f29;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Dashboard">
    <children>
-      <AnchorPane prefHeight="651.0" prefWidth="200.0" style="-fx-background-color: #294478; -fx-background-radius: 10;">
+      <AnchorPane layoutY="-8.0" prefHeight="651.0" prefWidth="200.0" style="-fx-background-color: #021b50; -fx-background-radius: 10;">
          <children>
             <ImageView layoutX="12.0" layoutY="31.0">
                <image>
                   <Image url="@images/icons8-user-64.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="26.0" layoutY="204.0">
-               <image>
-                  <Image url="@images/icons8-movies-folder-100.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="38.0" fitWidth="40.0" layoutX="24.0" layoutY="421.0">
-               <image>
-                  <Image url="@images/icons8-movie-theater-48.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="26.0" layoutY="253.0">
-               <image>
-                  <Image url="@images/icons8-publicity-64.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="38.0" fitWidth="40.0" layoutX="24.0" layoutY="365.0">
-               <image>
-                  <Image url="@images/icons8-shopping-cart-40.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="38.0" fitWidth="40.0" layoutX="24.0" layoutY="312.0">
-               <image>
-                  <Image url="@images/icons8-bookmark-48.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="26.0" layoutY="147.0">
-               <image>
-                  <Image url="@images/icons8-people-64.png" />
-               </image>
-            </ImageView>
-            <Button layoutX="73.0" layoutY="154.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="119.0" style="-fx-background-color: #294478;" text="Gestion User" textFill="#d7d7d9" />
-            <Button layoutX="85.0" layoutY="211.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Film" textFill="#d7d7d9" />
-            <Button fx:id="gestionPubButton" layoutX="84.0" layoutY="260.0" mnemonicParsing="false" onAction="#goToInterfaceChoixGP" style="-fx-background-color: #294478;" text="Gestion Pub" textFill="#d7d7d9" />
-            <Button layoutX="82.0" layoutY="319.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Cour" textFill="#d7d7d9" />
-            <Button layoutX="82.0" layoutY="372.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Produit" textFill="#d7d7d9" />
-            <Button layoutX="84.0" layoutY="428.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Salle" textFill="#d7d7d9" />
-            <Button layoutX="74.0" layoutY="31.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="126.0" style="-fx-background-color: #294478;" text="Mon Compte" textFill="#d7d7d9">
+            <Button layoutX="56.0" layoutY="181.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion User" textFill="#d7d7d9" />
+            <Button layoutX="57.0" layoutY="237.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Film" textFill="#d7d7d9" />
+            <Button fx:id="gestionPubButton" layoutX="57.0" layoutY="346.0" mnemonicParsing="false" onAction="#goToInterfaceChoixGP" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Pub" textFill="#d7d7d9" />
+            <Button layoutX="57.0" layoutY="399.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Cour" textFill="#d7d7d9" />
+            <Button layoutX="58.0" layoutY="293.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Produit" textFill="#d7d7d9" />
+            <Button layoutX="55.0" layoutY="454.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Salle" textFill="#d7d7d9" />
+            <Button layoutX="74.0" layoutY="31.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="126.0" style="-fx-background-color: #021b50;" text="Mon Compte" textFill="#d7d7d9">
+
                <font>
                   <Font size="16.0" />
                </font>
@@ -64,11 +37,41 @@
                   <Image url="@images/showtime-removebg-preview.png" />
                </image>
             </ImageView>
+            <ImageView fitHeight="31.0" fitWidth="29.0" layoutX="15.0" layoutY="178.0">
+               <image>
+                  <Image url="@images/usermodifier.png" />
+               </image>
+            </ImageView>
+            <ImageView fitWidth="29.0" layoutX="13.0" layoutY="236.0">
+               <image>
+                  <Image url="@images/film-slate.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="31.0" fitWidth="36.0" layoutX="9.0" layoutY="289.0">
+               <image>
+                  <Image url="@images/new-product.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="12.0" layoutY="339.0">
+               <image>
+                  <Image url="@images/mmmmmm.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="8.0" layoutY="392.0">
+               <image>
+                  <Image url="@images/gggggggggggggggggggggggg.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="31.0" fitWidth="29.0" layoutX="12.0" layoutY="451.0">
+               <image>
+                  <Image url="@images/cinema.png" />
+               </image>
+            </ImageView>
          </children>
       </AnchorPane>
-      <Pane layoutX="215.0" layoutY="14.0" prefHeight="67.0" prefWidth="1076.0" style="-fx-background-color: #ebedeb; -fx-background-radius: 30;">
+      <Pane layoutX="215.0" layoutY="14.0" prefHeight="67.0" prefWidth="1076.0" style="-fx-background-color: #021b50; -fx-background-radius: 30;">
          <children>
-            <Label layoutX="41.0" layoutY="18.0" prefHeight="31.0" prefWidth="148.0" text="SHOWTIME" textFill="#791d1d" textOverrun="CENTER_WORD_ELLIPSIS">
+            <Label layoutX="41.0" layoutY="18.0" prefHeight="31.0" prefWidth="148.0" text="SHOWTIME" textFill="WHITE" textOverrun="CENTER_WORD_ELLIPSIS">
                <font>
                   <Font size="24.0" />
                </font>
@@ -85,6 +88,34 @@
             </TextField>
          </children>
       </Pane>
-      <AnchorPane layoutX="215.0" layoutY="89.0" prefHeight="554.0" prefWidth="1068.0" style="-fx-background-color: #c5cbd9; -fx-background-radius: 20;" />
+      <AnchorPane layoutX="215.0" layoutY="89.0" prefHeight="554.0" prefWidth="1068.0" style="-fx-background-color: back; -fx-background-radius: 20;">
+         <children>
+            <ImageView fitHeight="548.0" fitWidth="1059.0" layoutX="-1.0" layoutY="1.0" opacity="0.38">
+               <image>
+                  <Image url="@images/cinemaback.jpg" />
+               </image>
+            </ImageView>
+            <Text fill="WHITE" layoutX="565.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bienvenue dans ShowTime !">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Text>
+            <Text fill="WHITE" layoutX="565.0" layoutY="162.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Réservez vos places pour les meilleurs films et achetez vos produits préférés directement depuis l'application. Pour les passionnés de cinéma, découvrez aussi nos cours de théâtre et de cinéma, où vous pourrez apprendre les secrets des pros et vivre votre passion pleinement" wrappingWidth="360.7294921875">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+            <Text fill="WHITE" layoutX="592.0" layoutY="356.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Avec ShowTime, Plongez dans une expérience complète qui mêle divertissement et apprentissage !" wrappingWidth="461.5263671875">
+               <font>
+                  <Font name="System Italic" size="18.0" />
+               </font>
+            </Text>
+            <Separator layoutX="507.0" layoutY="23.0" orientation="VERTICAL" prefHeight="476.0" prefWidth="5.0" />
+            <ImageView fitHeight="168.0" fitWidth="375.0" layoutX="58.0" layoutY="149.0">
+               <image>
+                  <Image url="@images/helooooocinema.png" />
+               </image>
+            </ImageView>
+         </children></AnchorPane>
    </children>
 </AnchorPane>
