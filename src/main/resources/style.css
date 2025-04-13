@@ -1,0 +1,147 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7fa;
+    color: #333;
+}
+
+/* Style for the VBox container */
+.VBox {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 90%;
+    max-width: 800px;
+    margin: 30px auto;
+}
+
+/* Title style */
+.Label {
+    font-size: 22px;
+    font-weight: bold;
+    color: #3a3a3a;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* ListView Styles */
+.ListView {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #fff;
+    height: 300px;
+    margin-bottom: 20px;
+}
+
+/* Button Styles */
+.Button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.Button:hover {
+    background-color: #45a049;
+}
+
+/* TextField Styles */
+.TextField {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.TextField:focus {
+    border-color: #4CAF50;
+    outline: none;
+}
+
+/* ComboBox Styles */
+.ComboBox {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: #fff;
+    margin-bottom: 15px;
+}
+
+/* DatePicker Styles */
+.DatePicker {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+/* Image chooser button */
+.Button[onAction="#choisirImage"] {
+    background-color: #008CBA;
+    margin-left: 10px;
+}
+
+.Button[onAction="#choisirImage"]:hover {
+    background-color: #007BB5;
+}
+
+/* Form container (AnchorPane) */
+.AnchorPane {
+    background-color: #f7f7f7;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 50px auto;
+}
+
+.AnchorPane .TextField {
+    margin-bottom: 20px;
+}
+
+/* Alert Styles */
+.Alert {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: #333;
+}
+
+/* Responsive Layout for small screens */
+@media screen and (max-width: 600px) {
+    .VBox {
+        width: 100%;
+        padding: 15px;
+    }
+    .Button {
+        width: 100%;
+        padding: 15px;
+    }
+    .TextField, .ComboBox, .DatePicker {
+        width: 100%;
+        padding: 12px;
+    }
+    .AnchorPane {
+        padding: 20px;
+    }
+}

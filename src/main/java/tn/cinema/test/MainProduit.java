@@ -1,6 +1,5 @@
 package tn.cinema.test;
 
-import tn.cinema.tools.Mydatabase;
 import tn.cinema.services.ProduitService;
 import tn.cinema.entities.Produit;
 import tn.cinema.entities.Commande;
@@ -8,7 +7,7 @@ import tn.cinema.services.CommandeService;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Main {
+public class MainProduit {
     public static void main(String[] args){
 
         // Test Produit CRUD
@@ -85,7 +84,7 @@ public class Main {
         }
 
         // Associer produit et commande (id fictifs)
-        commandeService.ajouterProduitACommande(2, 10);
-        commandeService.ajouterProduitACommande(2, 11); 
+        commandeService.ajouterProduitACommande(3, 12);
+        commandeService.ajouterProduitACommande(3, 13);
     }
 }
