@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.PasswordField?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.ModifierUser">
+    <children>
+        <Label layoutX="119.0" layoutY="123.0" text="Nom :" />
+        <Label layoutX="119.0" layoutY="159.0" text="Email :" />
+        <Label layoutX="119.0" layoutY="192.0" text="Mot de Passe :" />
+        <Label layoutX="119.0" layoutY="224.0" text="Date de Naissance :" />
+        <Label layoutX="119.0" layoutY="257.0" text="Role :" />
+        <Label layoutX="119.0" layoutY="288.0" text="Photo :" />
+        <TextField fx:id="Nom" layoutX="237.0" layoutY="119.0" />
+        <PasswordField fx:id="MotDePasse" layoutX="237.0" layoutY="187.0" />
+        <TextField fx:id="Email" layoutX="237.0" layoutY="155.0" />
+        <DatePicker fx:id="DateNaissance" layoutX="236.0" layoutY="220.0" prefHeight="26.0" prefWidth="150.0" />
+        <ComboBox fx:id="Role" layoutX="236.0" layoutY="253.0" prefWidth="150.0" />
+        <Button fx:id="PhotoButton" layoutX="236.0" layoutY="283.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" text="Séléctionner Photo" onAction="#PhotoPopUp" />
+        <Button layoutX="274.0" layoutY="332.0" mnemonicParsing="false" onAction="#handleSave" text="Save" />
+    </children>
+</AnchorPane>

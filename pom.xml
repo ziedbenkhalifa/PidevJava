@@ -31,4 +31,16 @@
                 <version>21.0.2</version>
             </dependency>
     </dependencies>
+    <build>
+        <plugins>
+        <plugin>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-maven-plugin</artifactId>
+            <version>0.0.8</version>
+            <configuration>
+                <mainClass>tn.cinema.test.UserMainFX</mainClass>
+            </configuration>
+        </plugin>
+        </plugins>
+    </build>
 </project>
