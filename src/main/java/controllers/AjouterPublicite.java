@@ -26,9 +26,12 @@ public class AjouterPublicite {
     @FXML
     private TextField montantField;
 
-    private InterfacePublicites parentController;
+    private InterfacePublicites parentController; // For InterfacePublicites
+    private InterfaceDemandes demandeParentController; // For InterfaceDemandes
 
     private PubliciteService publiciteService = new PubliciteService();
+
+    private boolean isFromDemande = false; // Flag to track if opened from InterfaceDemandes
 
     @FXML
     private void ajouterPublicite() {
@@ -51,8 +54,16 @@ public class AjouterPublicite {
             // Add the publicite using the service
             publiciteService.ajouterpub(publicite);
 
+            // Show success message
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Publicité ajoutée avec succès !");
+            alert.showAndWait();
+
             // Refresh the parent ListView
-            parentController.refreshList();
+            if (isFromDemande && demandeParentController != null) {
+                demandeParentController.refreshList();
+            } else if (parentController != null) {
+                parentController.refreshList();
+            }
 
             // Close the window
             Stage stage = (Stage) demandeIdField.getScene().getWindow();
@@ -69,7 +80,27 @@ public class AjouterPublicite {
         }
     }
 
+    // Method to set the parent controller when opened from InterfacePublicites
     public void setParentController(InterfacePublicites parentController) {
         this.parentController = parentController;
+        this.demandeParentController = null;
+        this.isFromDemande = false;
+        demandeIdField.setEditable(true); // Allow editing when opened from InterfacePublicites
+        demandeIdField.setStyle(""); // Reset style
+    }
+
+    // Overloaded method to set the parent controller when opened from InterfaceDemandes
+    public void setParentController(InterfaceDemandes demandeParentController) {
+        this.demandeParentController = demandeParentController;
+        this.parentController = null;
+        this.isFromDemande = true;
+    }
+
+    // Method to set the Demande ID and make the field non-editable
+    public void setDemandeId(int demandeId) {
+        demandeIdField.setText(String.valueOf(demandeId));
+        demandeIdField.setEditable(false); // Make the field non-editable
+        demandeIdField.setStyle("-fx-background-color: #e0e0e0;"); // Visually indicate it's non-editable
+        this.isFromDemande = true;
     }
 }

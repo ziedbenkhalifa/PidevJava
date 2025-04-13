@@ -15,6 +15,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import tn.cinema.entities.Demande;
 import tn.cinema.services.DemandeService;
+import tn.cinema.services.PubliciteService;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -28,14 +29,24 @@ public class InterfaceDemandes implements Initializable {
     private Button ajouterDemandeButton;
 
     @FXML
-    private Button backButton; // Added field for the Back button
+    private Button backButton;
 
     private DemandeService demandeService = new DemandeService();
+    private PubliciteService publiciteService; // Moved to class level
 
     private ObservableList<Demande> demandes;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Initialize publiciteService
+        try {
+            publiciteService = new PubliciteService();
+            System.out.println("PubliciteService initialized successfully: " + (publiciteService != null));
+        } catch (Exception e) {
+            System.err.println("Failed to initialize PubliciteService: " + e.getMessage());
+            e.printStackTrace();
+        }
+
         // Set up the ListView with a custom cell factory
         demandeListView.setCellFactory(listView -> new ListCell<Demande>() {
             @Override
@@ -94,9 +105,10 @@ public class InterfaceDemandes implements Initializable {
                     gridPane.add(statutText, 0, 3);
                     gridPane.add(dateText, 1, 3);
 
-                    // Create buttons for Modifier and Supprimer
+                    // Create buttons for Modifier, Supprimer, and conditionally Ajouter Publicité
                     HBox buttonsBox = new HBox(10);
-                    buttonsBox.setStyle("-fx-padding: 10 0 0 0;"); // Add padding above buttons
+                    buttonsBox.setStyle("-fx-padding: 10 0 0 0; -fx-alignment: center-right;"); // Align buttons to the right
+
                     Button modifierButton = new Button("Modifier");
                     modifierButton.setStyle("-fx-background-color: #294478; -fx-text-fill: #d7d7d9; -fx-background-radius: 5; -fx-font-size: 14;");
                     modifierButton.setOnMouseEntered(e -> modifierButton.setStyle("-fx-background-color: #3b5a9a; -fx-text-fill: #d7d7d9; -fx-background-radius: 5; -fx-font-size: 14;"));
@@ -125,7 +137,55 @@ public class InterfaceDemandes implements Initializable {
                         }
                     });
 
-                    buttonsBox.getChildren().addAll(modifierButton, supprimerButton);
+                    // Check if the Demande is approuvee and has no associated Publicite
+                    boolean isApprouvee = "approuvee".equalsIgnoreCase(demande.getStatut().trim());
+                    boolean hasPublicite = false;
+                    try {
+                        if (publiciteService == null) {
+                            System.err.println("publiciteService is null for Demande ID: " + demande.getId());
+                            Alert alert = new Alert(Alert.AlertType.ERROR, "Erreur : Service de publicité non initialisé.");
+                            alert.showAndWait();
+                        } else {
+                            hasPublicite = publiciteService.existsByDemandeId(demande.getId());
+                            System.out.println("Demande ID: " + demande.getId() +
+                                    ", Raw Statut: \"" + demande.getStatut() + "\"" +
+                                    ", Trimmed Statut: \"" + demande.getStatut().trim() + "\"" +
+                                    ", Is Approuvee: " + isApprouvee +
+                                    ", Has Publicite: " + hasPublicite);
+                        }
+                    } catch (SQLException e) {
+                        System.err.println("SQLException while checking Publicite for Demande ID: " + demande.getId());
+                        e.printStackTrace();
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Erreur lors de la vérification de la publicité : " + e.getMessage());
+                        alert.showAndWait();
+                    } catch (Exception e) {
+                        System.err.println("Unexpected error while checking Publicite for Demande ID: " + demande.getId());
+                        e.printStackTrace();
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Erreur inattendue : " + e.getMessage());
+                        alert.showAndWait();
+                    }
+
+                    if (isApprouvee && !hasPublicite) {
+                        System.out.println("Showing Ajouter Publicité button for Demande ID: " + demande.getId());
+                        Button ajouterPubliciteButton = new Button("Ajouter Publicité");
+                        ajouterPubliciteButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: #ffffff; -fx-background-radius: 5; -fx-font-size: 14; -fx-padding: 5 15;");
+                        ajouterPubliciteButton.setOnMouseEntered(e -> ajouterPubliciteButton.setStyle("-fx-background-color: #66BB6A; -fx-text-fill: #ffffff; -fx-background-radius: 5; -fx-font-size: 14; -fx-padding: 5 15;"));
+                        ajouterPubliciteButton.setOnMouseExited(e -> ajouterPubliciteButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: #ffffff; -fx-background-radius: 5; -fx-font-size: 14; -fx-padding: 5 15;"));
+                        ajouterPubliciteButton.setOnAction(event -> {
+                            try {
+                                openAjouterPubliciteFromDemande(demande);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Alert alert = new Alert(Alert.AlertType.ERROR, "Erreur lors de l'ouverture de la fenêtre Ajouter Publicité : " + e.getMessage());
+                                alert.showAndWait();
+                            }
+                        });
+                        buttonsBox.getChildren().addAll(modifierButton, supprimerButton, ajouterPubliciteButton);
+                    } else {
+                        System.out.println("Not showing Ajouter Publicité button for Demande ID: " + demande.getId() +
+                                " (Is Approuvee: " + isApprouvee + ", Has Publicite: " + hasPublicite + ")");
+                        buttonsBox.getChildren().addAll(modifierButton, supprimerButton);
+                    }
 
                     // Add GridPane and buttons to the VBox
                     vbox.getChildren().addAll(gridPane, buttonsBox);
@@ -158,6 +218,9 @@ public class InterfaceDemandes implements Initializable {
     private void loadDemandes() {
         try {
             demandes = FXCollections.observableArrayList(demandeService.recuperer());
+            for (Demande demande : demandes) {
+                System.out.println("Loaded Demande - ID: " + demande.getId() + ", Statut: \"" + demande.getStatut() + "\"");
+            }
             demandeListView.setItems(demandes);
             System.out.println("Nombre de demandes récupérées : " + demandes.size());
         } catch (SQLException e) {
@@ -211,21 +274,35 @@ public class InterfaceDemandes implements Initializable {
         stage.show();
     }
 
-    // Method to refresh the ListView after adding, modifying, or deleting a Demande
+    private void openAjouterPubliciteFromDemande(Demande demande) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterPublicite.fxml"));
+        Parent root = loader.load();
+
+        AjouterPublicite controller = loader.getController();
+        controller.setParentController(this);
+        controller.setDemandeId(demande.getId());
+
+        Stage stage = new Stage();
+        stage.setTitle("Ajouter une Publicité");
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
     public void refreshList() {
         loadDemandes();
     }
 
     private String transformStatutForUI(String statut) {
-        switch (statut) {
+        if (statut == null) return "Inconnu";
+        switch (statut.toLowerCase()) {
             case "approuvee":
                 return "Approuvée";
             case "en_attente":
-                return "En_attente";
+                return "En attente";
             case "rejete":
                 return "Rejetée";
             default:
-                return statut; // Fallback to the raw value if unknown
+                return statut;
         }
     }
 
