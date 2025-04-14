@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #0b0f29;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.ModifierUser">
+    <children>
+        <Label layoutX="119.0" layoutY="123.0" style="-fx-text-fill: white; -fx-font-size: 14;" text="Nom :">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+        <Label layoutX="119.0" layoutY="159.0" style="-fx-text-fill: white; -fx-font-size: 14;" text="Email :">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+        <Label layoutX="119.0" layoutY="192.0" style="-fx-text-fill: white; -fx-font-size: 14;" text="Mot de Passe :">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+        <Label layoutX="119.0" layoutY="224.0" style="-fx-text-fill: white; -fx-font-size: 14;" text="Date de Naissance :">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+        <Label layoutX="119.0" layoutY="257.0" style="-fx-text-fill: white; -fx-font-size: 14;" text="Rôle :">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+        <Label layoutX="119.0" layoutY="288.0" style="-fx-text-fill: white; -fx-font-size: 14;" text="Photo :">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+        <TextField fx:id="Nom" layoutX="237.0" layoutY="119.0" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #1a2a44; -fx-text-fill: white; -fx-background-radius: 5; -fx-border-color: #162c4f; -fx-border-radius: 5;" />
+        <PasswordField fx:id="MotDePasse" layoutX="237.0" layoutY="187.0" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #1a2a44; -fx-text-fill: white; -fx-background-radius: 5; -fx-border-color: #162c4f; -fx-border-radius: 5;" />
+        <TextField fx:id="Email" layoutX="237.0" layoutY="155.0" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #1a2a44; -fx-text-fill: white; -fx-background-radius: 5; -fx-border-color: #162c4f; -fx-border-radius: 5;" />
+        <DatePicker fx:id="DateNaissance" layoutX="237.0" layoutY="220.0" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #1a2a44; -fx-text-fill: white; -fx-background-radius: 5;" />
+        <ComboBox fx:id="Role" layoutX="237.0" layoutY="253.0" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #1a2a44; -fx-text-fill: white; -fx-background-radius: 5;" />
+        <Button fx:id="PhotoButton" layoutX="237.0" layoutY="283.0" mnemonicParsing="false" onAction="#PhotoPopUp" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #294478; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-size: 14;" text="Séléctionner Photo">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Button>
+        <Button layoutX="274.0" layoutY="332.0" mnemonicParsing="false" onAction="#handleSave" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #1e7e34; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-size: 14; -fx-cursor: hand;" text="Enregistrer">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Button>
+      <Label layoutX="168.0" layoutY="48.0" text="Modifier vos informations :" textFill="WHITE">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Label>
+    </children>
+</AnchorPane>

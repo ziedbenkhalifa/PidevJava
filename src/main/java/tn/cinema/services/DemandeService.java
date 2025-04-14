@@ -2,7 +2,8 @@ package tn.cinema.services;
 
 import tn.cinema.entities.Demande;
 import tn.cinema.tools.Mydatabase;
-
+import tn.cinema.utils.SessionManager;
+import tn.cinema.entities.User;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,16 +51,23 @@ public class DemandeService implements IServices<Demande>{
     public void ajoutDemande(Demande demande) throws SQLException {
         String sql = "INSERT INTO demande(user_id, nbr_Jours, description, type, lien_supp) VALUES(?,?,?,?,?)";
         try {
+            // Get logged-in user's ID from SessionManager
+            User loggedInUser = SessionManager.getInstance().getLoggedInUser();
+            if (loggedInUser == null) {
+                throw new IllegalStateException("Aucun utilisateur connecté.");
+            }
+            int userId = loggedInUser.getId();
+
             PreparedStatement ps = cnx.prepareStatement(sql);
-            ps.setInt(1, 3); // user_id statique
+            ps.setInt(1, userId); // Dynamic user_id
             ps.setInt(2, demande.getNombreJours());
             ps.setString(3, demande.getDescription());
             ps.setString(4, demande.getType());
             ps.setString(5, demande.getLienSupplementaire());
             ps.executeUpdate();
-            System.out.println("Demande ajoutée");
+            System.out.println("Demande ajoutée pour user_id: " + userId);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new SQLException("Erreur lors de l'ajout de la demande: " + e.getMessage());
         }
     }
 
@@ -212,30 +220,41 @@ public class DemandeService implements IServices<Demande>{
 
     public List<Demande> recupereDemandesParClient() throws SQLException {
         String sql = "SELECT * FROM demande WHERE user_id = ?";
-        PreparedStatement pstmt = cnx.prepareStatement(sql);
-        pstmt.setInt(1, 3); // user_id statique
-        ResultSet rs = pstmt.executeQuery();
-        List<Demande> demandes = new ArrayList<>();
-
-        while (rs.next()) {
-            int id = rs.getInt("id");
-            int userId = rs.getInt("user_id");
-            int adminId = rs.getInt("admin_id");
-            int nombreJours = rs.getInt("nbr_jours");
-            String description = rs.getString("description");
-            String type = rs.getString("type");
-            String lienSupplementaire = rs.getString("lien_supp");
-            String statut = rs.getString("statut");
-            if (statut == null) {
-                statut = "Inconnu";
+        try {
+            // Get logged-in user's ID from SessionManager
+            User loggedInUser = SessionManager.getInstance().getLoggedInUser();
+            if (loggedInUser == null) {
+                throw new IllegalStateException("Aucun utilisateur connecté.");
             }
-            Date dateSoumission = rs.getDate("date_soumission");
+            int userId = loggedInUser.getId();
 
-            Demande d = new Demande(id, userId, adminId, nombreJours, description, type, lienSupplementaire, statut, dateSoumission);
-            demandes.add(d);
+            PreparedStatement pstmt = cnx.prepareStatement(sql);
+            pstmt.setInt(1, userId); // Dynamic user_id
+            ResultSet rs = pstmt.executeQuery();
+            List<Demande> demandes = new ArrayList<>();
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                int userIdFromDb = rs.getInt("user_id");
+                int adminId = rs.getInt("admin_id");
+                int nombreJours = rs.getInt("nbr_jours");
+                String description = rs.getString("description");
+                String type = rs.getString("type");
+                String lienSupplementaire = rs.getString("lien_supp");
+                String statut = rs.getString("statut");
+                if (statut == null) {
+                    statut = "Inconnu";
+                }
+                Date dateSoumission = rs.getDate("date_soumission");
+
+                Demande d = new Demande(id, userIdFromDb, adminId, nombreJours, description, type, lienSupplementaire, statut, dateSoumission);
+                demandes.add(d);
+            }
+
+            return demandes;
+        } catch (SQLException e) {
+            throw new SQLException("Erreur lors de la récupération des demandes: " + e.getMessage());
         }
-
-        return demandes;
     }
 
 

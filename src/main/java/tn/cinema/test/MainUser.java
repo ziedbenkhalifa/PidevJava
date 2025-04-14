@@ -1,6 +1,6 @@
 package tn.cinema.test;
 
-import tn.cinema.entities.User;
+/*import tn.cinema.entities.User;
 import tn.cinema.tools.Mydatabase;
 import tn.cinema.services.UserService;
 
@@ -43,5 +43,5 @@ public class MainUser {
         }
         System.out.println("------------------------");
         System.out.println("Total utilisateurs : " + users.size());*/
-    }
-}
+ //   }
+//}
