@@ -1,4 +1,4 @@
-package controllers;
+package tn.cinema.controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

@@ -1,4 +1,4 @@
-package controllers;
+package tn.cinema.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
