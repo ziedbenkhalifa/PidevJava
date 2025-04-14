@@ -9,81 +9,74 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #162c4f;" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.AjouterUser">
+<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #0b0f29;" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.AjouterUser">
    <children>
       <!-- Sidebar -->
-      <AnchorPane prefHeight="651.0" prefWidth="200.0" style="-fx-background-color: #294478; -fx-background-radius: 10;">
+      <AnchorPane layoutY="-8.0" prefHeight="651.0" prefWidth="200.0" style="-fx-background-color: #021b50; -fx-background-radius: 10;">
          <children>
-            <!-- User Profile Section -->
             <ImageView layoutX="12.0" layoutY="31.0">
                <image>
                   <Image url="@images/icons8-user-64.png" />
                </image>
             </ImageView>
-            <Button layoutX="74.0" layoutY="31.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="126.0" style="-fx-background-color: #294478;" text="Mon Compte" textFill="#d7d7d9">
+            <Button fx:id="monCompteButton" layoutX="74.0" layoutY="31.0" mnemonicParsing="false" onAction="#handleMonCompteAction" prefHeight="64.0" prefWidth="126.0" style="-fx-background-color: #021b50;" text="Mon Compte" textFill="#d7d7d9">
                <font>
                   <Font size="16.0" />
                </font>
             </Button>
+            <Button layoutX="56.0" layoutY="181.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion User" textFill="#d7d7d9" />
+            <Button layoutX="57.0" layoutY="237.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Film" textFill="#d7d7d9" />
+            <Button layoutX="57.0" layoutY="346.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Pub" textFill="#d7d7d9" />
+            <Button layoutX="57.0" layoutY="399.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Cour" textFill="#d7d7d9" />
+            <Button layoutX="58.0" layoutY="293.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Produit" textFill="#d7d7d9" />
+            <Button layoutX="55.0" layoutY="454.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Salle" textFill="#d7d7d9" />
 
-            <!-- Navigation Buttons -->
-            <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="26.0" layoutY="147.0">
+            <!-- Sidebar Icons -->
+            <ImageView fitHeight="31.0" fitWidth="29.0" layoutX="15.0" layoutY="178.0">
                <image>
-                  <Image url="@images/icons8-people-64.png" />
+                  <Image url="@images/usermodifier.png" />
                </image>
             </ImageView>
-            <Button layoutX="73.0" layoutY="154.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="119.0" style="-fx-background-color: #294478;" text="Gestion User" textFill="#d7d7d9" />
-
-            <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="26.0" layoutY="204.0">
+            <ImageView fitWidth="29.0" layoutX="13.0" layoutY="236.0">
                <image>
-                  <Image url="@images/icons8-movies-folder-100.png" />
+                  <Image url="@images/film-slate.png" />
                </image>
             </ImageView>
-            <Button layoutX="85.0" layoutY="211.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Film" textFill="#d7d7d9" />
-
-            <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="26.0" layoutY="253.0">
+            <ImageView fitHeight="31.0" fitWidth="36.0" layoutX="9.0" layoutY="289.0">
                <image>
-                  <Image url="@images/icons8-publicity-64.png" />
+                  <Image url="@images/new-product.png" />
                </image>
             </ImageView>
-            <Button layoutX="84.0" layoutY="260.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Pub" textFill="#d7d7d9" />
-
-            <ImageView fitHeight="38.0" fitWidth="40.0" layoutX="24.0" layoutY="312.0">
+            <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="12.0" layoutY="339.0">
                <image>
-                  <Image url="@images/icons8-bookmark-48.png" />
+                  <Image url="@images/mmmmmm.png" />
                </image>
             </ImageView>
-            <Button layoutX="82.0" layoutY="319.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Cour" textFill="#d7d7d9" />
-
-            <ImageView fitHeight="38.0" fitWidth="40.0" layoutX="24.0" layoutY="365.0">
+            <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="8.0" layoutY="392.0">
                <image>
-                  <Image url="@images/icons8-shopping-cart-40.png" />
+                  <Image url="@images/gggggggggggggggggggggggg.png" />
                </image>
             </ImageView>
-            <Button layoutX="82.0" layoutY="372.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Produit" textFill="#d7d7d9" />
-
-            <ImageView fitHeight="38.0" fitWidth="40.0" layoutX="24.0" layoutY="421.0">
+            <ImageView fitHeight="31.0" fitWidth="29.0" layoutX="12.0" layoutY="451.0">
                <image>
-                  <Image url="@images/icons8-movie-theater-48.png" />
+                  <Image url="@images/cinema.png" />
                </image>
             </ImageView>
-            <Button layoutX="84.0" layoutY="428.0" mnemonicParsing="false" style="-fx-background-color: #294478;" text="Gestion Salle" textFill="#d7d7d9" />
-
-            <!-- Footer Logo -->
             <ImageView fitHeight="87.0" fitWidth="100.0" layoutX="8.0" layoutY="542.0">
                <image>
-                  <Image url="@images/showtime-removebg-preview (1).png" />
+                  <Image url="@images/showtime-removebg-preview.png" />
                </image>
             </ImageView>
          </children>
       </AnchorPane>
 
       <!-- Header Section -->
-      <Pane layoutX="215.0" layoutY="14.0" prefHeight="67.0" prefWidth="1076.0" style="-fx-background-color: #ebedeb; -fx-background-radius: 30;">
+      <Pane layoutX="215.0" layoutY="14.0" prefHeight="67.0" prefWidth="1076.0" style="-fx-background-color: #021b50; -fx-background-radius: 30;">
          <children>
-            <Label layoutX="41.0" layoutY="18.0" prefHeight="31.0" prefWidth="148.0" text="SHOWTIME" textFill="#791d1d" textOverrun="CENTER_WORD_ELLIPSIS">
+            <Label layoutX="41.0" layoutY="18.0" prefHeight="31.0" prefWidth="148.0" text="SHOWTIME" textFill="WHITE">
                <font>
                   <Font size="24.0" />
                </font>
@@ -98,25 +91,42 @@
                   <Font size="18.0" />
                </font>
             </TextField>
+            <Button fx:id="backButton" layoutX="388.0" layoutY="16.0" mnemonicParsing="false" onAction="#handleBackAction" prefHeight="36.0" prefWidth="150.0" style="-fx-background-color: #021b50; -fx-text-fill: white; -fx-font-size: 16px;" text="Back to Users List" />
          </children>
       </Pane>
 
-      <!-- Main Content Area with Form -->
-      <AnchorPane layoutX="215.0" layoutY="89.0" prefHeight="554.0" prefWidth="1068.0" style="-fx-background-color: #c5cbd9; -fx-background-radius: 20;">
+      <!-- Main Content Area -->
+      <AnchorPane layoutX="215.0" layoutY="89.0" prefHeight="554.0" prefWidth="1068.0" style="-fx-background-radius: 20;">
          <children>
-            <Label layoutX="119.0" layoutY="123.0" text="Nom :" style="-fx-text-fill: #162c4f; -fx-font-size: 14px;" />
-            <Label layoutX="119.0" layoutY="159.0" text="Email :" style="-fx-text-fill: #162c4f; -fx-font-size: 14px;" />
-            <Label layoutX="119.0" layoutY="192.0" text="Mot de Passe :" style="-fx-text-fill: #162c4f; -fx-font-size: 14px;" />
-            <Label layoutX="119.0" layoutY="224.0" text="Date de Naissance :" style="-fx-text-fill: #162c4f; -fx-font-size: 14px;" />
-            <Label layoutX="119.0" layoutY="257.0" text="Role :" style="-fx-text-fill: #162c4f; -fx-font-size: 14px;" />
-            <Label layoutX="119.0" layoutY="288.0" text="Photo :" style="-fx-text-fill: #162c4f; -fx-font-size: 14px;" />
-            <TextField fx:id="Nom" layoutX="237.0" layoutY="119.0" prefWidth="200.0" style="-fx-background-color: #ebedeb; -fx-text-fill: #162c4f; -fx-font-size: 14px;" />
-            <TextField fx:id="MotDePasse" layoutX="237.0" layoutY="187.0" prefWidth="200.0" style="-fx-background-color: #ebedeb; -fx-text-fill: #162c4f; -fx-font-size: 14px;" />
-            <TextField fx:id="Email" layoutX="237.0" layoutY="155.0" prefWidth="200.0" style="-fx-background-color: #ebedeb; -fx-text-fill: #162c4f; -fx-font-size: 14px;" />
-            <DatePicker fx:id="DateNaissance" layoutX="237.0" layoutY="220.0" prefHeight="26.0" prefWidth="200.0" style="-fx-background-color: #ebedeb; -fx-font-size: 14px;" />
-            <ComboBox fx:id="Role" layoutX="237.0" layoutY="253.0" prefWidth="200.0" style="-fx-background-color: #ebedeb; -fx-font-size: 14px;" />
-            <Button layoutX="237.0" layoutY="283.0" mnemonicParsing="false" onAction="#PhotoPopUp" prefHeight="26.0" prefWidth="200.0" text="Séléctionner Photo" style="-fx-background-color: #294478; -fx-text-fill: #d7d7d9; -fx-font-size: 14px;" />
-            <Button layoutX="287.0" layoutY="332.0" mnemonicParsing="false" onAction="#Sinscrire" text="Save" style="-fx-background-color: #294478; -fx-text-fill: #d7d7d9; -fx-font-size: 14px;" />
+            <!-- Background Image -->
+            <ImageView fitHeight="554.0" fitWidth="1068.0" opacity="0.35">
+               <image>
+                  <Image url="@images/cinemaback.jpg" />
+               </image>
+            </ImageView>
+
+            <!-- Sign-Up Form -->
+            <VBox layoutX="10.0" layoutY="10.0" prefWidth="1048.0" spacing="15" style="-fx-padding: 20;">
+               <children>
+                  <Label prefWidth="150" style="-fx-text-fill: white;" text="Nom" />
+                  <TextField fx:id="Nom" prefHeight="40.0" prefWidth="300.0" promptText="Nom" style="-fx-background-color: transparent; -fx-border-color: #162c4f; -fx-border-width: 1; -fx-border-radius: 5;" />
+
+                  <Label prefWidth="200" style="-fx-text-fill: white;" text="Email" />
+                  <TextField fx:id="Email" prefHeight="40.0" prefWidth="300.0" promptText="Email" style="-fx-background-color: transparent; -fx-border-color: #162c4f; -fx-border-width: 1; -fx-border-radius: 5;" />
+
+                  <Label prefWidth="150" style="-fx-text-fill: white;" text="Mot de Passe" />
+                  <TextField fx:id="MotDePasse" prefHeight="40.0" prefWidth="300.0" promptText="Mot de Passe" style="-fx-background-color: transparent; -fx-border-color: #162c4f; -fx-border-width: 1; -fx-border-radius: 5;" />
+
+                  <Label prefWidth="150" style="-fx-text-fill: white;" text="Date de Naissance" />
+                  <DatePicker fx:id="DateNaissance" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: transparent; -fx-border-color: #162c4f; -fx-border-width: 1; -fx-border-radius: 5;" />
+
+                  <Label prefWidth="100" style="-fx-text-fill: white;" text="Rôle" />
+                  <ComboBox fx:id="Role" prefHeight="40.0" prefWidth="300.0" promptText="Role" style="-fx-background-color: transparent; -fx-border-color: #162c4f; -fx-border-width: 1; -fx-border-radius: 5;" />
+                  <Button layoutX="237.0" layoutY="283.0" mnemonicParsing="false" onAction="#PhotoPopUp" prefHeight="30.0" prefWidth="298.0" style="-fx-background-color: #294478; -fx-text-fill: #d7d7d9; -fx-font-size: 14px;" text="Séléctionner Photo" />
+                  <Button layoutX="287.0" layoutY="332.0" mnemonicParsing="false" onAction="#Sinscrire" style="-fx-background-color: #294478; -fx-text-fill: #d7d7d9; -fx-font-size: 14px;" text="Save" />
+               </children>
+            </VBox>
+
          </children>
       </AnchorPane>
    </children>

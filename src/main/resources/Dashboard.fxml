@@ -73,7 +73,7 @@
                 <!-- Footer Logo -->
                 <ImageView fitHeight="87.0" fitWidth="100.0" layoutX="8.0" layoutY="542.0">
                     <image>
-                        <Image url="@images/showtime-removebg-preview (1).png" />
+                        <Image url="@images/showtime-removebg-preview.png" />
                     </image>
                 </ImageView>
             </children>

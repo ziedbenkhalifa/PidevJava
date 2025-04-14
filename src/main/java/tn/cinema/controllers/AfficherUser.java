@@ -4,7 +4,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -12,22 +11,19 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import tn.cinema.entities.User;
 import tn.cinema.services.UserService;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.ResourceBundle;
 
-public class AfficherUser implements Initializable {
+public class AfficherUser extends BaseController {
 
     @FXML
-    private ListView<User> listView; // Replaces TableView
+    private ListView<User> listView;
 
     @FXML
     private Button modifierButton;
@@ -35,18 +31,22 @@ public class AfficherUser implements Initializable {
     @FXML
     private Button deleteButton;
 
+    @FXML
+    private Button monCompteButton;
+
     private UserService userService = new UserService();
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        // Load users into the ListView
+    @FXML
+    public void initialize() {
         loadUsers();
-
-        // Set up modifier button action
         modifierButton.setOnAction(event -> handleModifierButtonClick());
-
-        // Set up delete button action
         deleteButton.setOnAction(event -> handleDeleteButtonClick());
+    }
+
+    @FXML
+    private void handleMonCompteAction() {
+        Stage stage = (Stage) monCompteButton.getScene().getWindow();
+        super.handleMonCompteAction(stage);
     }
 
     @FXML
@@ -54,26 +54,25 @@ public class AfficherUser implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterUser.fxml"));
             Parent root = loader.load();
-
-            // Get the current stage and close it
-            Stage currentStage = (Stage) listView.getScene().getWindow();
-            currentStage.close();
-
-            // Open the new AjouterUser stage
             Stage stage = new Stage();
             stage.setTitle("Ajouter un utilisateur");
             stage.setScene(new Scene(root));
             stage.show();
+            Stage currentStage = (Stage) listView.getScene().getWindow();
+            currentStage.close();
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Erreur", "Impossible de charger le formulaire d'ajout.");
+            showAlert("Erreur", "Impossible de charger le formulaire d'ajout: " + e.getMessage());
         }
     }
-
 
     private void loadUsers() {
         try {
             List<User> users = userService.recuperer();
+            System.out.println("Fetched " + users.size() + " users from database");
+            if (users.isEmpty()) {
+                showAlert("Information", "Aucun utilisateur trouvé dans la base de données.");
+            }
             ObservableList<User> observableList = FXCollections.observableArrayList(users);
             listView.setItems(observableList);
 
@@ -85,45 +84,80 @@ public class AfficherUser implements Initializable {
                         setText(null);
                         setGraphic(null);
                     } else {
-                        HBox row = new HBox(10);
-                        row.setStyle("-fx-padding: 10; -fx-border-color: #cccccc; -fx-border-width: 0 0 1 0; -fx-alignment: CENTER_LEFT;");
-                        row.setPrefHeight(60);
+                        System.out.println("Rendering user: " + user.getNom());
+                        HBox card = new HBox(15);
+                        card.setStyle("-fx-background-color: #1a2a44; -fx-padding: 15; -fx-background-radius: 10; -fx-margin: 5;");
+                        card.setPrefWidth(1000);
 
-                        // Remove PHOTO logic, no ImageView setup anymore
+                        ImageView photoView = new ImageView();
+                        photoView.setFitHeight(50);
+                        photoView.setFitWidth(50);
+                        photoView.setPreserveRatio(true);
+                        photoView.setStyle("-fx-background-radius: 25; -fx-border-radius: 25; -fx-border-color: #162c4f; -fx-border-width: 2;");
 
-                        // INFOS UTILISATEUR
-                        Label nom = createLabel(user.getNom(), 150);
-                        Label email = createLabel(user.getEmail(), 200);
-                        Label mdp = createLabel(user.getMotDePasse(), 150);
-                        Label naissance = createLabel(
-                                user.getDateDeNaissance() != null
+                        String photoPath = user.getPhoto();
+                        if (photoPath != null && !photoPath.trim().isEmpty()) {
+                            try {
+                                String imagePath = photoPath;
+                                if (!photoPath.startsWith("http") && !photoPath.startsWith("file:")) {
+                                    File file = new File(photoPath);
+                                    if (file.exists()) {
+                                        imagePath = "file:" + file.getAbsolutePath().replace("\\", "/");
+                                        System.out.println("Using photo path for " + user.getNom() + ": " + imagePath);
+                                    } else {
+                                        System.out.println("Photo file does not exist for user " + user.getNom() + ": " + photoPath);
+                                        imagePath = "/images/userwhite.png";
+                                    }
+                                }
+                                Image image = new Image(imagePath, true);
+                                if (image.isError()) {
+                                    System.out.println("Image loading error for user " + user.getNom() + ": " + image.getException().getMessage());
+                                    photoView.setImage(new Image("/images/userwhite.png"));
+                                } else {
+                                    photoView.setImage(image);
+                                    System.out.println("Photo loaded successfully for " + user.getNom());
+                                }
+                            } catch (Exception e) {
+                                System.out.println("Exception loading photo for user " + user.getNom() + ": " + e.getMessage());
+                                photoView.setImage(new Image("/images/userwhite.png"));
+                            }
+                        } else {
+                            System.out.println("Photo path is null or empty for user: " + user.getNom());
+                            photoView.setImage(new Image("/images/userwhite.png"));
+                        }
+
+                        VBox infoBox = new VBox(5);
+                        infoBox.setPrefWidth(900);
+
+                        Label nomLabel = new Label("Nom: " + (user.getNom() != null ? user.getNom() : "N/A"));
+                        nomLabel.setStyle("-fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;");
+
+                        Label emailLabel = new Label("Email: " + (user.getEmail() != null ? user.getEmail() : "N/A"));
+                        emailLabel.setStyle("-fx-text-fill: #d7d7d9; -fx-font-size: 14;");
+
+                        Label mdpLabel = new Label("Mot de passe: " + (user.getMotDePasse() != null ? user.getMotDePasse() : "N/A"));
+                        mdpLabel.setStyle("-fx-text-fill: #d7d7d9; -fx-font-size: 14;");
+
+                        Label naissanceLabel = new Label("Date de Naissance: " +
+                                (user.getDateDeNaissance() != null
                                         ? user.getDateDeNaissance().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                                        : "N/A",
-                                150
-                        );
-                        Label role = createLabel(user.getRole(), 100);
+                                        : "N/A"));
+                        naissanceLabel.setStyle("-fx-text-fill: #d7d7d9; -fx-font-size: 14;");
 
-                        row.getChildren().addAll(nom, email, mdp, naissance, role);
-                        setGraphic(row);
+                        Label roleLabel = new Label("Rôle: " + (user.getRole() != null ? user.getRole() : "N/A"));
+                        roleLabel.setStyle("-fx-text-fill: #d7d7d9; -fx-font-size: 14;");
+
+                        infoBox.getChildren().addAll(nomLabel, emailLabel, mdpLabel, naissanceLabel, roleLabel);
+                        card.getChildren().addAll(photoView, infoBox);
+                        setGraphic(card);
                     }
-                }
-
-                private Label createLabel(String text, double width) {
-                    Label label = new Label(text != null ? text : "N/A");
-                    label.setPrefWidth(width);
-                    label.setWrapText(true);
-                    return label;
                 }
             });
         } catch (Exception e) {
-            showAlert("Erreur", "Échec du chargement des utilisateurs : " + e.getMessage());
+            System.out.println("Exception in loadUsers: " + e.getMessage());
             e.printStackTrace();
+            showAlert("Erreur", "Échec du chargement des utilisateurs : " + e.getMessage());
         }
-    }
-
-    @FXML
-    private void refreshList() {
-        loadUsers();
     }
 
     private void handleModifierButtonClick() {
@@ -141,11 +175,10 @@ public class AfficherUser implements Initializable {
             stage.setScene(new Scene(root));
             stage.setTitle("Modifier Utilisateur");
             stage.showAndWait();
-            // Reload users after edit
             loadUsers();
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert("Erreur", "Impossible de charger le formulaire de modification.");
+            showAlert("Erreur", "Impossible de charger le formulaire de modification: " + e.getMessage());
         }
     }
 
@@ -170,13 +203,5 @@ public class AfficherUser implements Initializable {
                 }
             }
         });
-    }
-
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
     }
 }
