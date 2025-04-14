@@ -56,11 +56,11 @@ public class AjouterDemande implements Initializable {
         });
 
         // Initialize ComboBox options
-        typeComboBox.getItems().addAll("Congé", "Absence", "Autre");
+       // typeComboBox.getItems().addAll("Congé", "Absence", "Autre");
         statutComboBox.getItems().addAll("Approuvée", "En_attente", "Rejetée");
 
         // Set default values for ComboBox
-        typeComboBox.setValue("Congé"); // Default type
+        //typeComboBox.setValue("Congé"); // Default type
         statutComboBox.setValue("En_attente"); // Default status
     }
 

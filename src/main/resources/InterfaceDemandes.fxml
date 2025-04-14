@@ -12,6 +12,7 @@
 
 <AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #162c4f;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.InterfaceDemandes">
     <children>
+        <!-- Barre latérale -->
         <AnchorPane layoutY="-8.0" prefHeight="651.0" prefWidth="200.0" style="-fx-background-color: #021b50; -fx-background-radius: 10;">
             <children>
                 <ImageView layoutX="12.0" layoutY="31.0">
@@ -67,6 +68,8 @@
                 </ImageView>
             </children>
         </AnchorPane>
+
+        <!-- Barre supérieure -->
         <Pane layoutX="215.0" layoutY="14.0" prefHeight="67.0" prefWidth="1076.0" style="-fx-background-color: #ebedeb; -fx-background-radius: 30;">
             <children>
                 <Label layoutX="41.0" layoutY="18.0" prefHeight="31.0" prefWidth="148.0" text="SHOWTIME" textFill="#791d1d" textOverrun="CENTER_WORD_ELLIPSIS">
@@ -86,8 +89,18 @@
                 </TextField>
             </children>
         </Pane>
-        <AnchorPane layoutX="215.0" layoutY="89.0" prefHeight="554.0" prefWidth="1068.0" style="-fx-background-color: #c5cbd9; -fx-background-radius: 20;">
+
+        <!-- Liste des demandes avec image de fond -->
+        <AnchorPane layoutX="215.0" layoutY="89.0" prefHeight="554.0" prefWidth="1068.0" style="-fx-background-radius: 20;">
             <children>
+                <!-- Image de fond -->
+                <ImageView fitHeight="554.0" fitWidth="1068.0" layoutX="0.0" layoutY="0.0" opacity="0.38" preserveRatio="false">
+                    <image>
+                        <Image url="@images/cinemaback.jpg" />
+                    </image>
+                </ImageView>
+
+                <!-- Contenu -->
                 <Button fx:id="ajouterDemandeButton" layoutX="777.0" layoutY="59.0" mnemonicParsing="false" onAction="#onAjouterDemandeClick" prefHeight="30.0" prefWidth="150.0" style="-fx-background-color: #294478; -fx-background-radius: 10;" text="Ajouter Demande" textFill="#d7d7d9">
                     <font>
                         <Font size="14.0" />

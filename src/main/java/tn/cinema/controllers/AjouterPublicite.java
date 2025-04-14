@@ -11,6 +11,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 
 public class AjouterPublicite {
+
     @FXML
     private TextField demandeIdField;
 
@@ -29,78 +30,127 @@ public class AjouterPublicite {
     private InterfacePublicites parentController; // For InterfacePublicites
     private InterfaceDemandes demandeParentController; // For InterfaceDemandes
 
-    private PubliciteService publiciteService = new PubliciteService();
-
-    private boolean isFromDemande = false; // Flag to track if opened from InterfaceDemandes
+    private final PubliciteService publiciteService = new PubliciteService();
+    private boolean isFromDemande = false;
 
     @FXML
     private void ajouterPublicite() {
+        int demandeId;
+        Date dateDebut;
+        Date dateFin;
+        String support;
+        double montant;
+
+        // Validate Demande ID
         try {
-            // Validate and parse inputs
-            int demandeId = Integer.parseInt(demandeIdField.getText());
-            Date dateDebut = Date.valueOf(dateDebutField.getText());
-            Date dateFin = Date.valueOf(dateFinField.getText());
-            String support = supportField.getText();
-            double montant = Double.parseDouble(montantField.getText());
+            demandeId = Integer.parseInt(demandeIdField.getText());
+        } catch (NumberFormatException e) {
+            showAlert("Champ invalide", "Veuillez entrer un identifiant de demande numérique valide.");
+            return;
+        }
 
-            // Create a new Publicite object
-            Publicite publicite = new Publicite();
-            publicite.setDemandeId(demandeId);
-            publicite.setDateDebut(dateDebut);
-            publicite.setDateFin(dateFin);
-            publicite.setSupport(support);
-            publicite.setMontant(montant);
+        // Validate Date début
+        try {
+            dateDebut = Date.valueOf(dateDebutField.getText());
+        } catch (IllegalArgumentException e) {
+            showAlert("Champ invalide", "Veuillez entrer une date de début valide au format yyyy-MM-dd.");
+            return;
+        }
 
-            // Add the publicite using the service
+        // Validate Date fin
+        try {
+            dateFin = Date.valueOf(dateFinField.getText());
+        } catch (IllegalArgumentException e) {
+            showAlert("Champ invalide", "Veuillez entrer une date de fin valide au format yyyy-MM-dd.");
+            return;
+        }
+
+        // Check if dateDebut is before dateFin
+        if (dateFin.before(dateDebut)) {
+            showAlert("Dates invalides", "La date de fin doit être postérieure à la date de début.");
+            return;
+        }
+
+        // Validate Support
+        support = supportField.getText().trim();
+        if (support.isEmpty()) {
+            showAlert("Champ manquant", "Veuillez entrer le support de la publicité.");
+            return;
+        }
+
+        // Validate Montant
+        try {
+            montant = Double.parseDouble(montantField.getText());
+            if (montant < 0) {
+                showAlert("Montant invalide", "Le montant ne peut pas être négatif.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            showAlert("Champ invalide", "Veuillez entrer un montant numérique valide.");
+            return;
+        }
+
+        // Création de l'objet Publicite
+        Publicite publicite = new Publicite();
+        publicite.setDemandeId(demandeId);
+        publicite.setDateDebut(dateDebut);
+        publicite.setDateFin(dateFin);
+        publicite.setSupport(support);
+        publicite.setMontant(montant);
+
+        // Enregistrement via le service
+        try {
             publiciteService.ajouterpub(publicite);
+            showAlert("Succès", "Publicité ajoutée avec succès !", Alert.AlertType.INFORMATION);
 
-            // Show success message
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Publicité ajoutée avec succès !");
-            alert.showAndWait();
-
-            // Refresh the parent ListView
+            // Rafraîchir la liste dans l'interface parent
             if (isFromDemande && demandeParentController != null) {
                 demandeParentController.refreshList();
             } else if (parentController != null) {
                 parentController.refreshList();
             }
 
-            // Close the window
+            // Fermer la fenêtre
             Stage stage = (Stage) demandeIdField.getScene().getWindow();
             stage.close();
-        } catch (NumberFormatException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Veuillez entrer des valeurs numériques valides pour Demande ID et Montant.");
-            alert.showAndWait();
-        } catch (IllegalArgumentException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Veuillez entrer des dates valides au format yyyy-MM-dd.");
-            alert.showAndWait();
+
         } catch (SQLException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Erreur lors de l'ajout de la publicité : " + e.getMessage());
-            alert.showAndWait();
+            showAlert("Erreur SQL", "Erreur lors de l'ajout de la publicité : " + e.getMessage());
         }
     }
 
-    // Method to set the parent controller when opened from InterfacePublicites
+    private void showAlert(String title, String message) {
+        showAlert(title, message, Alert.AlertType.ERROR);
+    }
+
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    // Quand ouvert depuis InterfacePublicites
     public void setParentController(InterfacePublicites parentController) {
         this.parentController = parentController;
         this.demandeParentController = null;
         this.isFromDemande = false;
-        demandeIdField.setEditable(true); // Allow editing when opened from InterfacePublicites
-        demandeIdField.setStyle(""); // Reset style
+        demandeIdField.setEditable(true);
+        demandeIdField.setStyle("");
     }
 
-    // Overloaded method to set the parent controller when opened from InterfaceDemandes
+    // Quand ouvert depuis InterfaceDemandes
     public void setParentController(InterfaceDemandes demandeParentController) {
         this.demandeParentController = demandeParentController;
         this.parentController = null;
         this.isFromDemande = true;
     }
 
-    // Method to set the Demande ID and make the field non-editable
     public void setDemandeId(int demandeId) {
         demandeIdField.setText(String.valueOf(demandeId));
-        demandeIdField.setEditable(false); // Make the field non-editable
-        demandeIdField.setStyle("-fx-background-color: #e0e0e0;"); // Visually indicate it's non-editable
+        demandeIdField.setEditable(false);
+        demandeIdField.setStyle("-fx-background-color: #e0e0e0;");
         this.isFromDemande = true;
     }
 }
