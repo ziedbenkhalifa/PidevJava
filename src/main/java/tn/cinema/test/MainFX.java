@@ -53,7 +53,7 @@ public class MainFX extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         // Load Dashboard.fxml as the initial scene
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Dashboard.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));
         Parent root = loader.load();
 
         // Set up the scene and stage

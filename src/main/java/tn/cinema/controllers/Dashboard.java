@@ -5,8 +5,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import tn.cinema.utils.SessionManager;
 
 import java.io.IOException;
 
@@ -96,6 +98,63 @@ public class Dashboard {
             e.printStackTrace();
             System.err.println("Error loading Dashboard.fxml: " + e.getMessage());
         }
+    }
+
+
+
+
+
+
+    /// aliiiiiiiiii
+
+
+    @FXML
+    private Button gestionUserButton;
+
+    @FXML
+    private Button monCompteButton;
+
+    @FXML
+    private void handleGestionUserAction() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherUser.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) gestionUserButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Gestion Utilisateurs");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible de charger AfficherUser.fxml: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleMonCompteAction() {
+        if (SessionManager.getInstance().getLoggedInUser() == null) {
+            showAlert("Erreur", "Aucun utilisateur connecté.");
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/MonCompte.fxml"));
+            Parent root = loader.load();
+            MonCompte controller = loader.getController();
+            controller.setLoggedInUser(SessionManager.getInstance().getLoggedInUser());
+            Stage stage = (Stage) monCompteButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Mon Compte");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible de charger MonCompte.fxml: " + e.getMessage());
+        }
+    }
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }
 

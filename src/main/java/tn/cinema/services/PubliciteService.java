@@ -2,6 +2,8 @@ package tn.cinema.services;
 
 import tn.cinema.entities.Publicite;
 import tn.cinema.tools.Mydatabase;
+import tn.cinema.entities.User;
+import tn.cinema.utils.SessionManager;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -142,11 +144,19 @@ public class PubliciteService implements IServices<Publicite> {
         if (cnx == null) {
             throw new SQLException("Database connection is null, cannot retrieve Publicites.");
         }
+
+        // Get logged-in user's ID from SessionManager
+        User loggedInUser = SessionManager.getInstance().getLoggedInUser();
+        if (loggedInUser == null) {
+            throw new IllegalStateException("Aucun utilisateur connecté.");
+        }
+        int userId = loggedInUser.getId();
+
         String sql = "SELECT p.* FROM publicite p " +
                 "JOIN demande d ON p.demande_id = d.id " +
                 "WHERE d.user_id = ?";
         PreparedStatement pstmt = cnx.prepareStatement(sql);
-        pstmt.setInt(1, 3); // user_id statique
+        pstmt.setInt(1, userId); // Dynamic user_id
         ResultSet rs = pstmt.executeQuery();
 
         List<Publicite> publicites = new ArrayList<>();
@@ -163,6 +173,7 @@ public class PubliciteService implements IServices<Publicite> {
 
         return publicites;
     }
+
 
 
     public boolean existsByDemandeId(int demandeId) throws SQLException {

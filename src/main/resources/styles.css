@@ -1,0 +1,41 @@
+.table-view {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1;
+}
+
+.table-row-cell {
+    -fx-background-color: #c30e0e;
+    -fx-padding: 5;
+    -fx-font-size: 14px;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #f9f9f9;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+.table-column {
+    -fx-alignment: CENTER-LEFT;
+    -fx-font-family: "Arial";
+    -fx-text-fill: #333333;
+}
+
+.column-header {
+    -fx-background-color: #4a90e2;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Style for photo column */
+.table-column#photoColumn {
+    -fx-alignment: CENTER;
+}
+
+/* Optional: Style for ImageView in photo column */
+.table-cell .image-view {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 1);
+}
