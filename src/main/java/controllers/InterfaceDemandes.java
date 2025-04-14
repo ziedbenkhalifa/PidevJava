@@ -2,6 +2,7 @@ package controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -319,6 +320,22 @@ public class InterfaceDemandes implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Error loading InterfaceChoixGP.fxml: " + e.getMessage());
+        }
+    }
+    @FXML
+    private Button backButtonn;
+    public void goBackToLogin(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Dashboard.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) backButtonn.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Dashboard");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error loading Dashboard.fxml: " + e.getMessage());
         }
     }
 }

@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class ModifierPublicite implements Initializable {
+
     @FXML
     private TextField demandeIdField;
 
@@ -35,7 +36,70 @@ public class ModifierPublicite implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Pre-fill the form with the existing publicite data
+        // Rien ici car les données seront initialisées après avec setPublicite()
+    }
+
+    /**
+     * Méthode appelée lorsqu'on clique sur le bouton "Modifier"
+     */
+    @FXML
+    private void modifierPublicite() {
+        try {
+            // Lecture et validation des champs
+            int demandeId = Integer.parseInt(demandeIdField.getText());
+            Date dateDebut = Date.valueOf(dateDebutField.getText());
+            Date dateFin = Date.valueOf(dateFinField.getText());
+            String support = supportField.getText();
+            double montant = Double.parseDouble(montantField.getText());
+
+            // Mise à jour de l'objet
+            Publicite updatedPublicite = new Publicite();
+            updatedPublicite.setDemandeId(demandeId);
+            updatedPublicite.setDateDebut(dateDebut);
+            updatedPublicite.setDateFin(dateFin);
+            updatedPublicite.setSupport(support);
+            updatedPublicite.setMontant(montant);
+
+            // Persistance
+            publiciteService.modifierpub(publicite.getId(), updatedPublicite);
+
+            // Rafraîchissement de la liste (dans la vue précédente)
+            if (parentController != null) {
+                parentController.refreshList();
+            }
+
+            // Fermeture de la fenêtre
+            Stage stage = (Stage) demandeIdField.getScene().getWindow();
+            stage.close();
+
+        } catch (NumberFormatException e) {
+            showAlert("Veuillez entrer des valeurs numériques valides pour Demande ID et Montant.");
+        } catch (IllegalArgumentException e) {
+            showAlert("Veuillez entrer des dates valides au format yyyy-MM-dd.");
+        } catch (SQLException e) {
+            showAlert("Erreur lors de la modification de la publicité : " + e.getMessage());
+        }
+    }
+
+    /**
+     * Méthode à appeler après le chargement du contrôleur, pour injecter l'objet à modifier
+     */
+    public void setPublicite(Publicite publicite) {
+        this.publicite = publicite;
+        initialiserChamps();
+    }
+
+    /**
+     * Injecte le contrôleur parent (pour pouvoir rafraîchir la liste)
+     */
+    public void setParentController(InterfacePublicites parentController) {
+        this.parentController = parentController;
+    }
+
+    /**
+     * Pré-remplit les champs avec les données existantes
+     */
+    private void initialiserChamps() {
         if (publicite != null) {
             demandeIdField.setText(String.valueOf(publicite.getDemandeId()));
             dateDebutField.setText(publicite.getDateDebut().toString());
@@ -45,50 +109,11 @@ public class ModifierPublicite implements Initializable {
         }
     }
 
-    @FXML
-    private void modifierPublicite() {
-        try {
-            // Validate and parse inputs
-            int demandeId = Integer.parseInt(demandeIdField.getText());
-            Date dateDebut = Date.valueOf(dateDebutField.getText());
-            Date dateFin = Date.valueOf(dateFinField.getText());
-            String support = supportField.getText();
-            double montant = Double.parseDouble(montantField.getText());
-
-            // Update the publicite object
-            Publicite updatedPublicite = new Publicite();
-            updatedPublicite.setDemandeId(demandeId);
-            updatedPublicite.setDateDebut(dateDebut);
-            updatedPublicite.setDateFin(dateFin);
-            updatedPublicite.setSupport(support);
-            updatedPublicite.setMontant(montant);
-
-            // Update the publicite in the database
-            publiciteService.modifierpub(publicite.getId(), updatedPublicite);
-
-            // Refresh the parent ListView
-            parentController.refreshList();
-
-            // Close the window
-            Stage stage = (Stage) demandeIdField.getScene().getWindow();
-            stage.close();
-        } catch (NumberFormatException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Veuillez entrer des valeurs numériques valides pour Demande ID et Montant.");
-            alert.showAndWait();
-        } catch (IllegalArgumentException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Veuillez entrer des dates valides au format yyyy-MM-dd.");
-            alert.showAndWait();
-        } catch (SQLException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Erreur lors de la modification de la publicité : " + e.getMessage());
-            alert.showAndWait();
-        }
-    }
-
-    public void setPublicite(Publicite publicite) {
-        this.publicite = publicite;
-    }
-
-    public void setParentController(InterfacePublicites parentController) {
-        this.parentController = parentController;
+    /**
+     * Affiche une alerte avec un message donné
+     */
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR, message);
+        alert.showAndWait();
     }
 }
