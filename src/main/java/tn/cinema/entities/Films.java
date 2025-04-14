@@ -28,6 +28,7 @@ public class Films {
         this.date_production = date_production;
     }
 
+
     public int getId() {
         return id;
     }
