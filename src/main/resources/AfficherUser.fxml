@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #0b0f29;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.AfficherUser">
+<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #0b0f29;" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.AfficherUser">
     <children>
         <!-- Sidebar -->
         <AnchorPane layoutY="-8.0" prefHeight="651.0" prefWidth="200.0" style="-fx-background-color: #021b50; -fx-background-radius: 10;">
@@ -79,6 +79,11 @@
                         <Font size="24.0" />
                     </font>
                 </Label>
+                <Button fx:id="backToDashboardButton" layoutX="200.0" layoutY="18.0" mnemonicParsing="false" onAction="#handleBackToDashboard" prefHeight="31.0" prefWidth="120.0" style="-fx-background-color: #294478; -fx-text-fill: white; -fx-background-radius: 5;" text="Retour au Dashboard">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Button>
                 <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="956.0" layoutY="15.0">
                     <image>
                         <Image url="@images/search.png" />
@@ -108,11 +113,11 @@
                 <Button fx:id="modifierButton" layoutX="790.0" layoutY="515.0" mnemonicParsing="false" prefWidth="120.0" style="-fx-background-color: #294478; -fx-text-fill: white;" text="Modifier" />
                 <Button fx:id="deleteButton" layoutX="920.0" layoutY="515.0" mnemonicParsing="false" prefWidth="120.0" style="-fx-background-color: #791d1d; -fx-text-fill: white;" text="Supprimer" />
                 <Button fx:id="ajouterButton" layoutX="660.0" layoutY="515.0" mnemonicParsing="false" onAction="#handleAjouterUser" prefWidth="120.0" style="-fx-background-color: #1e7e34; -fx-text-fill: white;" text="Ajouter User" />
-            <Label layoutX="40.0" layoutY="5.0" text="Users List :" textFill="WHITE">
-               <font>
-                  <Font size="22.0" />
-               </font>
-            </Label>
+                <Label layoutX="40.0" layoutY="5.0" text="Users List :" textFill="WHITE">
+                    <font>
+                        <Font size="22.0" />
+                    </font>
+                </Label>
             </children>
         </AnchorPane>
     </children>

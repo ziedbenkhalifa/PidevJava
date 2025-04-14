@@ -66,12 +66,13 @@ public class Login {
 
     private void loadAdminScreen() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherUser.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Dashboard.fxml"));
             AnchorPane pane = loader.load();
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.setScene(new Scene(pane));
+            stage.setTitle("Dashboard");
         } catch (Exception e) {
-            showAlert("Error", "Failed to load AfficherUser.fxml: " + e.getMessage(), Alert.AlertType.ERROR);
+            showAlert("Error", "Failed to load Dashboard.fxml: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -81,6 +82,7 @@ public class Login {
             AnchorPane pane = loader.load();
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.setScene(new Scene(pane));
+            stage.setTitle("FrontZ");
         } catch (Exception e) {
             showAlert("Error", "Failed to load FrontZ.fxml: " + e.getMessage(), Alert.AlertType.ERROR);
         }

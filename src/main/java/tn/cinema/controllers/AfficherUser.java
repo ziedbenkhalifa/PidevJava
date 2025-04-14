@@ -14,13 +14,14 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import tn.cinema.entities.User;
 import tn.cinema.services.UserService;
+import tn.cinema.utils.SessionManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class AfficherUser extends BaseController {
+public class AfficherUser {
 
     @FXML
     private ListView<User> listView;
@@ -34,6 +35,9 @@ public class AfficherUser extends BaseController {
     @FXML
     private Button monCompteButton;
 
+    @FXML
+    private Button backToDashboardButton;
+
     private UserService userService = new UserService();
 
     @FXML
@@ -44,25 +48,53 @@ public class AfficherUser extends BaseController {
     }
 
     @FXML
+    private void handleBackToDashboard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Dashboard.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) backToDashboardButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Dashboard");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible de charger Dashboard.fxml: " + e.getMessage());
+        }
+    }
+
+    @FXML
     private void handleMonCompteAction() {
-        Stage stage = (Stage) monCompteButton.getScene().getWindow();
-        super.handleMonCompteAction(stage);
+        if (SessionManager.getInstance().getLoggedInUser() == null) {
+            showAlert("Erreur", "Aucun utilisateur connecté.");
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/MonCompte.fxml"));
+            Parent root = loader.load();
+            MonCompte controller = loader.getController();
+            controller.setLoggedInUser(SessionManager.getInstance().getLoggedInUser());
+            Stage stage = (Stage) monCompteButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Mon Compte");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible de charger la page Mon Compte: " + e.getMessage());
+        }
     }
 
     @FXML
     private void handleAjouterUser() {
         try {
+            System.out.println("Attempting to load AjouterUser.fxml");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterUser.fxml"));
             Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setTitle("Ajouter un utilisateur");
+            Stage stage = (Stage) listView.getScene().getWindow();
             stage.setScene(new Scene(root));
+            stage.setTitle("Ajouter un utilisateur");
             stage.show();
-            Stage currentStage = (Stage) listView.getScene().getWindow();
-            currentStage.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
-            showAlert("Erreur", "Impossible de charger le formulaire d'ajout: " + e.getMessage());
+            showAlert("Erreur", "Impossible de charger AjouterUser.fxml: " + e.getMessage());
         }
     }
 
@@ -203,5 +235,13 @@ public class AfficherUser extends BaseController {
                 }
             }
         });
+    }
+
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }
