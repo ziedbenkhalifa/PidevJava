@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class DashBoard {
+public class Dashboard {
 
     @FXML
     void gestionFilm(ActionEvent event) {
@@ -25,6 +25,9 @@ public class DashBoard {
         } catch (IOException e) {
             e.printStackTrace(); // For debug
         }
+    }
+
+    public void goToInterfaceChoixGP(ActionEvent actionEvent) {
     }
 }
 

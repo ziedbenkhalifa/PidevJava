@@ -48,4 +48,9 @@ public class GestionFilms {
         }
     }
 
+    public void gestionFilm(ActionEvent actionEvent) {
+    }
+
+    public void goToInterfaceChoixGP(ActionEvent actionEvent) {
+    }
 }

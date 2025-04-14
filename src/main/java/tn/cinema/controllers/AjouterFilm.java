@@ -4,13 +4,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 import tn.cinema.entities.Films;
 import tn.cinema.services.FilmsService;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -24,7 +24,15 @@ public class AjouterFilm {
     private TextField genre;
 
     @FXML
+    private Button chooseImgButton;
+
+    @FXML
     private TextField img;
+
+    @FXML
+    private Label imgLabel;
+
+    private File selectedImageFile;
 
     @FXML
     private TextField nomFilm;
@@ -36,6 +44,22 @@ public class AjouterFilm {
 
 
     @FXML
+    void chooseImage(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choisir une image");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif")
+        );
+
+        File file = fileChooser.showOpenDialog(chooseImgButton.getScene().getWindow());
+
+        if (file != null) {
+            selectedImageFile = file;
+            imgLabel.setText(file.getName());
+            img.setText(file.getAbsolutePath()); // You can still store the path in the hidden field if needed
+        }
+    }
+    @FXML
     void ajout(ActionEvent event) {
         if (dateFilm.getValue() == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -45,13 +69,17 @@ public class AjouterFilm {
             return;
         }
 
-        if (nomFilm.getText().isEmpty() || realisateur.getText().isEmpty() || genre.getText().isEmpty() || img.getText().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur");
-            alert.setContentText("All fields must be filled.");
+        if (nomFilm.getText().isEmpty() || realisateur.getText().isEmpty() ||
+                genre.getText().isEmpty() || dateFilm.getValue() == null ||
+                (selectedImageFile == null && img.getText().isEmpty())) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Champs manquants");
+            alert.setContentText("Veuillez remplir tous les champs.");
             alert.showAndWait();
             return;
         }
+
+
 
         try {
             // Add the film to the database
@@ -59,7 +87,7 @@ public class AjouterFilm {
                     nomFilm.getText(),
                     realisateur.getText(),
                     genre.getText(),
-                    img.getText(),
+                    selectedImageFile != null ? selectedImageFile.getAbsolutePath() : "",
                     dateFilm.getValue()
             ));
 
@@ -81,6 +109,7 @@ public class AjouterFilm {
 
     private Films filmToEdit;
 
+
     public void edit(Films film) {
         this.filmToEdit = film;
 
@@ -88,7 +117,9 @@ public class AjouterFilm {
         nomFilm.setText(film.getNom_film());
         realisateur.setText(film.getRealisateur());
         genre.setText(film.getGenre());
-        img.setText(film.getImg());
+        imgLabel.setText(film.getImg() != null ? new File(film.getImg()).getName() : "Aucune image");
+        selectedImageFile = new File(film.getImg());
+
         dateFilm.setValue(film.getDate_production());
     }
 
@@ -103,7 +134,8 @@ public class AjouterFilm {
         }
 
         if (nomFilm.getText().isEmpty() || realisateur.getText().isEmpty() ||
-                genre.getText().isEmpty() || img.getText().isEmpty() || dateFilm.getValue() == null) {
+                genre.getText().isEmpty() || dateFilm.getValue() == null ||
+                (selectedImageFile == null && img.getText().isEmpty())) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Champs manquants");
             alert.setContentText("Veuillez remplir tous les champs.");
@@ -115,10 +147,16 @@ public class AjouterFilm {
             filmToEdit.setNom_film(nomFilm.getText());
             filmToEdit.setRealisateur(realisateur.getText());
             filmToEdit.setGenre(genre.getText());
-            filmToEdit.setImg(img.getText());
+            filmToEdit.setImg(
+                    selectedImageFile != null ? selectedImageFile.getAbsolutePath() : img.getText()
+            );
+
             filmToEdit.setDate_production(dateFilm.getValue());
 
             fs.modifier(filmToEdit); // Appelle la méthode de mise à jour
+
+            System.out.println("Image path saved: " + (selectedImageFile != null ? selectedImageFile.getAbsolutePath() : img.getText()));
+
 
             // Recharge AfficherFilm.fxml après modification
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherFilm.fxml"));
