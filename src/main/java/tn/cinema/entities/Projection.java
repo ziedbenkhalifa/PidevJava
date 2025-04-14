@@ -40,6 +40,22 @@ public class Projection {
         return prix;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setCapaciter(int capaciter) {
+        this.capaciter = capaciter;
+    }
+
+    public void setDate_projection(LocalDate date_projection) {
+        this.date_projection = date_projection;
+    }
+
+    public void setPrix(float prix) {
+        this.prix = prix;
+    }
+
     @Override
     public String toString() {
         return "Projection{" +

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #162c4f;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.AjouterFilm">
+   <children>
+      <!-- Header -->
+      <AnchorPane layoutX="215.0" layoutY="14.0" prefHeight="67.0" prefWidth="1076.0" style="-fx-background-color: #ebedeb; -fx-background-radius: 30;">
+         <children>
+            <Label layoutX="41.0" layoutY="18.0" prefHeight="31.0" prefWidth="250.0" text="Ajouter Film" textFill="#791d1d" textOverrun="CENTER_WORD_ELLIPSIS">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+
+      <!-- Form Panel -->
+      <AnchorPane layoutX="300.0" layoutY="100.0" prefHeight="450.0" prefWidth="700.0" style="-fx-background-color: #ffffff; -fx-background-radius: 20;">
+         <children>
+            <Label layoutX="80.0" layoutY="60.0" text="Nom Film" />
+            <TextField fx:id="nomFilm" layoutX="250.0" layoutY="56.0" prefWidth="350.0" style="-fx-background-radius: 10;" />
+
+            <Label layoutX="80.0" layoutY="110.0" text="Date de Production" />
+            <DatePicker fx:id="dateFilm" layoutX="250.0" layoutY="106.0" prefWidth="350.0" style="-fx-background-radius: 10;" />
+
+            <Label layoutX="80.0" layoutY="160.0" text="Réalisateur" />
+            <TextField fx:id="realisateur" layoutX="250.0" layoutY="156.0" prefWidth="350.0" style="-fx-background-radius: 10;" />
+
+            <Label layoutX="80.0" layoutY="210.0" text="Genre" />
+            <TextField fx:id="genre" layoutX="250.0" layoutY="206.0" prefWidth="350.0" style="-fx-background-radius: 10;" />
+
+            <Label layoutX="80.0" layoutY="260.0" text="Image" />
+            <Button fx:id="chooseImgButton" layoutX="250.0" layoutY="256.0" prefWidth="160.0" text="Choisir une image" onAction="#chooseImage" style="-fx-background-color: #294478; -fx-background-radius: 10;" textFill="white" />
+            <Label fx:id="imgLabel" layoutX="430.0" layoutY="260.0" text="Aucune image" />
+
+            <!-- Action Buttons -->
+            <Button layoutX="160.0" layoutY="320.0" mnemonicParsing="false" onAction="#ajout" prefHeight="40.0" prefWidth="120.0" text="Ajouter" style="-fx-background-color: #f0653c; -fx-background-radius: 10;" textFill="white" />
+            <Button layoutX="320.0" layoutY="320.0" mnemonicParsing="false" onAction="#edit" prefHeight="40.0" prefWidth="120.0" text="Modifier" style="-fx-background-color: #f0653c; -fx-background-radius: 10;" textFill="white" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

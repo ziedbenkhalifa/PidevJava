@@ -56,4 +56,19 @@ public class Front {
         stage.setScene(scene);
         stage.show();
     }
+
+    @FXML
+    void filmsButtonClicked(ActionEvent event) throws IOException {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/FrontFilm.fxml")); // Adjust path if needed
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();   // Get current window
+            Scene scene = new Scene(root);
+            stage.setScene(scene); // Set the new scene
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace(); // For debug
+        }
+
+
+    }
 }
