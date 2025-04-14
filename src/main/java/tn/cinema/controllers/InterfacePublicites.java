@@ -1,4 +1,4 @@
-package controllers;
+package tn.cinema.controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,7 +20,6 @@ import tn.cinema.services.PubliciteService;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.ResourceBundle;
 
 public class InterfacePublicites implements Initializable {

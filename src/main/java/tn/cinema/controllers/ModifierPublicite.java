@@ -1,4 +1,4 @@
-package controllers;
+package tn.cinema.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

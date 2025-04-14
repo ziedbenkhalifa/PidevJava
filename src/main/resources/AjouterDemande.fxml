@@ -9,7 +9,7 @@
 <?import javafx.collections.FXCollections?>
 
 <?import java.lang.String?>
-<VBox prefHeight="400.0" prefWidth="600.0" spacing="10" style="-fx-background-color: #c5cbd9; -fx-padding: 20;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterDemande">
+<VBox prefHeight="400.0" prefWidth="600.0" spacing="10" style="-fx-background-color: #c5cbd9; -fx-padding: 20;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.AjouterDemande">
     <children>
         <Label text="Ajouter une Demande" style="-fx-text-fill: #064625;">
             <font>
