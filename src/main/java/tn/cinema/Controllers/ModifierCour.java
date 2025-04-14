@@ -21,8 +21,7 @@ import java.time.format.DateTimeParseException;
 public class ModifierCour {
 
     @FXML
-    private ComboBox<String> typeCourComboBox; // Ensure this is annotated with @FXML
-
+    private ComboBox<String> typeCourComboBox;
     @FXML
     private TextField coutField;
 
@@ -38,14 +37,14 @@ public class ModifierCour {
     @FXML
     private TextField dateFinTimeField;
 
-    private Cour cour; // The Cour object to be modified
+    private Cour cour;
     private final CourService courService = new CourService();
 
-    // Method to set the Cour object and pre-fill the form
+
     public void setCour(Cour cour) {
         this.cour = cour;
-        // Pre-fill the form fields with the Cour data
-        typeCourComboBox.setValue(cour.getTypeCour()); // Line 48 where the error occurs
+
+        typeCourComboBox.setValue(cour.getTypeCour());
         coutField.setText(String.valueOf(cour.getCout()));
         dateDebutPicker.setValue(cour.getDateDebut().toLocalDate());
         dateDebutTimeField.setText(cour.getDateDebut().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")));
@@ -56,7 +55,7 @@ public class ModifierCour {
     @FXML
     private void modifierCour() {
         try {
-            // Récupération des données du formulaire
+
             String typeCour = typeCourComboBox.getValue();
             if (typeCour == null || typeCour.trim().isEmpty()) {
                 throw new IllegalArgumentException("Type de Cour must be selected.");
@@ -72,7 +71,7 @@ public class ModifierCour {
                 throw new IllegalArgumentException("Coût must be a valid number.");
             }
 
-            // Validate and parse DateDebut
+
             LocalDate dateDebut = dateDebutPicker.getValue();
             if (dateDebut == null) {
                 throw new IllegalArgumentException("Date de Début must be selected.");
@@ -89,7 +88,7 @@ public class ModifierCour {
             }
             LocalDateTime dateDebutTimeFinal = LocalDateTime.of(dateDebut, dateDebutTime);
 
-            // Validate and parse DateFin
+
             LocalDate dateFin = dateFinPicker.getValue();
             if (dateFin == null) {
                 throw new IllegalArgumentException("Date de Fin must be selected.");
@@ -106,22 +105,22 @@ public class ModifierCour {
             }
             LocalDateTime dateFinTimeFinal = LocalDateTime.of(dateFin, dateFinTime);
 
-            // Validate that DateFin is after DateDebut
+
             if (dateFinTimeFinal.isBefore(dateDebutTimeFinal)) {
                 throw new IllegalArgumentException("Date de Fin must be after Date de Début.");
             }
 
-            // Update the Cour object with the new values
+
             cour.setTypeCour(typeCour);
             cour.setCout(cout);
             cour.setDateDebut(dateDebutTimeFinal);
             cour.setDateFin(dateFinTimeFinal);
 
-            // Save the changes to the database
+
             courService.modifier(cour);
             System.out.println("Cours modifié: " + cour);
 
-            // Navigate back to AffichageListCours
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/affichageListCours.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) coutField.getScene().getWindow();

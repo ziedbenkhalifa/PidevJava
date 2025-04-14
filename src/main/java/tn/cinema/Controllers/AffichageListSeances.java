@@ -42,20 +42,20 @@ public class AffichageListSeances implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Load Seances into the ListView
+
         loadSeances();
 
-        // Set the custom cell factory
+
         rlist.setCellFactory(listView -> new CustomSeanceCell());
 
-        // Ensure the ListView cells are always visible by adjusting the style
+
         rlist.setStyle("-fx-background-color: #192342; -fx-control-inner-background: #192342;");
 
-        // Disable Modifier and Supprimer buttons until a row is selected
+
         btnModifier.setDisable(true);
         btnSupprimer.setDisable(true);
 
-        // Enable buttons when a row is selected
+
         rlist.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             btnModifier.setDisable(newSelection == null);
             btnSupprimer.setDisable(newSelection == null);
@@ -63,10 +63,10 @@ public class AffichageListSeances implements Initializable {
     }
 
     private void loadSeances() {
-        // Manually create the Seance objects as per the image
+
         List<Seance> seances = new ArrayList<>();
 
-        // Seance 1: ID 15
+
         Cour cour1 = new Cour();
         cour1.setId(29);
         Seance seance1 = new Seance();
@@ -77,7 +77,6 @@ public class AffichageListSeances implements Initializable {
         seance1.setCour(cour1);
         seances.add(seance1);
 
-        // Seance 2: ID 18
         Cour cour2 = new Cour();
         cour2.setId(30);
         Seance seance2 = new Seance();
@@ -88,7 +87,7 @@ public class AffichageListSeances implements Initializable {
         seance2.setCour(cour2);
         seances.add(seance2);
 
-        // Seance 3: ID 19
+
         Cour cour3 = new Cour();
         cour3.setId(38);
         Seance seance3 = new Seance();
@@ -99,7 +98,7 @@ public class AffichageListSeances implements Initializable {
         seance3.setCour(cour3);
         seances.add(seance3);
 
-        // Seance 4: ID 33
+
         Cour cour4 = new Cour();
         cour4.setId(43);
         Seance seance4 = new Seance();
@@ -110,7 +109,7 @@ public class AffichageListSeances implements Initializable {
         seance4.setCour(cour4);
         seances.add(seance4);
 
-        // Seance 5: ID 34
+
         Cour cour5 = new Cour();
         cour5.setId(176);
         Seance seance5 = new Seance();
@@ -121,7 +120,7 @@ public class AffichageListSeances implements Initializable {
         seance5.setCour(cour5);
         seances.add(seance5);
 
-        // Seance 6: ID 36
+
         Cour cour6 = new Cour();
         cour6.setId(32);
         Seance seance6 = new Seance();
@@ -220,7 +219,7 @@ public class AffichageListSeances implements Initializable {
         Seance selectedSeance = rlist.getSelectionModel().getSelectedItem();
         if (selectedSeance != null) {
             try {
-                // Since we're using static data, just remove from the ListView
+
                 rlist.getItems().remove(selectedSeance);
                 btnModifier.setDisable(true);
                 btnSupprimer.setDisable(true);

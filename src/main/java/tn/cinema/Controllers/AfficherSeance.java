@@ -53,17 +53,17 @@ public class AfficherSeance implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Load Seances into the ListView
+
         loadSeances();
 
-        // Customize the ListView display
+
         rlist.setCellFactory(listView -> new CustomSeanceCell());
 
-        // Disable buttons by default
+
         btnModifier.setDisable(true);
         btnSupprimer.setDisable(true);
 
-        // Enable/disable buttons based on selection and populate TextFields
+
         rlist.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             btnModifier.setDisable(newSelection == null);
             btnSupprimer.setDisable(newSelection == null);

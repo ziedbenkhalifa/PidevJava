@@ -41,7 +41,7 @@ public class ModifierSeance implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Populate the ComboBox with Cour objects
+
         try {
             List<Cour> cours = courService.recuperer();
             courIdComboBox.getItems().addAll(cours);
@@ -71,7 +71,7 @@ public class ModifierSeance implements Initializable {
             seanceToModify.setCour(courIdComboBox.getSelectionModel().getSelectedItem());
             seanceService.modifier(seanceToModify);
 
-            // Navigate back to AfficherSeance
+
             Parent root = FXMLLoader.load(getClass().getResource("/AffichageListSeances.fxml"));
             Stage stage = (Stage) dateSeancePicker.getScene().getWindow();
             stage.setScene(new Scene(root));

@@ -47,82 +47,83 @@ public class AjouterCour {
     @FXML
     private void ajoutercour() throws SQLException {
         try {
-            // Récupération des données du formulaire
+
             String typeCour = typeCourComboBox.getValue();
             if (typeCour == null || typeCour.trim().isEmpty()) {
-                throw new IllegalArgumentException("Type de Cour must be selected.");
+                throw new IllegalArgumentException("Type de Cour doit être sélectionné.");
             }
 
             double cout;
             try {
                 cout = Double.parseDouble(coutField.getText());
                 if (cout < 0) {
-                    throw new IllegalArgumentException("Coût must be a positive number.");
+                    throw new IllegalArgumentException("Le Coût doit être un nombre positif.");
                 }
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Coût must be a valid number.");
+                throw new IllegalArgumentException("Le Coût doit être un nombre valide.");
             }
 
-            // Validate and parse DateDebut
+
             LocalDate dateDebut = dateDebutPicker.getValue();
             if (dateDebut == null) {
-                throw new IllegalArgumentException("Date de Début must be selected.");
+                throw new IllegalArgumentException("La Date de Début doit être sélectionnée.");
             }
             String dateDebutTimeStr = dateDebutTimeField.getText();
             if (dateDebutTimeStr == null || dateDebutTimeStr.trim().isEmpty()) {
-                throw new IllegalArgumentException("Time for Date de Début must be specified (e.g., 14:30).");
+                throw new IllegalArgumentException("L'heure pour la Date de Début doit être spécifiée (ex. : 14:30).");
             }
             LocalTime dateDebutTime;
             try {
                 dateDebutTime = LocalTime.parse(dateDebutTimeStr, DateTimeFormatter.ofPattern("HH:mm"));
             } catch (DateTimeParseException e) {
-                throw new IllegalArgumentException("Time for Date de Début must be in the format 'HH:mm' (e.g., 14:30).");
+                throw new IllegalArgumentException("L'heure pour la Date de Début doit être au format 'HH:mm' (ex. : 14:30).");
             }
             LocalDateTime dateDebutTimeFinal = LocalDateTime.of(dateDebut, dateDebutTime);
 
-            // Validate and parse DateFin
+
+            if (dateDebutTimeFinal.isBefore(LocalDateTime.now())) {
+                throw new IllegalArgumentException("La Date de Début doit être aujourd'hui ou dans le futur.");
+            }
+
             LocalDate dateFin = dateFinPicker.getValue();
             if (dateFin == null) {
-                throw new IllegalArgumentException("Date de Fin must be selected.");
+                throw new IllegalArgumentException("La Date de Fin doit être sélectionnée.");
             }
             String dateFinTimeStr = dateFinTimeField.getText();
             if (dateFinTimeStr == null || dateFinTimeStr.trim().isEmpty()) {
-                throw new IllegalArgumentException("Time for Date de Fin must be specified (e.g., 16:30).");
+                throw new IllegalArgumentException("L'heure pour la Date de Fin doit être spécifiée (ex. : 16:30).");
             }
             LocalTime dateFinTime;
             try {
                 dateFinTime = LocalTime.parse(dateFinTimeStr, DateTimeFormatter.ofPattern("HH:mm"));
             } catch (DateTimeParseException e) {
-                throw new IllegalArgumentException("Time for Date de Fin must be in the format 'HH:mm' (e.g., 16:30).");
+                throw new IllegalArgumentException("L'heure pour la Date de Fin doit être au format 'HH:mm' (ex. : 16:30).");
             }
             LocalDateTime dateFinTimeFinal = LocalDateTime.of(dateFin, dateFinTime);
 
-            // Validate that DateFin is after DateDebut
+
             if (dateFinTimeFinal.isBefore(dateDebutTimeFinal)) {
-                throw new IllegalArgumentException("Date de Fin must be after Date de Début.");
+                throw new IllegalArgumentException("La Date de Fin doit être postérieure à la Date de Début.");
             }
 
-            // Create Cour object with the updated LocalDateTime values
             Cour cour = new Cour(typeCour, cout, dateDebutTimeFinal, dateFinTimeFinal);
             courService.ajouter(cour);
             System.out.println("Cours ajouté: " + cour);
 
-            // Charger la vue AfficherCour.fxml
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherCour.fxml"));
             Parent root = loader.load();
 
-            // Passer les données à AfficherCour
             AfficherCour ac = loader.getController();
             ac.setRtype(typeCour);
             ac.setRcout(cout);
             ac.setRdatedebut(dateDebut);
             ac.setRdatefin(dateFin);
 
-            // Charger la liste mise à jour
+
             List<Cour> coursList = courService.recuperer();
             ac.setRlistItems(coursList);
 
-            // Remplacer la scène actuelle par AfficherCour
             Stage stage = (Stage) coutField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();

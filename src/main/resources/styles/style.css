@@ -1,4 +1,4 @@
-/* Style the ComboBox itself */
+
 .combo-box {
     -fx-background-color: #89849c;
     -fx-text-fill: #000000;
@@ -6,46 +6,45 @@
     -fx-background-radius: 5;
 }
 
-/* Style the text of the selected item in the ComboBox */
+
 .combo-box .text {
     -fx-fill: #000000;
 }
 
-/* Style the prompt text (e.g., "Sélectionnez un cours") */
 .combo-box .text-field {
     -fx-text-fill: #000000;
     -fx-prompt-text-fill: #a0a0a0;
 }
 
-/* Style the dropdown list background */
+
 .combo-box .list-view {
     -fx-background-color: #89849c;
 }
 
-/* Style the items in the dropdown list */
+
 .combo-box .list-cell {
     -fx-background-color: #89849c;
     -fx-text-fill: #000000;
 }
 
-/* Style the selected item in the dropdown list */
+
 .combo-box .list-cell:selected {
     -fx-text-fill: #000000;
-    -fx-background-color: #89849c; /* Slightly darker shade for selection */
+    -fx-background-color: #89849c;
 }
 
-/* Style the hover effect for items in the dropdown list */
+
 .combo-box .list-cell:hover {
     -fx-background-color: #89849c;
     -fx-text-fill: #000000;
 }
 
-/* Style the arrow of the ComboBox */
+
 .combo-box .arrow {
     -fx-background-color: #000000;
 }
 
-/* ComboBox with white text (used in AjouterSeance) */
+
 .combo-box-white-text {
     -fx-background-color: #3e2063;
     -fx-text-fill: white;
@@ -86,7 +85,7 @@
     -fx-background-color: #000000;
 }
 
-/* General Styles for TextField */
+
 .text-field {
     -fx-background-color: #ffffff;
     -fx-text-fill: white;
@@ -94,7 +93,7 @@
     -fx-background-radius: 5;
 }
 
-/* TextField with black text (used in ModifierSeance) */
+
 .text-field-black-text {
     -fx-background-color: #857c95;
     -fx-text-fill: black;
@@ -102,22 +101,21 @@
     -fx-background-radius: 5;
 }
 
-/* General Styles for DatePicker */
+
 .date-picker {
-    -fx-background-color: #857c95; /* Match the gray background of other fields */
+    -fx-background-color: #857c95;
     -fx-text-fill: black;
     -fx-control-inner-background: #857c95;
     -fx-background-radius: 5;
 }
 
 .date-picker .text-field {
-    -fx-background-color: #857c95; /* Ensure the inner text field matches */
+    -fx-background-color: #857c95;
     -fx-text-fill: black;
     -fx-prompt-text-fill: #a0a0a0;
     -fx-background-radius: 5;
 }
 
-/* DatePicker with black text (used in ModifierSeance) */
 .date-picker-black-text {
     -fx-background-color: #857c95;
     -fx-text-fill: black;
@@ -126,13 +124,12 @@
 }
 
 .date-picker-black-text .text-field {
-    -fx-background-color: #857c95; /* Ensure consistency */
+    -fx-background-color: #857c95;
     -fx-text-fill: black;
     -fx-prompt-text-fill: #a0a0a0;
     -fx-background-radius: 5;
 }
 
-/* DatePicker Popup Styles */
 .date-picker-popup .calendar-grid {
     -fx-background-color: #2a1844;
 }
@@ -150,7 +147,6 @@
     -fx-text-fill: #000000;
 }
 
-/* General Styles for Buttons */
 .button {
     -fx-background-color: #89849c;
     -fx-text-fill: white;
@@ -158,41 +154,40 @@
     -fx-background-radius: 10;
 }
 
-/* Specific Button Styles for AjouterSeance and ModifierSeance */
+
 .button.cancel {
-    -fx-background-color: #89849c; /* Used for "Annuler" in AjouterSeance */
+    -fx-background-color: #89849c;
 }
 
 .button.save {
-    -fx-background-color: #0e3b9c; /* Used for "Enregistrer" in ModifierSeance */
+    -fx-background-color: #0e3b9c;
 }
 
-/* Button Styles for AfficherSeance */
 #btnAjouter {
-    -fx-background-color: #0e3b9c; /* Blue */
+    -fx-background-color: #0e3b9c;
     -fx-text-fill: white;
     -fx-background-radius: 20;
 }
 
 #btnModifier {
-    -fx-background-color: #eacc39; /* Yellow */
+    -fx-background-color: #eacc39;
     -fx-text-fill: white;
     -fx-background-radius: 20;
 }
 
 #btnSupprimer {
-    -fx-background-color: #ff0000; /* Red */
+    -fx-background-color: #ff0000;
     -fx-text-fill: white;
     -fx-background-radius: 20;
 }
 
 #retourButton {
-    -fx-background-color: #89849c; /* Gray */
+    -fx-background-color: #89849c;
     -fx-text-fill: white;
     -fx-background-radius: 20;
 }
 
-/* ListView Styles */
+
 .list-view {
     -fx-background-color: #192342;
     -fx-control-inner-background: #192342;
@@ -204,9 +199,9 @@
 }
 
 .list-view .list-cell:selected {
-    -fx-background-color: transparent; /* Handled by CustomSeanceCell */
+    -fx-background-color: transparent;
 }
 
 .list-view .list-cell:hover {
-    -fx-background-color: transparent; /* Handled by CustomSeanceCell */
+    -fx-background-color: transparent;
 }

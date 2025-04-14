@@ -41,23 +41,23 @@ public class AffichageListCours implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            // Récupère les cours depuis la base de données
+
             List<Cour> cours = courService.recuperer();
 
-            // Remplit la ListView avec les données
+
             setRlistItems(cours);
 
-            // Set the custom cell factory
+
             rlist.setCellFactory(listView -> new CustomCourCell());
 
-            // Ensure the ListView cells are always visible by adjusting the style
+
             rlist.setStyle("-fx-background-color: #192342; -fx-control-inner-background: #192342;");
 
-            // Disable Modifier and Supprimer buttons until a row is selected
+
             btnModifier.setDisable(true);
             btnSupprimer.setDisable(true);
 
-            // Enable buttons when a row is selected
+
             rlist.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
                 btnModifier.setDisable(newSelection == null);
                 btnSupprimer.setDisable(newSelection == null);
@@ -136,11 +136,11 @@ public class AffichageListCours implements Initializable {
         Cour selectedCour = rlist.getSelectionModel().getSelectedItem();
         if (selectedCour != null) {
             try {
-                // Load the ModifierCour.fxml
+
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierCour.fxml"));
                 Parent root = loader.load();
 
-                // Get the controller and pass the selected Cour
+
                 ModifierCour controller = loader.getController();
                 controller.setCour(selectedCour);
 

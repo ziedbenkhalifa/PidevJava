@@ -45,11 +45,11 @@ public class AjouterSeance implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            // Fetch the list of Cours from the database
+
             List<Cour> coursList = courService.recuperer();
             courIdComboBox.setItems(FXCollections.observableArrayList(coursList));
 
-            // Customize the ComboBox display to show the nom and id of each Cour
+
             courIdComboBox.setConverter(new StringConverter<Cour>() {
                 @Override
                 public String toString(Cour cour) {
@@ -73,41 +73,45 @@ public class AjouterSeance implements Initializable {
     @FXML
     private void ajouterSeance() {
         try {
-            // Validate Date Séance
+
             LocalDate dateSeance = dateSeancePicker.getValue();
             if (dateSeance == null) {
-                throw new IllegalArgumentException("Date Séance must be selected.");
+                throw new IllegalArgumentException("Date Séance doit être sélectionnée.");
             }
 
-            // Validate Durée
+            if (dateSeance.isBefore(LocalDate.now())) {
+                throw new IllegalArgumentException("La Date Séance doit être aujourd'hui ou dans le futur.");
+            }
+
+
             String dureeStr = dureeField.getText();
             if (dureeStr == null || dureeStr.trim().isEmpty()) {
-                throw new IllegalArgumentException("Durée must be specified (e.g., 01:30).");
+                throw new IllegalArgumentException("La Durée doit être spécifiée (ex. : 01:30).");
             }
             LocalTime duree;
             try {
                 duree = LocalTime.parse(dureeStr, DateTimeFormatter.ofPattern("HH:mm"));
             } catch (DateTimeParseException e) {
-                throw new IllegalArgumentException("Durée must be in the format 'HH:mm' (e.g., 01:30).");
+                throw new IllegalArgumentException("La Durée doit être au format 'HH:mm' (ex. : 01:30).");
             }
 
-            // Validate Objectifs
+
             String objectifs = objectifsField.getText();
             if (objectifs == null || objectifs.trim().isEmpty()) {
-                throw new IllegalArgumentException("Objectifs must be specified.");
+                throw new IllegalArgumentException("Les Objectifs doivent être spécifiés.");
             }
 
-            // Validate Cour selection
+
             Cour selectedCour = courIdComboBox.getValue();
             if (selectedCour == null) {
-                throw new IllegalArgumentException("Cours must be selected.");
+                throw new IllegalArgumentException("Un Cours doit être sélectionné.");
             }
 
-            // Create Seance object
+
             Seance seance = new Seance(dateSeance, duree, objectifs, selectedCour);
             seanceService.ajouter(seance);
 
-            // Navigate to AfficherSeance
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherSeance.fxml"));
             Parent root = loader.load();
 

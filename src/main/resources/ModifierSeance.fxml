@@ -161,7 +161,7 @@
         </AnchorPane>
     </children>
 
-    <!-- Styles CSS -->
+
     <stylesheets>
         <String fx:value="/styles/style.css" />
     </stylesheets>

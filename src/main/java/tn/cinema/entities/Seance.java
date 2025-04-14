@@ -68,7 +68,7 @@ public class Seance {
     }
 
     public Cour getCour() {
-        return cour; // Getter pour l'objet Cour
+        return cour;
     }
 
     public void setCour(Cour cour) {

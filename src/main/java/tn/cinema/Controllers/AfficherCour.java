@@ -37,29 +37,28 @@ public class AfficherCour implements Initializable {
     private TextField rdatefin;
 
     @FXML
-    private ListView<Cour> rlist; // Added ListView field
+    private ListView<Cour> rlist;
 
     @FXML
     private Button retourButton;
 
     @FXML
-    private Button btnModifier; // Added for Modify button
+    private Button btnModifier;
 
     @FXML
-    private Button btnSupprimer; // Added for Delete button
+    private Button btnSupprimer;
 
     private final CourService courService = new CourService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Set the custom cell factory for the ListView
+
         rlist.setCellFactory(listView -> new CustomCourCell());
 
-        // Disable Modifier and Supprimer buttons until a row is selected
+
         btnModifier.setDisable(true);
         btnSupprimer.setDisable(true);
 
-        // Enable buttons when a row is selected
         rlist.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             btnModifier.setDisable(newSelection == null);
             btnSupprimer.setDisable(newSelection == null);
@@ -84,12 +83,12 @@ public class AfficherCour implements Initializable {
         rdatefin.setText(dateFin.format(formatter));
     }
 
-    // Added method to set the ListView items
+
     public void setRlistItems(List<Cour> items) {
         rlist.setItems(FXCollections.observableArrayList(items));
     }
 
-    // Custom cell factory for the ListView, similar to AffichageListCours
+
     private class CustomCourCell extends ListCell<Cour> {
         private HBox hbox = new HBox();
         private Text idText = new Text();
@@ -150,11 +149,11 @@ public class AfficherCour implements Initializable {
         Cour selectedCour = rlist.getSelectionModel().getSelectedItem();
         if (selectedCour != null) {
             try {
-                // Load the ModifierCour.fxml
+
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierCour.fxml"));
                 Parent root = loader.load();
 
-                // Get the controller and pass the selected Cour
+
                 ModifierCour controller = loader.getController();
                 controller.setCour(selectedCour);
 
