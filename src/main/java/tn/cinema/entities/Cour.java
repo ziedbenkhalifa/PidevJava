@@ -91,6 +91,14 @@ public class Cour {
                 '}';
     }
 
+    public List<Seance> getSeances() {
+        return seances;
+    }
+
+    public void setSeances(List<Seance> seances) {
+        this.seances = seances;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
