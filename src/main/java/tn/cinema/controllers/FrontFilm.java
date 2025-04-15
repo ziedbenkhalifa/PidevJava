@@ -4,18 +4,24 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import tn.cinema.entities.Films;
 import javafx.util.Callback;
 import tn.cinema.services.FilmsService;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -151,32 +157,61 @@ public class FrontFilm {
                         protected void updateItem(Films item, boolean empty) {
                             super.updateItem(item, empty);
                             if (item != null) {
-                                // Create HBox to hold the film details and image
                                 HBox hbox = new HBox(10);
+                                hbox.setStyle("-fx-padding: 10; -fx-background-color: #ffffff; -fx-background-radius: 10;");
+                                hbox.setPrefHeight(100);
 
-                                // Text for film details (name, director, genre)
-                                Text text = new Text(item.getNom_film() + " - " + item.getRealisateur() + " - " + item.getGenre());
-
-                                // Load the image (handle null cases if needed)
+                                // Film Image
                                 ImageView imageView = new ImageView();
                                 try {
-                                    // Assuming the image path is correct, you may need to adjust if images are stored in the resources folder
-                                    Image image = new Image("file:" + item.getImg()); // Modify the path as needed
+                                    Image image = new Image("file:" + item.getImg());
                                     imageView.setImage(image);
                                 } catch (Exception e) {
-                                    // Handle image loading error, show a placeholder if image fails to load
-                                    imageView.setImage(new Image("file:src/images/placeholder.jpg")); // Use a placeholder image if necessary
+                                    imageView.setImage(new Image("file:src/images/placeholder.jpg"));
                                 }
+                                imageView.setFitHeight(80);
+                                imageView.setFitWidth(60);
 
-                                // Set the image size
-                                imageView.setFitHeight(100);
-                                imageView.setFitWidth(80);
+                                // Text Info
+                                VBox textBox = new VBox(5);
+                                Text title = new Text(item.getNom_film());
+                                title.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+                                Text director = new Text("Réalisateur: " + item.getRealisateur());
+                                Text genre = new Text("Genre: " + item.getGenre());
+                                textBox.getChildren().addAll(title, director, genre);
+
+                                // Spacer to push button to the right
+                                Region spacer = new Region();
+                                HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+
+                                // Right-side Button
+                                Button afficherProjectionBtn = new Button("Afficher Projection");
+                                afficherProjectionBtn.setStyle("-fx-background-color: #3e2063; -fx-text-fill: white; -fx-font-size: 12px;");
+                                afficherProjectionBtn.setOnAction(e -> {
+                                    try {
+                                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontProjection.fxml"));
+                                        Parent root = loader.load();
+
+                                        // Optionally pass the selected film to the next controller
+                                        // FrontProjection controller = loader.getController();
+                                        // controller.setFilm(item); // if you want to pass the selected film
+
+                                        Stage stage = (Stage) list.getScene().getWindow(); // Gets the current stage
+                                        stage.setScene(new Scene(root));
+                                        stage.show();
+                                    } catch (IOException ex) {
+                                        ex.printStackTrace();
+                                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                                        alert.setTitle("Erreur de navigation");
+                                        alert.setHeaderText("Impossible de charger la page des projections");
+                                        alert.setContentText(ex.getMessage());
+                                        alert.showAndWait();
+                                    }
+                                });
 
 
-                                // Add the image and text to HBox
-                                hbox.getChildren().addAll(imageView, text);
-
-                                // Set the HBox as the cell's graphic
+                                // Combine all in HBox
+                                hbox.getChildren().addAll(imageView, textBox, spacer, afficherProjectionBtn);
                                 setGraphic(hbox);
                             } else {
                                 setGraphic(null);
