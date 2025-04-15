@@ -15,19 +15,25 @@ public class SalleService implements IServices<Salle> {
         cnx = Mydatabase.getInstance().getCnx();
     }
 
+
+
     public void ajouter(Salle salle) throws SQLException {
-        String sql = "INSERT INTO salle(id_salle, nombre_de_place, nom_salle, statut, disponibilite, type_salle, emplacement) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO salle(id_salle, nom_salle, statut, disponibilite, type_salle, emplacement, nombre_de_place) VALUES (?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement ps = cnx.prepareStatement(sql);
-        ps.setInt(1, salle.getId_salle());
-        ps.setInt(2, salle.getNombre_de_place());
-        ps.setString(3, salle.getNom_salle());
-        ps.setString(4, salle.getStatut());
-        ps.setString(5, salle.getDisponibilite());
-        ps.setString(6, salle.getType_salle());
-        ps.setString(7, salle.getEmplacement());
+
+        // Assurez-vous que l'ordre des paramètres correspond à l'ordre des colonnes dans la requête SQL
+        ps.setInt(1, salle.getId_salle()); // id_salle
+        ps.setString(2, salle.getNom_salle()); // nom_salle
+        ps.setString(3, salle.getStatut()); // statut
+        ps.setString(4, salle.getDisponibilite()); // disponibilite
+        ps.setString(5, salle.getType_salle()); // type_salle
+        ps.setString(6, salle.getEmplacement()); // emplacement
+        ps.setInt(7, salle.getNombre_de_place()); // nombre_de_place
+
         ps.executeUpdate();
         System.out.println("Salle ajoutée avec succès !");
     }
+
 
 
 
@@ -45,10 +51,16 @@ public class SalleService implements IServices<Salle> {
     }
 
     public void modifier(Salle salle) throws SQLException {
-        String sql = "UPDATE salle SET nom_salle = ? WHERE id_salle = ?";
+        String sql = "UPDATE salle SET nom_salle = ?, disponibilite = ?, emplacement = ?, statut = ?, type_salle = ?, nombre_de_place = ? WHERE id_salle = ?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
-            ps.setString(1, salle.getNom_salle()); // Récupérer le nom depuis l'objet Salle
-            ps.setInt(2, salle.getId_salle()); // Récupérer l'ID de la salle
+            ps.setString(1, salle.getNom_salle());
+            ps.setString(2, salle.getDisponibilite());
+            ps.setString(3, salle.getEmplacement());
+            ps.setString(4, salle.getStatut());
+            ps.setString(5, salle.getType_salle());
+            ps.setInt(6, salle.getNombre_de_place());
+            ps.setInt(7, salle.getId_salle());
+
             int rows = ps.executeUpdate();
             if (rows > 0) {
                 System.out.println("Salle modifiée !");
@@ -68,11 +80,13 @@ public class SalleService implements IServices<Salle> {
             Salle s = new Salle();
             s.setId_salle(rs.getInt("id_salle"));
             s.setNom_salle(rs.getString("nom_salle"));
+            s.setDisponibilite(rs.getString("disponibilite"));
             s.setType_salle(rs.getString("type_salle"));
             s.setStatut(rs.getString("statut"));
-            s.setNombre_de_place(rs.getInt("nombre_de_place"));
-            s.setDisponibilite(rs.getString("disponibilite"));
+
+
             s.setEmplacement(rs.getString("emplacement"));
+            s.setNombre_de_place(rs.getInt("nombre_de_place"));
             salles.add(s);
         }
         return salles;

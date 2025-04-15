@@ -15,14 +15,23 @@ public class Equipement {
         this.etat = etat;
         this.salle_id = salle_id;
     }
-    public Equipement (int salle_id, String nom, String type, String etat) {
-        this.id = id;
+    public Equipement(String nom, String type, int salle_id, String etat)
+    {
         this.nom = nom;
         this.type = type;
-        this.etat = etat;
         this.salle_id = salle_id;
+        this.etat = etat;
     }
+
     public Equipement () {}
+    public Equipement(String nom, String type, String salle_id) {
+        this.nom = nom;
+        this.type = type;
+        this.salle_id = Integer.parseInt(salle_id); // Si salle_id est un nombre
+        this.etat = "Disponible"; // Ou autre valeur par défaut
+    }
+
+
 
 
     public int getId() {

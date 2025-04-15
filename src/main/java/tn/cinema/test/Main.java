@@ -15,31 +15,58 @@ public class Main {
         SalleService salleService = new SalleService();
         EquipementService equipementService = new EquipementService();
 
-        Salle s = new Salle(1, "Grande Salle!", "oui", "Disponible", "IMAX", "Centre");
-        s.setId_salle(27);
-        s.setNom_salle("salleee");
-       // Equipement e = new Equipement( 22, "cadre", "Vidéo", "Fonctionnel?");
-        Equipement e1 = new Equipement( 22, "imprimante", "Vidéo", "Fonctionnel?");
-        Equipement e5 = new Equipement( 22, "korsi", "Vidéo", "mediocre");
-        e1.setId(50);
-        e1.setNom("BHHH");
-
+        // Test ajout d'équipement
         try {
-            //equipementService.ajouter(e5);
-            //equipementService.supprimer(26);
-           //equipementService.modifier(e1);
-            System.out.println(equipementService.recuperer());
+            Equipement equipementAajouter = new Equipement();
+            equipementAajouter.setNom("Équipement 1");
+            equipementAajouter.setType("Type 1");
+            equipementAajouter.setEtat("Neuf");
+            equipementAajouter.setSalle_id(1); // Assure-toi que la salle avec cet ID existe
+
+            equipementService.ajouter(equipementAajouter); // Appel de la méthode ajouter avec un objet valide
+
+            System.out.println("Liste des équipements après ajout:");
+            equipementService.recuperer().forEach(System.out::println);
+
         } catch (SQLException E) {
-            System.out.println(E.getMessage());
+            System.out.println("Erreur SQL lors de l'ajout d'équipement : " + E.getMessage());
         }
 
+        // Test modification d'équipement
         try {
-            //salleService.ajouter(s);
-            // salleService.modifier(s);
-           // salleService.supprimer(27);
-            System.out.println(salleService.recuperer());
+            Equipement equipementActuel = new Equipement();
+            equipementActuel.setId(1); // Assure-toi que l'ID est un ID existant dans la base
+            equipementActuel.setNom("Nom modifié");
+            equipementActuel.setType("Type modifié");
+            equipementActuel.setEtat("État modifié");
+            equipementActuel.setSalle_id(2); // Assure-toi que la salle avec cet ID existe
+
+            equipementService.modifier(equipementActuel); // Passer l'objet valide à la méthode modifier
+
+            System.out.println("Liste des équipements après modification:");
+            equipementService.recuperer().forEach(System.out::println);
+
         } catch (SQLException E) {
-            System.out.println(E.getMessage());
+            System.out.println("Erreur SQL lors de la modification d'équipement : " + E.getMessage());
+        }
+
+        // Test suppression d'équipement (exemple commenté, à décommenter pour tester)
+        try {
+            equipementService.supprimer(1); // Suppression de l'équipement ayant l'ID 1
+            System.out.println("Liste des équipements après suppression:");
+            equipementService.recuperer().forEach(System.out::println);
+        } catch (SQLException E) {
+            System.out.println("Erreur SQL lors de la suppression d'équipement : " + E.getMessage());
+        }
+
+        // Test récupération des salles
+        try {
+             salleService.ajouter(new Salle()); // Exemple d'ajout de salle
+            // salleService.supprimer(27); // Exemple de suppression de salle
+            System.out.println("Liste des salles:");
+            salleService.recuperer().forEach(System.out::println);
+        } catch (SQLException E) {
+            System.out.println("Erreur SQL lors de la gestion des salles : " + E.getMessage());
         }
     }
-    }
+}

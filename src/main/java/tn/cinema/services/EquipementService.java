@@ -44,11 +44,17 @@ public class EquipementService implements IServices<Equipement> {
 
     @Override
     public void modifier(Equipement equipement) throws SQLException {
-        String sql = "UPDATE equipement SET nom = ? WHERE id = ?";
+        String sql = "UPDATE equipement SET nom = ?, type = ?, salle_id = ?, etat = ? WHERE id = ?";
 
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            // Lier les valeurs des champs
             ps.setString(1, equipement.getNom());
-            ps.setInt(2, equipement.getId());
+            ps.setString(2, equipement.getType());
+            ps.setInt(3, equipement.getSalle_id());
+            ps.setString(4, equipement.getEtat());
+            ps.setInt(5, equipement.getId());
+
+            // Exécuter la mise à jour
             int rows = ps.executeUpdate();
 
             if (rows > 0) {
@@ -58,6 +64,7 @@ public class EquipementService implements IServices<Equipement> {
             }
         }
     }
+
 
 
 
