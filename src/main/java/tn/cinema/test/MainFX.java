@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import tn.cinema.Controllers.AjouterCour;
 
 public class MainFX extends Application {
     @Override

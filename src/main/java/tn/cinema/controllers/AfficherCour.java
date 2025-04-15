@@ -1,11 +1,10 @@
-package tn.cinema.Controllers;
+package tn.cinema.controllers;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -18,11 +17,24 @@ import tn.cinema.services.CourService;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class AffichageListCours implements Initializable {
+public class AfficherCour implements Initializable {
+
+    @FXML
+    private TextField rtype;
+
+    @FXML
+    private TextField rcout;
+
+    @FXML
+    private TextField rdatedebut;
+
+    @FXML
+    private TextField rdatefin;
 
     @FXML
     private ListView<Cour> rlist;
@@ -40,41 +52,42 @@ public class AffichageListCours implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try {
 
-            List<Cour> cours = courService.recuperer();
-
-
-            setRlistItems(cours);
+        rlist.setCellFactory(listView -> new CustomCourCell());
 
 
-            rlist.setCellFactory(listView -> new CustomCourCell());
+        btnModifier.setDisable(true);
+        btnSupprimer.setDisable(true);
 
-
-            rlist.setStyle("-fx-background-color: #192342; -fx-control-inner-background: #192342;");
-
-
-            btnModifier.setDisable(true);
-            btnSupprimer.setDisable(true);
-
-
-            rlist.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-                btnModifier.setDisable(newSelection == null);
-                btnSupprimer.setDisable(newSelection == null);
-            });
-
-        } catch (SQLException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur");
-            alert.setHeaderText(null);
-            alert.setContentText("Une erreur s'est produite lors de la récupération des cours : " + e.getMessage());
-            alert.showAndWait();
-        }
+        rlist.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            btnModifier.setDisable(newSelection == null);
+            btnSupprimer.setDisable(newSelection == null);
+        });
     }
+
+    public void setRtype(String type) {
+        rtype.setText(type);
+    }
+
+    public void setRcout(double cout) {
+        rcout.setText(String.format("%.2f", cout));
+    }
+
+    public void setRdatedebut(LocalDate dateDebut) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        rdatedebut.setText(dateDebut.format(formatter));
+    }
+
+    public void setRdatefin(LocalDate dateFin) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        rdatefin.setText(dateFin.format(formatter));
+    }
+
 
     public void setRlistItems(List<Cour> items) {
         rlist.setItems(FXCollections.observableArrayList(items));
     }
+
 
     private class CustomCourCell extends ListCell<Cour> {
         private HBox hbox = new HBox();
@@ -157,6 +170,7 @@ public class AffichageListCours implements Initializable {
             }
         }
     }
+
     @FXML
     private void supprimerAction() {
         Cour selectedCour = rlist.getSelectionModel().getSelectedItem();
@@ -180,7 +194,7 @@ public class AffichageListCours implements Initializable {
     @FXML
     private void retourAction() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/GestionCour.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/AjouterCour.fxml"));
             Stage stage = (Stage) retourButton.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
@@ -214,7 +228,7 @@ public class AffichageListCours implements Initializable {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/GestionCour.fxml"));
             Scene scene = new Scene(root);
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Stage stage = (Stage) rlist.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {

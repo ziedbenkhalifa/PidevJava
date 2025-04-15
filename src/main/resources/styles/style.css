@@ -150,8 +150,8 @@
 .button {
     -fx-background-color: #89849c;
     -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-background-radius: 10;
+    /*-fx-font-size: 14px;*/
+    /*-fx-background-radius: 10;*/
 }
 
 

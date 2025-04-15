@@ -1,4 +1,4 @@
-package tn.cinema.Controllers;
+package tn.cinema.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,7 +16,6 @@ import tn.cinema.services.SeanceService;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.ResourceBundle;
