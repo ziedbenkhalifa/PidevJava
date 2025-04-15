@@ -1,6 +1,6 @@
-package tn.cinema.test;
+//package tn.cinema.test;
 
-import tn.cinema.entities.Equipement;
+/*import tn.cinema.entities.Equipement;
 import tn.cinema.entities.Salle;
 import tn.cinema.services.EquipementService;
 import tn.cinema.services.SalleService;
@@ -42,4 +42,4 @@ public class MainSalle {
             System.out.println(E.getMessage());
         }
     }
-}
+}*/

@@ -17,8 +17,8 @@ public class Salle {
         this.statut = statut;
         this.emplacement = emplacement;
     }
-    public Salle(int nombre_de_place, String nom_salle, String disponibilite, String type_salle, String statut, String emplacement) {
-        this.id_salle = id_salle;
+    public Salle( String nom_salle, String disponibilite, String type_salle, String statut, String emplacement,int nombre_de_place) {
+
         this.nombre_de_place = nombre_de_place;
         this.nom_salle = nom_salle;
         this.disponibilite = disponibilite;
@@ -107,5 +107,9 @@ public class Salle {
     @Override
     public int hashCode() {
         return Objects.hash(id_salle, nombre_de_place, nom_salle, disponibilite, type_salle, statut, emplacement);
+    }
+
+    public void setNom(String salleNom) {
+
     }
 }
