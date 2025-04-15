@@ -65,9 +65,9 @@ public class AjouterPublicite {
             return;
         }
 
-        // Check if dateDebut is before dateFin
-        if (dateFin.before(dateDebut)) {
-            showAlert("Dates invalides", "La date de fin doit être postérieure à la date de début.");
+        // Check if dateFin is strictly after dateDebut
+        if (!dateFin.after(dateDebut)) {
+            showAlert("Dates invalides", "La date de fin doit être strictement postérieure à la date de début.");
             return;
         }
 
@@ -75,6 +75,10 @@ public class AjouterPublicite {
         support = supportField.getText().trim();
         if (support.isEmpty()) {
             showAlert("Champ manquant", "Veuillez entrer le support de la publicité.");
+            return;
+        }
+        if (!support.matches("^https://[\\w.-]+(?:\\.[\\w\\.-]+)+[/#?]?.*$")) {
+            showAlert("Lien invalide", "Veuillez entrer un lien valide commençant par https://");
             return;
         }
 

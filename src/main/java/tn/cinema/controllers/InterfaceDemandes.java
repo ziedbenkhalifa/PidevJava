@@ -78,17 +78,18 @@ public class InterfaceDemandes implements Initializable {
                     idText.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
                     Text userIdText = new Text("User ID: " + demande.getUserId());
                     userIdText.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
-                    Text adminIdText = new Text("Admin ID: " + (demande.getAdminId() != null ? demande.getAdminId() : "N/A"));
-                    adminIdText.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
+                 //  Text adminIdText = new Text("Admin ID: " + (demande.getAdminId() != null ? demande.getAdminId() : "N/A"));
+                   // adminIdText.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
                     Text nbJoursText = new Text("Nb Jours: " + demande.getNombreJours());
                     nbJoursText.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
                     Text descriptionText = new Text("Description: " + demande.getDescription());
-                    descriptionText.setStyle("-fx-font-size: 14;");
+                    descriptionText.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
                     descriptionText.setWrappingWidth(300); // Wrap long description
                     Text typeText = new Text("Type: " + demande.getType());
                     typeText.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
-                    Text lienSuppText = new Text("Lien Supp: " + (demande.getLienSupplementaire() != null ? demande.getLienSupplementaire() : "N/A"));
-                    lienSuppText.setStyle("-fx-font-size: 14;");
+                    Text lienSuppText = new Text("Lien Supp: "
+                            + (demande.getLienSupplementaire() != null ? demande.getLienSupplementaire() : "N/A"));
+                    lienSuppText.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
                     lienSuppText.setWrappingWidth(300); // Wrap long lienSupplementaire
                     Text statutText = new Text("Statut: " + transformStatutForUI(demande.getStatut()));
                     statutText.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
@@ -98,7 +99,7 @@ public class InterfaceDemandes implements Initializable {
                     // Add fields to GridPane
                     gridPane.add(idText, 0, 0);
                     gridPane.add(userIdText, 1, 0);
-                    gridPane.add(adminIdText, 2, 0);
+                //    gridPane.add(adminIdText, 2, 0);
                     gridPane.add(nbJoursText, 0, 1);
                     gridPane.add(descriptionText, 1, 1, 2, 1); // Span 2 columns
                     gridPane.add(typeText, 0, 2);
