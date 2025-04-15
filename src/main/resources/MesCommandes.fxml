@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #080b21;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.MesCommandesController">
+    <children>
+        <VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" spacing="20" style="-fx-background-color: #021b50; -fx-background-radius: 20;">
+            <children>
+                <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;" text="📋 Mes Commandes" />
+                <ListView fx:id="listViewCommandes" prefHeight="450.0" prefWidth="700.0" style="-fx-background-color: #c5cbd9; -fx-background-radius: 10;" />
+
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>
