@@ -10,8 +10,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.event.ActionEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import tn.cinema.entities.Films;
 import tn.cinema.entities.Projection;
@@ -36,6 +40,41 @@ public class AfficherProjection {
             List<Projection> projections = ps.recuperer();  // Get all projections
             ObservableList<Projection> observableList = FXCollections.observableList(projections);
             listProjection.setItems(observableList);
+
+            // Set custom cell factory
+            listProjection.setCellFactory(param -> new ListCell<>() {
+                @Override
+                protected void updateItem(Projection item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item != null && !empty) {
+                        // HBox container
+                        HBox hbox = new HBox(10);
+                        hbox.setStyle("-fx-padding: 10; -fx-alignment: center-left;");
+
+                        // VBox for text content
+                        VBox vbox = new VBox(5);
+                        vbox.setStyle("-fx-padding: 5;");
+
+                        // Displaying date, capaciter, and prix
+                        Text date = new Text("Date: " + item.getDate_projection());
+                        date.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+
+                        Text capacite = new Text("Capacité: " + item.getCapaciter());
+                        capacite.setStyle("-fx-font-size: 13px;");
+
+                        Text prix = new Text("Prix: " + item.getPrix() + " DT");
+                        prix.setStyle("-fx-font-size: 13px;");
+
+                        vbox.getChildren().addAll(date, capacite, prix);
+                        hbox.getChildren().add(vbox);
+
+                        setGraphic(hbox);  // Set the graphic for each item in the list
+                    } else {
+                        setGraphic(null);  // Set null when the item is empty
+                    }
+                }
+            });
+
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
@@ -43,6 +82,7 @@ public class AfficherProjection {
             alert.showAndWait();
         }
     }
+
 
     // Navigate to the 'AjouterProjection' form
     @FXML

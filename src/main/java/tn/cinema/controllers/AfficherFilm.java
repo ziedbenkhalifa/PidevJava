@@ -12,6 +12,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.event.ActionEvent;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import tn.cinema.entities.Films;
 import tn.cinema.services.FilmsService;
@@ -120,9 +125,53 @@ public class AfficherFilm {
     @FXML
     void initialize() {
         try {
-            List<Films> films =fs.recuperer();
+            List<Films> films = fs.recuperer();
             ObservableList<Films> observableList = FXCollections.observableList(films);
             listFilm.setItems(observableList);
+
+            listFilm.setCellFactory(param -> new javafx.scene.control.ListCell<Films>() {
+                @Override
+                protected void updateItem(Films item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item != null && !empty) {
+                        // HBox container
+                        HBox hbox = new HBox(10);
+                        hbox.setStyle("-fx-padding: 10; -fx-alignment: center-left;");
+
+                        // ImageView
+                        ImageView imageView = new ImageView();
+                        try {
+                            Image image = new Image("file:" + item.getImg());
+                            imageView.setImage(image);
+                        } catch (Exception e) {
+                            imageView.setImage(new Image("file:src/images/placeholder.jpg"));
+                        }
+                        imageView.setFitHeight(100);
+                        imageView.setFitWidth(80);
+
+                        // Text content
+                        VBox vbox = new VBox(5);
+                        vbox.setStyle("-fx-padding: 5;");
+
+                        Text title = new Text(item.getNom_film());
+                        title.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+
+                        Text director = new Text("Réalisateur: " + item.getRealisateur());
+                        director.setStyle("-fx-font-size: 13px;");
+
+                        Text genre = new Text("Genre: " + item.getGenre());
+                        genre.setStyle("-fx-font-size: 13px;");
+
+                        vbox.getChildren().addAll(title, director, genre);
+
+                        hbox.getChildren().addAll(imageView, vbox);
+                        setGraphic(hbox);
+                    } else {
+                        setGraphic(null);
+                    }
+                }
+            });
+
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
@@ -130,6 +179,7 @@ public class AfficherFilm {
             alert.showAndWait();
         }
     }
+
 
     @FXML
     void gestionFilm(ActionEvent event) {

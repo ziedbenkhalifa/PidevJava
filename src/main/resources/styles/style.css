@@ -1,0 +1,207 @@
+
+.combo-box {
+    -fx-background-color: #89849c;
+    -fx-text-fill: #000000;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+}
+
+
+.combo-box .text {
+    -fx-fill: #000000;
+}
+
+.combo-box .text-field {
+    -fx-text-fill: #000000;
+    -fx-prompt-text-fill: #a0a0a0;
+}
+
+
+.combo-box .list-view {
+    -fx-background-color: #89849c;
+}
+
+
+.combo-box .list-cell {
+    -fx-background-color: #89849c;
+    -fx-text-fill: #000000;
+}
+
+
+.combo-box .list-cell:selected {
+    -fx-text-fill: #000000;
+    -fx-background-color: #89849c;
+}
+
+
+.combo-box .list-cell:hover {
+    -fx-background-color: #89849c;
+    -fx-text-fill: #000000;
+}
+
+
+.combo-box .arrow {
+    -fx-background-color: #000000;
+}
+
+
+.combo-box-white-text {
+    -fx-background-color: #3e2063;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+}
+
+.combo-box-white-text .text {
+    -fx-fill: white;
+}
+
+.combo-box-white-text .text-field {
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #a0a0a0;
+}
+
+.combo-box-white-text .list-view {
+    -fx-background-color: #3e2063;
+    -fx-text-fill: #000000;
+}
+
+.combo-box-white-text .list-cell {
+    -fx-background-color: #3e2063;
+    -fx-text-fill: white;
+}
+
+.combo-box-white-text .list-cell:selected {
+    -fx-background-color: #89849c;
+    -fx-text-fill: #000000;
+}
+
+.combo-box-white-text .list-cell:hover {
+    -fx-background-color: #4a2a73;
+    -fx-text-fill: white;
+}
+
+.combo-box-white-text .arrow {
+    -fx-background-color: #000000;
+}
+
+
+.text-field {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #a0a0a0;
+    -fx-background-radius: 5;
+}
+
+
+.text-field-black-text {
+    -fx-background-color: #857c95;
+    -fx-text-fill: black;
+    -fx-prompt-text-fill: #a0a0a0;
+    -fx-background-radius: 5;
+}
+
+
+.date-picker {
+    -fx-background-color: #857c95;
+    -fx-text-fill: black;
+    -fx-control-inner-background: #857c95;
+    -fx-background-radius: 5;
+}
+
+.date-picker .text-field {
+    -fx-background-color: #857c95;
+    -fx-text-fill: black;
+    -fx-prompt-text-fill: #a0a0a0;
+    -fx-background-radius: 5;
+}
+
+.date-picker-black-text {
+    -fx-background-color: #857c95;
+    -fx-text-fill: black;
+    -fx-control-inner-background: #857c95;
+    -fx-background-radius: 5;
+}
+
+.date-picker-black-text .text-field {
+    -fx-background-color: #857c95;
+    -fx-text-fill: black;
+    -fx-prompt-text-fill: #a0a0a0;
+    -fx-background-radius: 5;
+}
+
+.date-picker-popup .calendar-grid {
+    -fx-background-color: #2a1844;
+}
+
+.date-picker-popup .day-cell {
+    -fx-text-fill: white;
+}
+
+.date-picker-popup .day-cell:hover {
+    -fx-background-color: #89849c;
+}
+
+.date-picker-popup .selected {
+    -fx-background-color: #3e2063;
+    -fx-text-fill: #000000;
+}
+
+.button {
+    -fx-background-color: #89849c;
+    -fx-text-fill: white;
+    /*-fx-font-size: 14px;*/
+    /*-fx-background-radius: 10;*/
+}
+
+
+.button.cancel {
+    -fx-background-color: #89849c;
+}
+
+.button.save {
+    -fx-background-color: #0e3b9c;
+}
+
+#btnAjouter {
+    -fx-background-color: #0e3b9c;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+}
+
+#btnModifier {
+    -fx-background-color: #eacc39;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+}
+
+#btnSupprimer {
+    -fx-background-color: #ff0000;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+}
+
+#retourButton {
+    -fx-background-color: #89849c;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+}
+
+
+.list-view {
+    -fx-background-color: #192342;
+    -fx-control-inner-background: #192342;
+}
+
+.list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.list-view .list-cell:selected {
+    -fx-background-color: transparent;
+}
+
+.list-view .list-cell:hover {
+    -fx-background-color: transparent;
+}

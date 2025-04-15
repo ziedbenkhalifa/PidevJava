@@ -28,6 +28,12 @@ public class Films {
         this.date_production = date_production;
     }
 
+    public Films(int id, String nom_film, String img) {
+        this.id = id;
+        this.nom_film = nom_film;
+        this.img = img;
+    }
+
 
     public int getId() {
         return id;
