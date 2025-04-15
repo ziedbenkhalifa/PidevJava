@@ -26,7 +26,6 @@ public class SeanceService implements IServices<Seance> {
         sql = "INSERT INTO seance(cour_id, date_seance, duree, objectifs) VALUES (?, ?, ?, ?)";
         ps = cnx.prepareStatement(sql);
 
-
         ps.setInt(1, seance.getCour().getId());
         ps.setDate(2, java.sql.Date.valueOf(seance.getDateSeance()));
         ps.setTime(3, Time.valueOf(seance.getDuree()));
@@ -56,17 +55,22 @@ public class SeanceService implements IServices<Seance> {
         ps.setString(4, seance.getObjectifs());
         ps.setInt(5, seance.getId());
 
-        ps.executeUpdate();
-        System.out.println("Séance modifiée");
+        int rowsUpdated = ps.executeUpdate();
+        if (rowsUpdated > 0) {
+            System.out.println("Séance modifiée avec succès. ID: " + seance.getId());
+        } else {
+            System.out.println("Échec de la modification. Aucune séance trouvée avec l'ID: " + seance.getId());
+        }
     }
 
     @Override
     public List<Seance> recuperer() throws SQLException {
         sql = "SELECT * FROM seance";
         st = cnx.createStatement();
-        ResultSet rs = st.executeQuery(sql);
+        rs = st.executeQuery(sql);
 
         List<Seance> seances = new ArrayList<>();
+        CourService courService = new CourService();
 
         while (rs.next()) {
             int id = rs.getInt("id");
@@ -75,10 +79,17 @@ public class SeanceService implements IServices<Seance> {
             String objectifs = rs.getString("objectifs");
             int idCour = rs.getInt("cour_id");
 
+            // Charger l'objet Cour complet à partir de CourService
+            Cour cour = courService.recuperer().stream()
+                    .filter(c -> c.getId() == idCour)
+                    .findFirst()
+                    .orElse(null);
 
-            Cour cour = new Cour();
-            cour.setId(idCour);
-
+            if (cour == null) {
+                System.out.println("Aucun cours trouvé pour cour_id: " + idCour);
+                cour = new Cour();
+                cour.setId(idCour);
+            }
 
             Seance s = new Seance(id, dateSeance, duree, objectifs, cour);
             seances.add(s);

@@ -3,6 +3,8 @@ package tn.cinema.controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
@@ -16,11 +18,15 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.animation.ScaleTransition;
 import javafx.animation.FadeTransition;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import tn.cinema.entities.Produit;
 import tn.cinema.services.ProduitService;
 import tn.cinema.entities.Commande;
 import tn.cinema.services.CommandeService;
+
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -226,5 +232,37 @@ public class ListProduits {
     private int getIdCommandeEnCours() {
         // Remplacer cette logique par la vraie logique de récupération de la commande en cours
         return -1;  // Valeur par défaut si aucune commande n'existe
+    }
+
+
+
+    @FXML
+    private void afficherMesCommandes() {
+        try {
+            // Vérifier si le fichier FXML existe
+            java.net.URL fxmlUrl = getClass().getResource("/MesCommandes.fxml");
+            if (fxmlUrl == null) {
+                showErrorMessage("Erreur", "Le fichier MesCommandes.fxml n'a pas été trouvé.");
+                return;
+            }
+
+            // Charger l'interface MesCommandes.fxml
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
+            Scene scene = new Scene(loader.load(), 800, 600); // Taille du popup
+
+            // Créer une nouvelle fenêtre modale
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL); // Bloque la fenêtre principale
+            popupStage.setTitle("Mes Commandes");
+            popupStage.setScene(scene);
+            popupStage.setResizable(false); // Empêche le redimensionnement
+
+            // Afficher le popup et attendre sa fermeture
+            popupStage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorMessage("Erreur", "Impossible de charger l'interface des commandes : " + e.getMessage());
+        }
     }
 }

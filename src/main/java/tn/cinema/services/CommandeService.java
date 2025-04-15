@@ -159,5 +159,36 @@ public class CommandeService implements IServices<Commande> {
         }
         return -1;  // Retourner -1 si aucune commande en cours n'est trouvée
     }
+    public List<Commande> recupererCommandesUtilisateurConnecte() {
+        List<Commande> commandes = new ArrayList<>();
+        User loggedInUser = SessionManager.getInstance().getLoggedInUser();
+
+        if (loggedInUser == null) {
+            System.err.println("❌ Aucun utilisateur connecté. Impossible de récupérer les commandes.");
+            return commandes;
+        }
+
+        String query = "SELECT * FROM commande WHERE user_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, loggedInUser.getId());
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Commande commande = new Commande(
+                            rs.getInt("id"),
+                            rs.getInt("user_id"),
+                            rs.getTimestamp("datecommande").toLocalDateTime(),
+                            rs.getDouble("montantpaye"),
+                            rs.getString("etat")
+                    );
+                    commandes.add(commande);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur lors de la récupération des commandes de l'utilisateur connecté : " + e.getMessage());
+        }
+
+        return commandes;
+    }
+
 
 }

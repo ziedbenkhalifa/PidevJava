@@ -13,13 +13,12 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import tn.cinema.entities.Cour;
 import tn.cinema.entities.Seance;
+import tn.cinema.services.SeanceService;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -40,22 +39,24 @@ public class AffichageListSeances implements Initializable {
     @FXML
     private Button btnSupprimer;
 
+    private SeanceService seanceService = new SeanceService();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        // Charger les séances depuis la base de données
         loadSeances();
 
-
+        // Définir une cellule personnalisée pour afficher les séances
         rlist.setCellFactory(listView -> new CustomSeanceCell());
 
-
+        // Appliquer un style à la ListView
         rlist.setStyle("-fx-background-color: #192342; -fx-control-inner-background: #192342;");
 
-
+        // Désactiver les boutons Modifier et Supprimer par défaut
         btnModifier.setDisable(true);
         btnSupprimer.setDisable(true);
 
-
+        // Activer les boutons Modifier et Supprimer lorsqu'une séance est sélectionnée
         rlist.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             btnModifier.setDisable(newSelection == null);
             btnSupprimer.setDisable(newSelection == null);
@@ -63,75 +64,17 @@ public class AffichageListSeances implements Initializable {
     }
 
     private void loadSeances() {
-
-        List<Seance> seances = new ArrayList<>();
-
-
-        Cour cour1 = new Cour();
-        cour1.setId(29);
-        Seance seance1 = new Seance();
-        seance1.setId(15);
-        seance1.setDateSeance(LocalDate.parse("2025-03-04"));
-        seance1.setDuree(LocalTime.parse("01:30"));
-        seance1.setObjectifs("Compréhension des émotions");
-        seance1.setCour(cour1);
-        seances.add(seance1);
-
-        Cour cour2 = new Cour();
-        cour2.setId(30);
-        Seance seance2 = new Seance();
-        seance2.setId(18);
-        seance2.setDateSeance(LocalDate.parse("2025-04-05"));
-        seance2.setDuree(LocalTime.parse("02:00"));
-        seance2.setObjectifs("Développement des compétences techniques");
-        seance2.setCour(cour2);
-        seances.add(seance2);
-
-
-        Cour cour3 = new Cour();
-        cour3.setId(38);
-        Seance seance3 = new Seance();
-        seance3.setId(19);
-        seance3.setDateSeance(LocalDate.parse("2025-04-09"));
-        seance3.setDuree(LocalTime.parse("03:30"));
-        seance3.setObjectifs("Histoire du Cinéma");
-        seance3.setCour(cour3);
-        seances.add(seance3);
-
-
-        Cour cour4 = new Cour();
-        cour4.setId(43);
-        Seance seance4 = new Seance();
-        seance4.setId(33);
-        seance4.setDateSeance(LocalDate.parse("2025-04-26"));
-        seance4.setDuree(LocalTime.parse("01:00"));
-        seance4.setObjectifs("dkjbdkjcnkjcndklcnkdlklcndlc,klc,dlkcljdclkjdclk");
-        seance4.setCour(cour4);
-        seances.add(seance4);
-
-
-        Cour cour5 = new Cour();
-        cour5.setId(176);
-        Seance seance5 = new Seance();
-        seance5.setId(34);
-        seance5.setDateSeance(LocalDate.parse("2025-04-03"));
-        seance5.setDuree(LocalTime.parse("01:00"));
-        seance5.setObjectifs("djcbjdkcnkcleklcdc");
-        seance5.setCour(cour5);
-        seances.add(seance5);
-
-
-        Cour cour6 = new Cour();
-        cour6.setId(32);
-        Seance seance6 = new Seance();
-        seance6.setId(36);
-        seance6.setDateSeance(LocalDate.parse("2025-05-01"));
-        seance6.setDuree(LocalTime.parse("14:00"));
-        seance6.setObjectifs("fjvkfnvfknd");
-        seance6.setCour(cour6);
-        seances.add(seance6);
-
-        rlist.setItems(FXCollections.observableArrayList(seances));
+        try {
+            // Charger les séances depuis la base de données
+            List<Seance> seances = seanceService.recuperer();
+            rlist.setItems(FXCollections.observableArrayList(seances));
+        } catch (SQLException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText(null);
+            alert.setContentText("Erreur lors du chargement des séances : " + e.getMessage());
+            alert.showAndWait();
+        }
     }
 
     private class CustomSeanceCell extends ListCell<Seance> {
@@ -140,7 +83,7 @@ public class AffichageListSeances implements Initializable {
         private Text dateSeanceText = new Text();
         private Text dureeText = new Text();
         private Text objectifsText = new Text();
-        private Text courIdText = new Text();
+        private Text courText = new Text();
 
         public CustomSeanceCell() {
             super();
@@ -149,16 +92,16 @@ public class AffichageListSeances implements Initializable {
             dateSeanceText.setStyle("-fx-fill: white;");
             dureeText.setStyle("-fx-fill: white;");
             objectifsText.setStyle("-fx-fill: white;");
-            courIdText.setStyle("-fx-fill: white;");
+            courText.setStyle("-fx-fill: white;");
 
             idText.setWrappingWidth(50);
             dateSeanceText.setWrappingWidth(120);
             dureeText.setWrappingWidth(80);
             objectifsText.setWrappingWidth(150);
-            courIdText.setWrappingWidth(80);
+            courText.setWrappingWidth(150);
 
             hbox.setSpacing(20);
-            hbox.getChildren().addAll(idText, dateSeanceText, dureeText, objectifsText, courIdText);
+            hbox.getChildren().addAll(idText, dateSeanceText, dureeText, objectifsText, courText);
             hbox.setStyle("-fx-background-color: #2a2f4a; -fx-padding: 10; -fx-background-radius: 5;");
             setPrefHeight(40);
         }
@@ -176,7 +119,8 @@ public class AffichageListSeances implements Initializable {
                 dateSeanceText.setText(seance.getDateSeance().format(dateFormatter));
                 dureeText.setText(seance.getDuree().format(timeFormatter));
                 objectifsText.setText(seance.getObjectifs());
-                courIdText.setText(String.valueOf(seance.getCour() != null ? seance.getCour().getId() : "N/A"));
+                Cour cour = seance.getCour();
+                courText.setText(cour != null ? (cour.getTypeCour() != null ? cour.getTypeCour() : "ID: " + cour.getId()) : "N/A");
 
                 setGraphic(hbox);
                 setStyle("-fx-background-color: transparent;");
@@ -219,11 +163,16 @@ public class AffichageListSeances implements Initializable {
         Seance selectedSeance = rlist.getSelectionModel().getSelectedItem();
         if (selectedSeance != null) {
             try {
+                // Supprimer la séance de la base de données
+                seanceService.supprimer(selectedSeance.getId());
 
-                rlist.getItems().remove(selectedSeance);
+                // Recharger les données depuis la base de données
+                loadSeances();
+
+                // Désactiver les boutons après la suppression
                 btnModifier.setDisable(true);
                 btnSupprimer.setDisable(true);
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Erreur");
                 alert.setHeaderText(null);
