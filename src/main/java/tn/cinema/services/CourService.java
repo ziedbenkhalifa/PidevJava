@@ -2,7 +2,8 @@ package tn.cinema.services;
 
 import tn.cinema.entities.Cour;
 import tn.cinema.tools.Mydatabase;
-
+import tn.cinema.utils.SessionManager;
+import tn.cinema.entities.User;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,7 +31,8 @@ public class CourService implements IServices<Cour>{
         ps.setTimestamp(3, Timestamp.valueOf(cour.getDateDebut()));
         ps.setTimestamp(4, Timestamp.valueOf(cour.getDateFin()));
         ps.executeUpdate();
-        System.out.println("Cour ajoutée");
+        System.out.println("Cour ajouté");
+
     }
 
     @Override
@@ -83,14 +85,25 @@ public class CourService implements IServices<Cour>{
 
 
 
-    public void ajouterParticipation(int userId, int courId) throws SQLException {
+    public void ajouterParticipation(int courId) throws SQLException {
+        // Récupérer l'utilisateur connecté via la session
+        User loggedInUser = SessionManager.getInstance().getLoggedInUser();
+        if (loggedInUser == null) {
+            System.err.println("❌ Aucun utilisateur connecté. Impossible d'ajouter une participation.");
+            return;
+        }
+
+        int userId = loggedInUser.getId(); // ✅ Récupération dynamique du user_id
+
         sql = "INSERT INTO participation (user_id, cour_id) VALUES (?, ?)";
         ps = cnx.prepareStatement(sql);
         ps.setInt(1, userId);
         ps.setInt(2, courId);
         ps.executeUpdate();
 
+        System.out.println("✅ Participation ajoutée avec succès pour l'utilisateur ID : " + userId);
     }
+
 
 
     public void supprimerParticipation(int userId, int courId) throws SQLException {
@@ -114,4 +127,6 @@ public class CourService implements IServices<Cour>{
 
         return coursIds;
     }
+
+
 }

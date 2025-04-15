@@ -7,6 +7,8 @@ public class Projection {
     private int id,capaciter;
     private LocalDate date_projection;
     private float prix;
+    private Films film;
+
 
     public Projection() {
     }
@@ -22,6 +24,14 @@ public class Projection {
         this.capaciter = capaciter;
         this.date_projection = date_projection;
         this.prix = prix;
+    }
+
+    public Films getFilm() {
+        return film;
+    }
+
+    public void setFilm(Films film) {
+        this.film = film;
     }
 
     public int getId() {

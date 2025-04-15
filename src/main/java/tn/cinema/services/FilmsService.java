@@ -78,6 +78,24 @@ public class FilmsService implements IServices<Films>{
         return films;
     }
 
+    public Films getById(int id) throws SQLException {
+        String sql = "SELECT * FROM films WHERE id = ?";
+        PreparedStatement ps = cnx.prepareStatement(sql);
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            String nom = rs.getString("nom_film");
+            String description = rs.getString("description");
+            String img = rs.getString("img");
+            // Complète avec les autres champs selon ton entité
+            return new Films(id, nom,img); // ou selon ton constructeur
+        }
+
+        return null;
+    }
+
+
     public Films recupererParId(int idFilm) throws SQLException {
         String sql = "SELECT * FROM films WHERE id = " + idFilm;
         Statement ste = cnx.createStatement();
