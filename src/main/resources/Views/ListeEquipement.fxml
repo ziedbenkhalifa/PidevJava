@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+
+<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #0b0f29;"
+            xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.cinema.controllers.ListeEquipement">
+    <children>
+        <!-- Sidebar -->
+        <AnchorPane layoutY="-8.0" prefHeight="651.0" prefWidth="200.0" style="-fx-background-color: #021b50; -fx-background-radius: 10;">
+            <children>
+                <ImageView layoutX="12.0" layoutY="31.0">
+                    <image>
+                        <Image url="@/images/icons8-user-64.png"/>
+                    </image>
+                </ImageView>
+
+                <Button layoutX="56.0" layoutY="181.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0"
+                        style="-fx-background-color: #3e2063;" text="Gestion User" textFill="#d7d7d9"/>
+                <ImageView fitHeight="31.0" fitWidth="29.0" layoutX="15.0" layoutY="178.0">
+                    <image>
+                        <Image url="@/images/icons8-user-64.png" />
+                    </image>
+                </ImageView>
+
+                <Button layoutX="57.0" layoutY="237.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0"
+                        style="-fx-background-color: #3e2063;" text="Gestion Film" textFill="#d7d7d9"/>
+                <ImageView fitWidth="29.0" layoutX="13.0" layoutY="236.0">
+                    <image>
+                        <Image url="@/images/film-slate.png" />
+                    </image>
+                </ImageView>
+
+                <Button layoutX="57.0" layoutY="293.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0"
+                        style="-fx-background-color: #3e2063;" text="Gestion Produit" textFill="#d7d7d9"/>
+                <ImageView fitHeight="31.0" fitWidth="36.0" layoutX="9.0" layoutY="289.0">
+                    <image>
+                        <Image url="@/images/new-product.png" />
+                    </image>
+                </ImageView>
+
+                <Button layoutX="57.0" layoutY="345.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0"
+                        style="-fx-background-color: #3e2063;" text="Gestion Equip" textFill="#d7d7d9"/>
+                <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="12.0" layoutY="339.0">
+                    <image>
+                        <Image url="@/images/mmmmmm.png" />
+                    </image>
+                </ImageView>
+
+                <Button layoutX="57.0" layoutY="399.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0"
+                        style="-fx-background-color: #3e2063;" text="Gestion Cour" textFill="#d7d7d9"/>
+                <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="8.0" layoutY="392.0">
+                    <image>
+                        <Image url="@/images/gggggggggggggggggggggggg.png" />
+                    </image>
+                </ImageView>
+
+                <Button layoutX="57.0" layoutY="453.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0"
+                        style="-fx-background-color: #3e2063;" text="Gestion Salle" textFill="#d7d7d9"/>
+                <ImageView fitHeight="31.0" fitWidth="29.0" layoutX="12.0" layoutY="451.0">
+                    <image>
+                        <Image url="@/images/cinema.png" />
+                    </image>
+                </ImageView>
+
+                <ImageView fitHeight="87.0" fitWidth="100.0" layoutX="8.0" layoutY="542.0">
+                    <image>
+                        <Image url="@/images/showtime-removebg-preview.png"/>
+                    </image>
+                </ImageView>
+            </children>
+        </AnchorPane>
+
+        <!-- Main Content Area -->
+        <AnchorPane layoutX="210.0" layoutY="0.0" prefHeight="650.0" prefWidth="1080.0">
+            <children>
+                <!-- Header -->
+                <Pane layoutX="10.0" layoutY="14.0" prefHeight="67.0" prefWidth="1060.0" style="-fx-background-color: #021b50; -fx-background-radius: 30;">
+                    <children>
+                        <Label layoutX="41.0" layoutY="18.0" prefHeight="31.0" prefWidth="148.0" text="SHOWTIME" textFill="WHITE">
+                            <font><Font size="24.0" /></font>
+                        </Label>
+                        <TextField layoutX="750.0" layoutY="10.0" prefHeight="48.0" prefWidth="256.0" promptText="  Search" style="-fx-background-radius: 30;">
+                            <font><Font size="18.0" /></font>
+                        </TextField>
+                        <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="1010.0" layoutY="15.0">
+                            <image><Image url="@/images/search.png" /></image>
+                        </ImageView>
+                    </children>
+                </Pane>
+
+                <!-- Equipment List Container -->
+                <AnchorPane layoutX="10.0" layoutY="95.0" prefHeight="540.0" prefWidth="1060.0" style="-fx-background-color: #e8eaf6; -fx-background-radius: 15;">
+                    <effect>
+                        <DropShadow color="#00000033" height="8.0" radius="3.5" width="8.0" />
+                    </effect>
+                    <children>
+                        <!-- Section Header -->
+                        <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="15.0" prefHeight="50.0" prefWidth="1020.0" spacing="10.0">
+                            <children>
+                                <Label text="Liste des Équipements" textFill="#294478">
+                                    <font><Font name="System Bold" size="20.0" /></font>
+                                </Label>
+                                <Pane HBox.hgrow="ALWAYS" />
+                                <Button fx:id="btnAjouter" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0"
+                                        style="-fx-background-color: linear-gradient(to bottom, #0570e3, #0461c7); -fx-background-radius: 8; -fx-font-weight: bold;"
+                                        text="+ Ajouter" textFill="WHITE">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Button>
+                                <Button fx:id="linkSalle" mnemonicParsing="false" onAction="#handleAide" prefHeight="40.0" prefWidth="160.0"
+                                        style="-fx-background-color: linear-gradient(to bottom, #284f72, #1d4266); -fx-background-radius: 8; -fx-font-weight: bold;
+                       -fx-border-color: #3a5d85; -fx-border-width: 1px;"
+                                        text="Gérer les salles 🎬" textFill="#d9e2ec"/>
+
+                            </children>
+                        </HBox>
+
+                        <!-- ✅ Header Row with Reduced Spacing -->
+                        <GridPane layoutX="20.0" layoutY="75.0" hgap="10.0" vgap="10.0"
+                                  prefHeight="50.0" prefWidth="1020.0"
+                                  style="-fx-background-color: #e6ecf5; -fx-background-radius: 10; -fx-padding: 10;">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="15" />
+                                <ColumnConstraints percentWidth="15" />
+                                <ColumnConstraints percentWidth="15" />
+                                <ColumnConstraints percentWidth="15" />
+                                <ColumnConstraints percentWidth="10" />
+                            </columnConstraints>
+                            <children>
+                                <Label text="Nom"     GridPane.columnIndex="0" style="-fx-font-weight: bold; -fx-text-fill: #0b0f29;" />
+                                <Label text="Type"    GridPane.columnIndex="1" style="-fx-font-weight: bold; -fx-text-fill: #0b0f29;" />
+                                <Label text="État"    GridPane.columnIndex="2" style="-fx-font-weight: bold; -fx-text-fill: #0b0f29;" />
+                                <Label text="Salle"   GridPane.columnIndex="3" style="-fx-font-weight: bold; -fx-text-fill: #0b0f29;" />
+                                <Label text="Actions" GridPane.columnIndex="4" style="-fx-font-weight: bold; -fx-text-fill: #0b0f29;" />
+                            </children>
+                        </GridPane>
+
+                        <!-- Equipment List -->
+                        <ScrollPane fitToWidth="true" layoutX="20.0" layoutY="135.0" prefHeight="390.0" prefWidth="1020.0" style="-fx-background-color: transparent; -fx-background: transparent;">
+                            <content>
+                                <ListView fx:id="listViewEquipements" prefWidth="1000.0" prefHeight="400.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 5;">
+                                    <effect>
+                                        <DropShadow color="#00000022" height="5.0" radius="2.0" width="5.0" />
+                                    </effect>
+                                </ListView>
+                            </content>
+                        </ScrollPane>
+                    </children>
+                </AnchorPane>
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>

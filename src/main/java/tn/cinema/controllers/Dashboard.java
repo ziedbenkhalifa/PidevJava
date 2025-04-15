@@ -172,6 +172,23 @@ public class Dashboard {
         }
     }
 
+    @FXML
+    private Button btnAjouterEquipement;
+    @FXML
+    private void ouvrirInterfaceAjout(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ListeSalle.fxml"));
+            Parent root = loader.load();
+            btnAjouterEquipement.getScene().setRoot(root); // Remplacer la scène actuelle
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Erreur de chargement");
+            errorAlert.setHeaderText(null);
+            errorAlert.setContentText("Impossible d'ouvrir l'interface Ajouter Équipement.");
+            errorAlert.showAndWait();
+        }
+    }
 
 }
 
