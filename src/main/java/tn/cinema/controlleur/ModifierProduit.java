@@ -41,7 +41,7 @@ public class ModifierProduit {
     @FXML
     public void initialize() {
         // Initialisation de la ComboBox pour la catégorie
-        categorie.setItems(FXCollections.observableArrayList("Catégorie 1", "Catégorie 2", "Catégorie 3"));
+        categorie.setItems(FXCollections.observableArrayList("Vetement", "Maison", "Food"));
 
         // Charger les informations du produit à modifier si disponible
         if (produitSelectionne != null) {
@@ -124,5 +124,19 @@ public class ModifierProduit {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    @FXML
+    private void clearFields() {
+        // Clear the text fields
+        nom.clear();
+        prix.clear();
+        description.clear();
+        image.clear();
+
+        // Reset the combo box to the first item or set it to null if needed
+        categorie.setValue(null);
+
+        // Optionally, clear the date picker
+        date.setValue(null);
     }
 }

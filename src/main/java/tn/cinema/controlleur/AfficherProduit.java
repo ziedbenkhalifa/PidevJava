@@ -5,6 +5,10 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import java.util.Optional;
+import javafx.scene.layout.GridPane;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -18,6 +22,8 @@ import javafx.event.ActionEvent;
 import tn.cinema.entities.Produit;
 import tn.cinema.services.ProduitService;
 import javafx.scene.Node;
+import javafx.geometry.Pos;
+import javafx.geometry.Insets;
 import java.io.IOException;
 
 public class AfficherProduit {
@@ -39,64 +45,122 @@ public class AfficherProduit {
         listViewProduits.getItems().clear();
 
         for (Produit p : produits) {
-            // Labels
-            Label lblNom = new Label("Nom: " + p.getNom());
-            Label lblDescription = new Label("Description: " + p.getDescription());
-            Label lblCategorie = new Label("Catégorie: " + p.getCategorie());
-            Label lblPrix = new Label("Prix: " + p.getPrix() + " DT");
-            Label lblDate = new Label("Date: " + p.getDate());
-
-            lblNom.setStyle("-fx-font-weight: bold; -fx-font-size: 16;");
-            lblPrix.setStyle("-fx-text-fill: green; -fx-font-size: 14;");
-
-            // Image
+            // === Image ===
             ImageView imageView = new ImageView();
             try {
-                Image image = new Image("file:" + p.getImage(), 120, 120, true, true);
+                Image image = new Image("file:" + p.getImage(), 180, 180, true, true);
                 imageView.setImage(image);
             } catch (Exception e) {
                 System.out.println("Erreur chargement image: " + e.getMessage());
             }
+            imageView.setStyle(
+                    "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 15, 0.1, 2, 2);" +
+                            "-fx-background-radius: 15; -fx-transition: all 0.3s ease-in-out;"
+            );
 
-            // Boutons avec styles et animations
-            Button btnModifier = new Button("Modifier");
-            Button btnSupprimer = new Button("Supprimer");
+            // Image hover animation
+            imageView.setOnMouseEntered(e -> {
+                imageView.setScaleX(1.1);
+                imageView.setScaleY(1.1);
+            });
+            imageView.setOnMouseExited(e -> {
+                imageView.setScaleX(1);
+                imageView.setScaleY(1);
+            });
+
+            // === Labels ===
+            Label lblNom = new Label("🛍️ " + p.getNom());
+            Label lblDescription = new Label("📋 " + p.getDescription());
+            Label lblCategorie = new Label("📂 " + p.getCategorie());
+            Label lblPrix = new Label("💰 " + p.getPrix() + " DT");
+            Label lblDate = new Label("📅 " + p.getDate());
+
+            // Styles
+            lblNom.setStyle("-fx-font-weight: bold; -fx-font-size: 20px; -fx-text-fill: #2c3e50;");
+            lblDescription.setStyle("-fx-font-size: 14px; -fx-text-fill: #555;");
+            lblCategorie.setStyle("-fx-font-size: 14px; -fx-text-fill: #555;");
+            lblPrix.setStyle("-fx-text-fill: #27ae60; -fx-font-size: 16px; -fx-font-weight: bold;");
+            lblDate.setStyle("-fx-font-size: 13px; -fx-text-fill: #888;");
+
+            // === Buttons ===
+            Button btnModifier = new Button("✏️ Modifier");
+            Button btnSupprimer = new Button("🗑️ Supprimer");
 
             btnModifier.setOnAction(e -> modifierProduit(p, e));
             btnSupprimer.setOnAction(e -> supprimerProduit(p));
 
-            // Styles CSS
-            String btnStyle = "-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;";
-            String btnHover = "-fx-background-color: #0056b3;";
+            String baseBtn = "-fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 12; -fx-cursor: hand;";
+            btnModifier.setStyle(baseBtn + "-fx-background-color: #3498db; -fx-text-fill: white;");
+            btnSupprimer.setStyle(baseBtn + "-fx-background-color: #e74c3c; -fx-text-fill: white;");
 
-            String btnDeleteStyle = "-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;";
-            String btnDeleteHover = "-fx-background-color: #a71d2a;";
+            // Button hover animation
+            btnModifier.setOnMouseEntered(e -> {
+                btnModifier.setStyle(baseBtn + "-fx-background-color: #2980b9; -fx-text-fill: white;");
+                btnModifier.setScaleX(1.1);
+                btnModifier.setScaleY(1.1);
+            });
+            btnModifier.setOnMouseExited(e -> {
+                btnModifier.setStyle(baseBtn + "-fx-background-color: #3498db; -fx-text-fill: white;");
+                btnModifier.setScaleX(1);
+                btnModifier.setScaleY(1);
+            });
 
-            btnModifier.setStyle(btnStyle);
-            btnSupprimer.setStyle(btnDeleteStyle);
+            btnSupprimer.setOnMouseEntered(e -> {
+                btnSupprimer.setStyle(baseBtn + "-fx-background-color: #c0392b; -fx-text-fill: white;");
+                btnSupprimer.setScaleX(1.1);
+                btnSupprimer.setScaleY(1.1);
+            });
+            btnSupprimer.setOnMouseExited(e -> {
+                btnSupprimer.setStyle(baseBtn + "-fx-background-color: #e74c3c; -fx-text-fill: white;");
+                btnSupprimer.setScaleX(1);
+                btnSupprimer.setScaleY(1);
+            });
 
-            btnModifier.setOnMouseEntered(e -> btnModifier.setStyle(btnHover + " -fx-text-fill: white; -fx-font-weight: bold;"));
-            btnModifier.setOnMouseExited(e -> btnModifier.setStyle(btnStyle));
+            // Button press animation
+            btnModifier.setOnMousePressed(e -> {
+                btnModifier.setStyle(baseBtn + "-fx-background-color: #1f618d; -fx-text-fill: white;");
+            });
+            btnModifier.setOnMouseReleased(e -> {
+                btnModifier.setStyle(baseBtn + "-fx-background-color: #2980b9; -fx-text-fill: white;");
+            });
 
-            btnSupprimer.setOnMouseEntered(e -> btnSupprimer.setStyle(btnDeleteHover + " -fx-text-fill: white; -fx-font-weight: bold;"));
-            btnSupprimer.setOnMouseExited(e -> btnSupprimer.setStyle(btnDeleteStyle));
+            btnSupprimer.setOnMousePressed(e -> {
+                btnSupprimer.setStyle(baseBtn + "-fx-background-color: #922b21; -fx-text-fill: white;");
+            });
+            btnSupprimer.setOnMouseReleased(e -> {
+                btnSupprimer.setStyle(baseBtn + "-fx-background-color: #c0392b; -fx-text-fill: white;");
+            });
 
-            // Layout
-            VBox infoBox = new VBox(5, lblNom, lblDescription, lblCategorie, lblPrix, lblDate);
-            HBox btnBox = new HBox(10, btnModifier, btnSupprimer);
-            VBox rightBox = new VBox(10, infoBox, btnBox);
+            // === Info section in a Grid-like layout
+            GridPane infoGrid = new GridPane();
+            infoGrid.setHgap(20);
+            infoGrid.setVgap(10);
+            infoGrid.add(lblNom, 0, 0);
+            infoGrid.add(lblDescription, 1, 0);
+            infoGrid.add(lblCategorie, 0, 1);
+            infoGrid.add(lblPrix, 1, 1);
+            infoGrid.add(lblDate, 0, 2);
 
-            // Carte produit (horizontale)
-            HBox produitBox = new HBox(20, imageView, rightBox);
+            // === Buttons in line
+            HBox btnBox = new HBox(15, btnModifier, btnSupprimer);
+            btnBox.setAlignment(Pos.CENTER_LEFT);
+            btnBox.setPadding(new Insets(10, 0, 0, 0));
+
+            VBox contentBox = new VBox(10, infoGrid, btnBox);
+            contentBox.setAlignment(Pos.CENTER_LEFT);
+
+            // === Main product box
+            HBox produitBox = new HBox(30, imageView, contentBox);
+            produitBox.setPadding(new Insets(25));
             produitBox.setStyle(
-                    "-fx-padding: 15;" +
-                            "-fx-border-color: #cccccc;" +
-                            "-fx-background-color: #ffffff;" +
-                            "-fx-border-radius: 10;" +
-                            "-fx-background-radius: 10;" +
-                            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);"
+                    "-fx-background-color: linear-gradient(to right, #ffffff, #f7f9fa);" +
+                            "-fx-background-radius: 15;" +
+                            "-fx-border-radius: 15;" +
+                            "-fx-border-color: #ecf0f1;" +
+                            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.07), 15, 0, 0, 10);"
             );
-            produitBox.setMinHeight(150);
+            produitBox.setMinHeight(200);
+            produitBox.setAlignment(Pos.CENTER_LEFT);
 
             listViewProduits.getItems().add(produitBox);
         }
@@ -135,10 +199,81 @@ public class AfficherProduit {
     }
 
     private void supprimerProduit(Produit p) {
-        produitService.supprimer(p.getId());
-        produits.remove(p);
-        afficherProduits();
+        // Création de la boîte de confirmation personnalisée
+        VBox vbox = new VBox(15);
+        vbox.setStyle("-fx-background-color: #ffffff; -fx-border-radius: 15; -fx-padding: 20;");
+        vbox.setAlignment(Pos.CENTER);
+
+        Label confirmationMessage = new Label("Êtes-vous sûr de vouloir supprimer ce produit ?");
+        confirmationMessage.setStyle("-fx-font-size: 16px; -fx-text-fill: #2c3e50;");
+
+        // Boutons de confirmation
+        Button btnYes = new Button("Oui");
+        Button btnNo = new Button("Non");
+        btnYes.setStyle("-fx-font-size: 14px; -fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 10px 20px; -fx-background-radius: 8;");
+        btnNo.setStyle("-fx-font-size: 14px; -fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 10px 20px; -fx-background-radius: 8;");
+
+        btnYes.setOnMouseEntered(e -> btnYes.setStyle("-fx-background-color: #c0392b; -fx-text-fill: white;"));
+        btnYes.setOnMouseExited(e -> btnYes.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;"));
+        btnNo.setOnMouseEntered(e -> btnNo.setStyle("-fx-background-color: #2980b9; -fx-text-fill: white;"));
+        btnNo.setOnMouseExited(e -> btnNo.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;"));
+
+        // Action pour le bouton "Oui"
+        btnYes.setOnAction(event -> {
+            produitService.supprimer(p.getId());
+            produits.remove(p);
+            afficherProduits();
+            showConfirmationSuccess();
+        });
+
+        // Action pour le bouton "Non"
+        btnNo.setOnAction(event -> {
+            // Fermer la fenêtre sans rien faire
+            System.out.println("Suppression annulée.");
+        });
+
+        // Ajouter tous les éléments à la VBox
+        vbox.getChildren().addAll(confirmationMessage, btnYes, btnNo);
+
+        // Créer une nouvelle scène pour afficher la confirmation
+        Stage confirmationStage = new Stage();
+        Scene confirmationScene = new Scene(vbox);
+        confirmationStage.setScene(confirmationScene);
+        confirmationStage.setTitle("Confirmation de suppression");
+        confirmationStage.show();
     }
+
+    private void showConfirmationSuccess() {
+        // Fenêtre de succès après suppression
+        VBox successBox = new VBox(15);
+        successBox.setStyle("-fx-background-color: #ffffff; -fx-border-radius: 15; -fx-padding: 20;");
+        successBox.setAlignment(Pos.CENTER);
+
+        Label successMessage = new Label("Le produit a été supprimé avec succès !");
+        successMessage.setStyle("-fx-font-size: 16px; -fx-text-fill: #27ae60;");
+
+        Button btnClose = new Button("Fermer");
+        btnClose.setStyle("-fx-font-size: 14px; -fx-background-color: #2ecc71; -fx-text-fill: white; -fx-padding: 10px 20px; -fx-background-radius: 8;");
+        btnClose.setOnMouseEntered(e -> btnClose.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white;"));
+        btnClose.setOnMouseExited(e -> btnClose.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;"));
+
+        btnClose.setOnAction(event -> {
+            // Fermer la fenêtre de succès
+            Stage stage = (Stage) btnClose.getScene().getWindow();
+            stage.close();
+        });
+
+        successBox.getChildren().addAll(successMessage, btnClose);
+
+        // Créer une nouvelle scène pour afficher le message de succès
+        Stage successStage = new Stage();
+        Scene successScene = new Scene(successBox);
+        successStage.setScene(successScene);
+        successStage.setTitle("Succès");
+        successStage.show();
+    }
+
+
 
     @FXML
     void ajouter(ActionEvent event) {
@@ -150,5 +285,24 @@ public class AfficherProduit {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    @FXML
+    void back(ActionEvent event) {
+        try {
+            // Charger la scène FXML qui affiche la liste des produits
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Dashboard.fxml"));
+            Parent root = loader.load();
+
+            // Obtenez la scène actuelle et changez son contenu (root)
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.getScene().setRoot(root); // Remplacer le contenu de la scène actuelle par root
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            afficherAlerte("Erreur", "Impossible de charger la page de dashboard.");
+        }
+    }
+
+    private void afficherAlerte(String erreur, String s) {
     }
 }
