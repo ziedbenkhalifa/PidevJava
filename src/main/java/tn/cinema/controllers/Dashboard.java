@@ -172,8 +172,7 @@ public class Dashboard {
         }
     }
 
-    public void goToInterfaceChoixGP(ActionEvent actionEvent) {
-    }
+
 }
 
 
