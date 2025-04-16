@@ -13,7 +13,7 @@ import tn.cinema.entities.Cour;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
-public class AfficherDetailsCour extends FrontzController {
+public class AfficherDetailsCour {
 
     @FXML
     private Label typeCourLabel;
@@ -76,7 +76,7 @@ public class AfficherDetailsCour extends FrontzController {
 
     }
 
-    private void showAlertt(String title, String message) {
+    private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);

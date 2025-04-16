@@ -4,9 +4,12 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.collections.FXCollections?>
 
+<?import java.lang.String?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #080b21;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.ModifierDemandeClientController">
     <children>
         <Label layoutX="20.0" layoutY="20.0" text="Modifier une Demande" textFill="WHITE">
@@ -19,7 +22,15 @@
         <Label layoutX="20.0" layoutY="100.0" text="Description:" textFill="WHITE" />
         <TextArea fx:id="descriptionField" layoutX="150.0" layoutY="100.0" prefHeight="100.0" prefWidth="400.0" />
         <Label layoutX="20.0" layoutY="220.0" text="Type:" textFill="WHITE" />
-        <TextField fx:id="typeField" layoutX="150.0" layoutY="220.0" prefWidth="400.0" />
+        <ComboBox fx:id="typeField" layoutX="150.0" layoutY="220.0" prefWidth="400.0" promptText="Sélectionner un type">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="integrefilm" />
+                    <String fx:value="footerWeb" />
+                    <String fx:value="backdrop" />
+                </FXCollections>
+            </items>
+        </ComboBox>
         <Label layoutX="20.0" layoutY="260.0" text="Lien Supplémentaire:" textFill="WHITE" />
         <TextField fx:id="lienSuppField" layoutX="150.0" layoutY="260.0" prefWidth="400.0" />
         <Button fx:id="modifierButton" layoutX="150.0" layoutY="320.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #294478;" text="Modifier" textFill="WHITE" onAction="#modifierDemande" />

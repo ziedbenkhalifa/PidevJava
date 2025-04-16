@@ -79,7 +79,13 @@ public class FrontFilm extends FrontzController {
                             if (item != null && !empty) {
                                 // Main VBox container for vertical layout
                                 VBox mainVBox = new VBox(10);
-                                mainVBox.setStyle("-fx-padding: 10; -fx-alignment: center; -fx-background-color: #ffffff; -fx-background-radius: 10;");
+                                mainVBox.setStyle(
+                                        "-fx-background-color: linear-gradient(to right, #0b0f29, #0b0f29);" +
+                                                "-fx-background-radius: 12;" +
+                                                "-fx-border-radius: 12;" +
+                                                "-fx-border-color: #0b0f29;" +
+                                                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);"
+                                );
 
                                 // HBox for centering the image
                                 HBox imageHBox = new HBox();
@@ -104,13 +110,13 @@ public class FrontFilm extends FrontzController {
                                 textVBox.setStyle("-fx-padding: 5; -fx-alignment: center;");
 
                                 Text title = new Text(item.getNom_film());
-                                title.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: black;");
+                                title.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: white;");
 
                                 Text director = new Text("Réalisateur: " + item.getRealisateur());
-                                director.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-fill: black;");
+                                director.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-fill: white;");
 
                                 Text genre = new Text("Genre: " + item.getGenre());
-                                genre.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-fill: black;");
+                                genre.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-fill: white;");
 
                                 textVBox.getChildren().addAll(title, director, genre);
 

@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import tn.cinema.entities.Demande;
 import tn.cinema.services.DemandeService;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -66,7 +67,8 @@ public class ModifierDemande implements Initializable {
         try {
             // Validate required fields
             if (nombreJoursField.getText().isEmpty() || descriptionField.getText().isEmpty() ||
-                    typeComboBox.getValue() == null || statutComboBox.getValue() == null) {
+                    typeComboBox.getValue() == null || statutComboBox.getValue() == null ||
+                    lienSupplementaireField.getText().isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Veuillez remplir tous les champs obligatoires.");
                 alert.showAndWait();
                 return;
@@ -87,6 +89,14 @@ public class ModifierDemande implements Initializable {
                 return;
             }
 
+            // Validate the lienSupplementaire is a valid URL
+            String lien = lienSupplementaireField.getText();
+            if (!isValidURL(lien)) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Le lien fourni n'est pas une URL valide (ex: https://exemple.com).");
+                alert.showAndWait();
+                return;
+            }
+
             // Transform statut value for database
             String statut = transformStatutForDatabase(statutComboBox.getValue());
             if (statut == null) {
@@ -99,7 +109,7 @@ public class ModifierDemande implements Initializable {
             demande.setNombreJours(nombreJours);
             demande.setDescription(descriptionField.getText());
             demande.setType(typeComboBox.getValue());
-            demande.setLienSupplementaire(lienSupplementaireField.getText().isEmpty() ? null : lienSupplementaireField.getText());
+            demande.setLienSupplementaire(lien);
             demande.setStatut(statut);
 
             // Call DemandeService to update the Demande
@@ -110,7 +120,7 @@ public class ModifierDemande implements Initializable {
             alert.showAndWait();
 
             // Refresh the ListView in InterfaceDemandes
-            parentController.refreshList(); // Changed from refreshTable()
+            parentController.refreshList();
 
             // Close the window
             Stage stage = (Stage) nombreJoursField.getScene().getWindow();
@@ -118,6 +128,15 @@ public class ModifierDemande implements Initializable {
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Erreur lors de la modification de la demande : " + e.getMessage());
             alert.showAndWait();
+        }
+    }
+
+    private boolean isValidURL(String url) {
+        try {
+            URL u = new URL(url);
+            return url.startsWith("http://") || url.startsWith("https://");
+        } catch (MalformedURLException e) {
+            return false;
         }
     }
 

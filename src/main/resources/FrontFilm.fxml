@@ -83,7 +83,7 @@
                             </image>
                         </ImageView>
                         <VBox layoutX="0.0" layoutY="3.0" prefHeight="355.0" prefWidth="1234.0" spacing="10.0" style="-fx-padding: 10;">
-                            <ListView fx:id="list" prefHeight="335.0" prefWidth="1030.0" style="                                  -fx-background-color: transparent;                                  -fx-control-inner-background: #535d93;                                  -fx-background-insets: 0;                                  -fx-padding: 10;                                  -fx-border-color: #3e2063;                                  -fx-border-radius: 10;                                  -fx-background-radius: 10;                              " />
+                            <ListView fx:id="list" prefHeight="335.0" prefWidth="1104.0" style="                                  -fx-background-color: transparent;                                  -fx-control-inner-background: #535d93;                                  -fx-background-insets: 0;                                  -fx-padding: 10;                                  -fx-border-color: #3e2063;                                  -fx-border-radius: 10;                                  -fx-background-radius: 10;                              " />
                         </VBox>
 
                     </children>

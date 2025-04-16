@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import tn.cinema.entities.Produit;
 import tn.cinema.services.ProduitService;
 import javafx.scene.Node;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -38,48 +39,98 @@ public class AjouterProduit {
 
     @FXML
     void initialize() {
-        // Prepopulate ComboBox with categories
-        categorie.getItems().addAll("Vetement", "Maison", "Food"); // Example categories
+        // Pré-remplir la ComboBox avec des catégories
+        categorie.getItems().addAll("Vetement", "Maison", "Food");
     }
 
     @FXML
     void ajouter(ActionEvent event) {
-        // Récupérer les données du formulaire
-        String nomProduit = nom.getText();
-        String descriptionProduit = description.getText();
-        String categorieProduit = categorie.getValue(); // Get selected category
-        String imageProduit = image.getText(); // Get image file path
-        String prixText = prix.getText();
+        String nomProduit = nom.getText().trim();
+        String descriptionProduit = description.getText().trim();
+        String categorieProduit = categorie.getValue();
+        String imageProduit = image.getText().trim();
+        String prixText = prix.getText().trim();
 
-        if (nomProduit.isEmpty() || prixText.isEmpty() || categorieProduit == null) {
-            afficherAlerte("Erreur", "Nom, prix et catégorie sont obligatoires.");
+        // Vérification des champs obligatoires
+        if (nomProduit.isEmpty() || prixText.isEmpty() || categorieProduit == null || imageProduit.isEmpty()) {
+            afficherAlerte("Erreur", "Tous les champs sont obligatoires.");
             return;
         }
 
+        // Validation du nom
+        if (nomProduit.length() < 3) {
+            afficherAlerte("Erreur", "Le nom du produit doit contenir au moins 3 caractères.");
+            return;
+        }
+
+        // Validation de la description
+        if (descriptionProduit.isEmpty()) {
+            afficherAlerte("Erreur", "La description est obligatoire.");
+            return;
+        } else if (descriptionProduit.length() < 10) {
+            afficherAlerte("Erreur", "La description doit contenir au moins 10 caractères.");
+            return;
+        }
+
+        // Validation du prix
+        double prixProduit;
         try {
-            double prixProduit = Double.parseDouble(prixText);
-
-            // Définir la date actuelle comme la date d'ajout
-            LocalDateTime dateProduit = LocalDateTime.now();
-
-            // Créer l'objet Produit
-            Produit produit = new Produit(nomProduit, prixProduit, categorieProduit, descriptionProduit, imageProduit, dateProduit);
-
-            // Ajouter le produit via le service
-            produitService.ajouter(produit);
-
-            // Afficher un message de succès
-            afficherAlerte("Succès", "Produit ajouté avec succès !");
-
-            // Vider les champs du formulaire après l'ajout
-            viderChamps();
-
+            prixProduit = Double.parseDouble(prixText);
+            if (prixProduit <= 0) {
+                afficherAlerte("Erreur", "Le prix doit être un nombre positif.");
+                return;
+            }
         } catch (NumberFormatException e) {
-            afficherAlerte("Erreur", "Le prix doit être un nombre.");
+            afficherAlerte("Erreur", "Le prix doit être un nombre valide.");
+            return;
+        }
+
+        // Validation de l'image (le fichier doit exister)
+        File imageFile = new File(imageProduit);
+        if (!imageFile.exists() || imageFile.isDirectory()) {
+            afficherAlerte("Erreur", "L’image sélectionnée est invalide ou n’existe pas.");
+            return;
+        }
+
+        // Création du produit
+        LocalDateTime dateProduit = LocalDateTime.now();
+        Produit produit = new Produit(nomProduit, prixProduit, categorieProduit, descriptionProduit, imageProduit, dateProduit);
+
+        // Ajout via service
+        produitService.ajouter(produit);
+
+        // Message succès
+        afficherAlerte("Succès", "Produit ajouté avec succès !");
+        viderChamps();
+    }
+
+    // Choisir une image via FileChooser
+    @FXML
+    void choisirImage(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif"));
+        File selectedFile = fileChooser.showOpenDialog(null);
+
+        if (selectedFile != null) {
+            image.setText(selectedFile.getAbsolutePath());
         }
     }
 
-    // Méthode pour afficher une alerte
+    // Aller à l'affichage des produits
+    @FXML
+    void afficher(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherProduit.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+            afficherAlerte("Erreur", "Impossible de charger la page des produits.");
+        }
+    }
+
+    // Afficher une alerte
     private void afficherAlerte(String titre, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titre);
@@ -88,44 +139,12 @@ public class AjouterProduit {
         alert.showAndWait();
     }
 
-    // Méthode pour vider les champs après l'ajout
+    // Vider les champs du formulaire
     private void viderChamps() {
         nom.clear();
         description.clear();
-        categorie.setValue(null); // Clear the selected category
+        categorie.setValue(null);
         image.clear();
         prix.clear();
-    }
-
-    @FXML
-    void choisirImage(ActionEvent event) {
-        // Ouvrir une boîte de dialogue pour choisir un fichier image
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif"));
-
-        // Ouvrir la boîte de dialogue et récupérer le fichier sélectionné
-        File selectedFile = fileChooser.showOpenDialog(null);
-
-        // Si un fichier est sélectionné, mettre à jour le champ image avec le chemin du fichier
-        if (selectedFile != null) {
-            image.setText(selectedFile.getAbsolutePath());
-        }
-    }
-
-    @FXML
-    void afficher(ActionEvent event) {
-        try {
-            // Charger la scène FXML qui affiche la liste des produits
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherProduit.fxml"));
-            Parent root = loader.load();
-
-            // Obtenez la scène actuelle et changez son contenu (root)
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.getScene().setRoot(root); // Remplacer le contenu de la scène actuelle par root
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            afficherAlerte("Erreur", "Impossible de charger la page des produits.");
-        }
     }
 }
