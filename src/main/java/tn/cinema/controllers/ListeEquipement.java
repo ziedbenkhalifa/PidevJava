@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-public class ListeEquipement {
+public class ListeEquipement extends Dashboard{
 
     @FXML
     private ListView<Equipement> listViewEquipements;

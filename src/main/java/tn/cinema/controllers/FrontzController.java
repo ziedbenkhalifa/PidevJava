@@ -106,6 +106,9 @@ public class FrontzController extends BaseController {
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
+
+
+
     }
 
     @FXML

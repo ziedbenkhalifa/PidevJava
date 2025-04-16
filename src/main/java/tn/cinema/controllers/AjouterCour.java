@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-public class AjouterCour {
+public class AjouterCour extends Dashboard{
 
     @FXML
     private ComboBox<String> typeCourComboBox;

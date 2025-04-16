@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class AfficherUser {
+public class AfficherUser extends Dashboard {
 
     @FXML
     private ListView<User> listView;

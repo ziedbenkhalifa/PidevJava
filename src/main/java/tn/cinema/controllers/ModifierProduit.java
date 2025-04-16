@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-public class ModifierProduit {
+public class ModifierProduit extends Dashboard {
 
     @FXML
     private TextField nom;

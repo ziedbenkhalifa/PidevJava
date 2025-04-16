@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class AffichageListCoursFront implements Initializable {
+public class AffichageListCoursFront extends FrontzController implements Initializable {
 
     @FXML
     private GridPane coursGrid;
@@ -172,13 +172,14 @@ public class AffichageListCoursFront implements Initializable {
         }
     }
 
-    private void showAlert(String title, String message) {
+    private void showAlertt(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
+
 
     @FXML
     private void goCourAction() {
@@ -203,7 +204,7 @@ public class AffichageListCoursFront implements Initializable {
     @FXML
     private void retourAccueilAction(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Front.fxml")); // chemin vers ton fichier FXML d'accueil
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontZ.fxml")); // chemin vers ton fichier FXML d'accueil
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);

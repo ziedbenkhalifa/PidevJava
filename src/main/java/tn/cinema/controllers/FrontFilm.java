@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-public class FrontFilm {
+public class FrontFilm extends FrontzController {
 
     @FXML
     private Button coursButton;
@@ -54,25 +54,9 @@ public class FrontFilm {
     @FXML
     private Button publicitesButton;
 
-    @FXML
-    void goToDemandeClient(ActionEvent event) {
-        // Handle Demande Client button click
-    }
 
-    @FXML
-    void goToPubliciteClient(ActionEvent event) {
-        // Handle Publicité Client button click
-    }
 
-    @FXML
-    void logout(ActionEvent event) {
-        // Handle logout
-    }
 
-    @FXML
-    void toggleSubButtons(ActionEvent event) {
-        // Handle toggle sub-buttons
-    }
 
     private FilmsService fs = new FilmsService();
 

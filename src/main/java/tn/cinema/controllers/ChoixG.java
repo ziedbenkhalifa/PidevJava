@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class ChoixG {
+public class ChoixG extends Dashboard {
 
     @FXML
     void GestionCommande(ActionEvent event) {

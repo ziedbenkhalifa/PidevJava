@@ -22,7 +22,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-public class InterfaceDemandes implements Initializable {
+public class InterfaceDemandes extends Dashboard implements Initializable {
     @FXML
     private ListView<Demande> demandeListView;
 

@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #0b0f29;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.AfficherProjection">
+<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #0b0f29;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.AfficherProjection">
     <children>
         <!-- Sidebar -->
         <AnchorPane layoutY="-8.0" prefHeight="651.0" prefWidth="200.0" style="-fx-background-color: #021b50; -fx-background-radius: 10;">
@@ -15,13 +20,13 @@
                         <Image url="@images/icons8-user-64.png" />
                     </image>
                 </ImageView>
-                <Button layoutX="56.0" layoutY="181.0" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion User" textFill="#d7d7d9" />
-                <Button layoutX="57.0" layoutY="235.0" onAction="#gestionFilm" prefHeight="26.0" prefWidth="120.0" style="-fx-background-color: #294478;" text="Gestion Film" textFill="#d7d7d9" />
-                <Button layoutX="58.0" layoutY="293.0" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Produit" textFill="#d7d7d9" />
-                <Button layoutX="57.0" layoutY="346.0" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Pub" textFill="#d7d7d9" />
-                <Button layoutX="57.0" layoutY="399.0" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Cour" textFill="#d7d7d9" />
-                <Button layoutX="55.0" layoutY="454.0" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Salle" textFill="#d7d7d9" />
-                <Button layoutX="74.0" layoutY="31.0" prefHeight="64.0" prefWidth="126.0" style="-fx-background-color: #021b50;" text="Mon Compte" textFill="#d7d7d9">
+                <Button fx:id="gestionUserButton" layoutX="56.0" layoutY="181.0" mnemonicParsing="false" onAction="#handleGestionUserAction" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion User" textFill="#d7d7d9" />
+                <Button layoutX="57.0" layoutY="235.0" mnemonicParsing="false" onAction="#gestionFilm" prefHeight="26.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Film" textFill="#d7d7d9" />
+                <Button fx:id="gestionPubButton" layoutX="57.0" layoutY="346.0" mnemonicParsing="false" onAction="#goToInterfaceChoixGP" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Pub" textFill="#d7d7d9" />
+                <Button layoutX="57.0" layoutY="399.0" mnemonicParsing="false" onAction="#handleGestinCour" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Cour" textFill="#d7d7d9" />
+                <Button layoutX="58.0" layoutY="293.0" mnemonicParsing="false" onAction="#affichage" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Produit" textFill="#d7d7d9" />
+                <Button fx:id="btnAjouterEquipement" layoutX="55.0" layoutY="454.0" mnemonicParsing="false" onAction="#ouvrirInterfaceAjout" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Salle" textFill="#d7d7d9" />
+                <Button fx:id="monCompteButton" layoutX="74.0" layoutY="31.0" mnemonicParsing="false" onAction="#handleMonCompteAction" prefHeight="64.0" prefWidth="126.0" style="-fx-background-color: #021b50;" text="Mon Compte" textFill="#d7d7d9">
                     <font>
                         <Font size="16.0" />
                     </font>
@@ -102,7 +107,7 @@
                     </font>
                 </Label>
 
-                <ListView fx:id="listProjection" layoutX="40.0" layoutY="70.0" prefHeight="370.0" prefWidth="988.0" style="-fx-background-radius: 20; -fx-background-color: #9aadfc;" />
+                <ListView fx:id="listProjection" layoutX="40.0" layoutY="70.0" prefHeight="370.0" prefWidth="988.0" style="-fx-background-radius: 20; -fx-background-color: #021b50;" />
 
                 <Button layoutX="225.0" layoutY="460.0" onAction="#ajout" prefHeight="36.0" prefWidth="150.0" style="-fx-background-radius: 10; -fx-background-color: #3e2063; -fx-text-fill: white;" text="Ajouter" />
                 <Button layoutX="459.0" layoutY="460.0" onAction="#edit" prefHeight="36.0" prefWidth="150.0" style="-fx-background-radius: 10; -fx-background-color: #3e2063; -fx-text-fill: white;" text="Modifier" />

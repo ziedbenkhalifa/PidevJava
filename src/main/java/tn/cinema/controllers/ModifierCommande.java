@@ -16,7 +16,7 @@ import tn.cinema.entities.Commande;
 import tn.cinema.services.CommandeService;
 import java.io.IOException;
 
-public class ModifierCommande {
+public class ModifierCommande extends Dashboard {
 
     @FXML
     private TextField tfUserId;

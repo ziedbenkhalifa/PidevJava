@@ -5,126 +5,124 @@ import com.google.zxing.WriterException;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
-import tn.cinema.entities.Films;
 import javafx.application.Platform;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-import javafx.scene.control.Alert;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import tn.cinema.entities.Projection;
 import tn.cinema.services.ProjectionService;
 
+import javax.imageio.ImageIO;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class FrontProjection {
+public class FrontProjection extends FrontzController implements Initializable {
 
     @FXML
     private Button coursButton, demandeSubButton, filmsButton, logoutButton,
-            monCompteButton, produitsButton, publiciteSubButton, publicitesButton;
+            monCompteButton, produitsButton, publiciteSubButton, publicitesButton,
+            courSubButton, seanceSubButton;
 
     @FXML
     private ListView<Projection> listProjection;
 
-    @FXML
-    void initialize() throws SQLException {
-        // Example list – replace with your service call
-        ProjectionService ps = new ProjectionService();
-        List<Projection> projections = ps.recuperer();
-        listProjection.getItems().addAll(projections);
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        try {
+            ProjectionService ps = new ProjectionService();
+            List<Projection> projections = ps.recuperer();
+            ObservableList<Projection> observableList = FXCollections.observableArrayList(projections);
+            listProjection.setItems(observableList);
 
+            listProjection.setCellFactory(param -> new ListCell<>() {
+                @Override
+                protected void updateItem(Projection item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item != null && !empty) {
+                        HBox hbox = new HBox(10);
+                        hbox.setStyle("-fx-padding: 10; -fx-alignment: center-left; -fx-background-color: rgba(255,255,255,0.08); -fx-background-radius: 10;");
 
+                        VBox vbox = new VBox(5);
+                        vbox.setStyle("-fx-padding: 5;");
 
-        ObservableList<Projection> observableList = FXCollections.observableArrayList(projections);
-        listProjection.setItems(observableList);
+                        Text date = new Text("Date: " + item.getDate_projection());
+                        date.setStyle("-fx-font-size: 14px; -fx-fill: #000000;");
 
-        listProjection.setCellFactory(param -> new ListCell<>() {
-            @Override
-            protected void updateItem(Projection item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item != null && !empty) {
-                    HBox hbox = new HBox(10);
-                    hbox.setStyle("-fx-padding: 10; -fx-alignment: center-left; -fx-background-color: rgba(255,255,255,0.08); -fx-background-radius: 10;");
+                        Text capaciter = new Text("Capacité: " + item.getCapaciter());
+                        capaciter.setStyle("-fx-font-size: 14px; -fx-fill: #000000;");
 
-                    VBox vbox = new VBox(5);
-                    vbox.setStyle("-fx-padding: 5;");
+                        Text prix = new Text("Prix: " + item.getPrix() + " DT");
+                        prix.setStyle("-fx-font-size: 14px; -fx-fill: #000000;");
 
-                    Text date = new Text("Date: " + item.getDate_projection());
-                    date.setStyle("-fx-font-size: 14px; -fx-fill: #000000;");
+                        Text filmName = new Text(item.getFilm() != null ? "Film: " + item.getFilm().getNom_film() : "Film: Non spécifié");
+                        filmName.setStyle("-fx-font-size: 14px; -fx-fill: #000000;");
 
-                    Text capaciter = new Text("Capacité: " + item.getCapaciter());
-                    capaciter.setStyle("-fx-font-size: 14px; -fx-fill: #000000;");
+                        vbox.getChildren().addAll(filmName, date, capaciter, prix);
 
-                    Text prix = new Text("Prix: " + item.getPrix() + "DT");
-                    prix.setStyle("-fx-font-size: 14px; -fx-fill: #040404;");
+                        Region spacer = new Region();
+                        HBox.setHgrow(spacer, Priority.ALWAYS);
 
-                    vbox.getChildren().addAll(date, capaciter, prix);
+                        Button reserveBtn = new Button("Reservation");
+                        reserveBtn.setStyle("-fx-background-color: #3e2063; -fx-text-fill: white; -fx-background-radius: 10;");
+                        reserveBtn.setOnAction(e -> {
+                            String filmDetails = (item.getFilm() != null ? "Film: " + item.getFilm().getNom_film() : "Film: Non spécifié") +
+                                    "\nDate: " + item.getDate_projection() +
+                                    "\nCapacité: " + item.getCapaciter() +
+                                    "\nPrix: " + item.getPrix() + " DT";
 
-                    Region spacer = new Region();
-                    HBox.setHgrow(spacer, Priority.ALWAYS);
+                            generateQRCode(filmDetails);
+                            showAlert("Succès", "Réservation pour la projection du " + item.getDate_projection());
+                        });
 
-                    Button reserveBtn = new Button("Reservation");
-                    reserveBtn.setStyle("-fx-background-color: #3e2063; -fx-text-fill: white; -fx-background-radius: 10;");
-                    reserveBtn.setOnAction(e -> {
-                        // Get the film details from the Projection object
-                        String filmDetails = "Film: " + item.getFilm().getNom_film() + // Assuming Projection has Film object
-                                "\nDate: " + item.getDate_projection() +
-                                "\nCapacité: " + item.getCapaciter() +
-                                "\nPrix: " + item.getPrix() + " DT";
-
-                        // Call the method to generate the QR code
-                        generateQRCode(filmDetails);
-
-                        // Optionally, show an alert
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Réservation pour la projection du " + item.getDate_projection());
-                        alert.showAndWait();
-                    });
-
-
-                    hbox.getChildren().addAll(vbox, spacer, reserveBtn);
-                    setGraphic(hbox);
-                } else {
-                    setGraphic(null);
+                        hbox.getChildren().addAll(vbox, spacer, reserveBtn);
+                        setGraphic(hbox);
+                    } else {
+                        setGraphic(null);
+                    }
                 }
-            }
-        });
+            });
+        } catch (SQLException e) {
+            showAlert("Erreur", "Erreur lors du chargement des projections : " + e.getMessage());
+        }
     }
 
     @FXML
-    void filmsButtonClicked(javafx.event.ActionEvent event) {}
-
-    @FXML
-    void goToDemandeClient(javafx.event.ActionEvent event) {}
-
-    @FXML
-    void goToPubliciteClient(javafx.event.ActionEvent event) {}
-
-    @FXML
-    void logout(javafx.event.ActionEvent event) {}
-
-    @FXML
-    void toggleSubButtons(javafx.event.ActionEvent event) {
-        demandeSubButton.setVisible(!demandeSubButton.isVisible());
-        publiciteSubButton.setVisible(!publiciteSubButton.isVisible());
+    void filmsButtonClicked(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontFilm.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la navigation vers la page Films : " + e.getMessage());
+        }
     }
 
-
+    @FXML
+    void toggleSubButtonss(ActionEvent event) {
+        boolean isVisible = demandeSubButton.isVisible();
+        demandeSubButton.setVisible(!isVisible);
+        publiciteSubButton.setVisible(!isVisible);
+    }
 
     private void generateQRCode(String content) {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
@@ -132,21 +130,13 @@ public class FrontProjection {
         int height = 300;
 
         try {
-            // Generate QR code as a bit matrix
             BitMatrix bitMatrix = qrCodeWriter.encode(content, BarcodeFormat.QR_CODE, width, height);
-            BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
-
-            // Convert BufferedImage to ByteArrayInputStream
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ImageIO.write(qrImage, "png", byteArrayOutputStream);
-            byteArrayOutputStream.flush();
-            byte[] imageData = byteArrayOutputStream.toByteArray();
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(imageData);
-            byte[] finalImageData = imageData; // make it effectively final for lambda
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            MatrixToImageWriter.writeToStream(bitMatrix, "PNG", baos);
+            byte[] imageData = baos.toByteArray();
 
             Platform.runLater(() -> {
-                ByteArrayInputStream inputForFX = new ByteArrayInputStream(finalImageData);
-                Image fxImage = new Image(inputForFX);
+                Image fxImage = new Image(new ByteArrayInputStream(imageData));
                 ImageView imageView = new ImageView(fxImage);
                 StackPane root = new StackPane(imageView);
                 Scene scene = new Scene(root, width, height);
@@ -155,12 +145,17 @@ public class FrontProjection {
                 qrStage.setScene(scene);
                 qrStage.show();
             });
-
-
         } catch (WriterException | IOException e) {
             e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la génération du QR code : " + e.getMessage());
         }
     }
 
-
+    private void showAlertt(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }

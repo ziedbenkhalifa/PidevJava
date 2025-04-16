@@ -22,7 +22,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ResourceBundle;
 
-public class InterfacePublicites implements Initializable {
+public class InterfacePublicites extends Dashboard implements Initializable {
     @FXML
     private ListView<Publicite> publiciteListView;
 

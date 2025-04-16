@@ -17,7 +17,7 @@ import java.sql.SQLException;
 import java.util.List;
 import tn.cinema.entities.Salle;
 
-public class ListeSalle {
+public class ListeSalle extends Dashboard {
 
     public Button btnGererEquipement;
     @FXML

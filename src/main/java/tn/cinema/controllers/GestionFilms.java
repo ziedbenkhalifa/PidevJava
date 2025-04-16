@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class GestionFilms {
+public class GestionFilms extends Dashboard {
 
     @FXML
     void afficherFilm(ActionEvent event) {
