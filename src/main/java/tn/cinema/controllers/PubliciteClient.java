@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -70,9 +71,7 @@ public class PubliciteClient extends FrontzController implements Initializable {
                     gridPane.setHgap(15);
                     gridPane.setVgap(8);
 
-                    // Define fields to display
-                    Text idText = new Text("ID: " + publicite.getId());
-                    idText.setStyle("-fx-font-weight: bold; -fx-font-size: 15; -fx-fill: #ffffff;");
+                    // Define fields to display (excluding ID)
                     Text demandeIdText = new Text("Demande ID: " + publicite.getDemandeId());
                     demandeIdText.setStyle("-fx-font-weight: bold; -fx-font-size: 15; -fx-fill: #ffffff;");
                     Text dateDebutText = new Text("Date Début: " + publicite.getDateDebut());
@@ -84,13 +83,12 @@ public class PubliciteClient extends FrontzController implements Initializable {
                     Text montantText = new Text("Montant: " + publicite.getMontant());
                     montantText.setStyle("-fx-font-weight: bold; -fx-font-size: 15; -fx-fill: #ffffff;");
 
-                    // Add fields to GridPane
-                    gridPane.add(idText, 0, 0);
-                    gridPane.add(demandeIdText, 1, 0);
-                    gridPane.add(dateDebutText, 0, 1);
-                    gridPane.add(dateFinText, 1, 1);
-                    gridPane.add(supportText, 0, 2);
-                    gridPane.add(montantText, 1, 2);
+                    // Add fields to GridPane (reorganized without ID)
+                    gridPane.add(demandeIdText, 0, 0);
+                    gridPane.add(dateDebutText, 1, 0);
+                    gridPane.add(dateFinText, 0, 1);
+                    gridPane.add(supportText, 1, 1);
+                    gridPane.add(montantText, 0, 2);
 
                     // Add GridPane to the VBox (no buttons since CRUD is not allowed)
                     vbox.getChildren().add(gridPane);
@@ -156,7 +154,13 @@ public class PubliciteClient extends FrontzController implements Initializable {
     @FXML
     public void goBackToFront(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Front.fxml"));
+            // Adjust the path based on the actual location of Front.fxml
+            String fxmlPath = "/FrontZ.fxml"; // Update this if Front.fxml is in a different package
+            URL fxmlUrl = getClass().getResource(fxmlPath);
+            if (fxmlUrl == null) {
+                throw new IOException("Cannot find resource: " + fxmlPath);
+            }
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
@@ -166,6 +170,8 @@ public class PubliciteClient extends FrontzController implements Initializable {
             System.out.println("Navigated back to Front.fxml from PubliciteClient");
         } catch (IOException e) {
             e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Erreur lors du retour au tableau de bord : " + e.getMessage());
+            alert.showAndWait();
             System.err.println("Error loading Front.fxml: " + e.getMessage());
         }
     }
