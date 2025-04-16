@@ -26,11 +26,25 @@ public class Login {
 
     @FXML
     private void handleLoginAction(ActionEvent event) {
-        String email = emailField.getText();
+        String email = emailField.getText().trim(); // Remove leading/trailing spaces
         String password = passwordField.getText();
 
+        // Check if email or password is empty
         if (email.isEmpty() || password.isEmpty()) {
             showAlert("Validation Error", "Email and password cannot be empty.", Alert.AlertType.ERROR);
+            return;
+        }
+
+        // Validate email format using regex
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+        if (!email.matches(emailRegex)) {
+            showAlert("Validation Error", "Please enter a valid email address.", Alert.AlertType.ERROR);
+            return;
+        }
+
+        // Validate password length
+        if (password.length() < 8) {
+            showAlert("Validation Error", "Password must be at least 8 characters long.", Alert.AlertType.ERROR);
             return;
         }
 
@@ -50,7 +64,6 @@ public class Login {
             showAlert("Login Failed", "Invalid email or password.", Alert.AlertType.ERROR);
         }
     }
-
     @FXML
     private void handleSignUpAction(ActionEvent event) {
         try {
