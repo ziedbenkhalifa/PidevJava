@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #162c4f;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.InterfacePublicites">
@@ -86,7 +91,7 @@
                 <Button fx:id="backButton" layoutX="954.0" layoutY="59.0" mnemonicParsing="false" onAction="#goBackToInterfaceChoixGP" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #294478; -fx-background-radius: 10;" text="Back" textFill="#d7d7d9">
                     <font><Font size="14.0" /></font>
                 </Button>
-                <Label layoutX="44.0" layoutY="58.0" prefHeight="31.0" prefWidth="274.0" text="Liste des Publicités" textFill="#064625">
+                <Label layoutX="44.0" layoutY="58.0" prefHeight="31.0" prefWidth="274.0" text="Liste des Publicités" textFill="#ffd2ac">
                     <font><Font size="24.0" /></font>
                 </Label>
 
