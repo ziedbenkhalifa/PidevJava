@@ -42,16 +42,25 @@ public class ModifierDemandeClientController {
     @FXML
     private void modifierDemande() {
         try {
-            int nombreJours = Integer.parseInt(nombreJoursField.getText());
-            String description = descriptionField.getText();
-            String type = typeField.getText();
-            String lienSupp = lienSuppField.getText();
+            // Validate that all fields are filled
+            String nombreJoursText = nombreJoursField.getText().trim();
+            String description = descriptionField.getText().trim();
+            String type = typeField.getText().trim();
+            String lienSupp = lienSuppField.getText().trim();
 
+            if (nombreJoursText.isEmpty() || description.isEmpty() || type.isEmpty() || lienSupp.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Tous les champs doivent être remplis.");
+                alert.showAndWait();
+                return;
+            }
+
+            // Parse and proceed with modification
+            int nombreJours = Integer.parseInt(nombreJoursText);
             Demande updatedDemande = new Demande();
             updatedDemande.setNombreJours(nombreJours);
             updatedDemande.setDescription(description);
             updatedDemande.setType(type);
-            updatedDemande.setLienSupplementaire(lienSupp.isEmpty() ? null : lienSupp);
+            updatedDemande.setLienSupplementaire(lienSupp);
 
             demandeService.modifier(demande.getId(), updatedDemande);
             parentController.refreshList();

@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -22,7 +23,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
-import javafx.fxml.FXMLLoader;
 
 public class PubliciteClient implements Initializable {
     @FXML
@@ -57,32 +57,32 @@ public class PubliciteClient implements Initializable {
                 } else {
                     // Create a custom layout for each Publicite item
                     VBox vbox = new VBox(10);
-                    vbox.setStyle("-fx-background-color: " + (getIndex() % 2 == 0 ? "#f0f4f8" : "#e8ecef") + ";" +
-                            "-fx-padding: 15;" +
-                            "-fx-background-radius: 10;" +
-                            "-fx-border-radius: 10;" +
-                            "-fx-border-color: #064625;" +
-                            "-fx-border-width: 1;" +
-                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0.5, 2, 2);");
+                    vbox.setStyle("-fx-background-color: linear-gradient(to right, #1a2a44, #2a3b5a);" +
+                            "-fx-padding: 20;" +
+                            "-fx-background-radius: 15;" +
+                            "-fx-border-radius: 15;" +
+                            "-fx-border-color: #4a5e7a;" +
+                            "-fx-border-width: 1.5;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0.3, 3, 3);");
 
                     // Use GridPane to organize Publicite details
                     GridPane gridPane = new GridPane();
-                    gridPane.setHgap(10);
-                    gridPane.setVgap(5);
+                    gridPane.setHgap(15);
+                    gridPane.setVgap(8);
 
                     // Define fields to display
                     Text idText = new Text("ID: " + publicite.getId());
-                    idText.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
+                    idText.setStyle("-fx-font-weight: bold; -fx-font-size: 15; -fx-fill: #ffffff;");
                     Text demandeIdText = new Text("Demande ID: " + publicite.getDemandeId());
-                    demandeIdText.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
+                    demandeIdText.setStyle("-fx-font-weight: bold; -fx-font-size: 15; -fx-fill: #ffffff;");
                     Text dateDebutText = new Text("Date Début: " + publicite.getDateDebut());
-                    dateDebutText.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
+                    dateDebutText.setStyle("-fx-font-weight: bold; -fx-font-size: 15; -fx-fill: #ffffff;");
                     Text dateFinText = new Text("Date Fin: " + publicite.getDateFin());
-                    dateFinText.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
+                    dateFinText.setStyle("-fx-font-weight: bold; -fx-font-size: 15; -fx-fill: #ffffff;");
                     Text supportText = new Text("Support: " + publicite.getSupport());
-                    supportText.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
+                    supportText.setStyle("-fx-font-weight: bold; -fx-font-size: 15; -fx-fill: #ffffff;");
                     Text montantText = new Text("Montant: " + publicite.getMontant());
-                    montantText.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
+                    montantText.setStyle("-fx-font-weight: bold; -fx-font-size: 15; -fx-fill: #ffffff;");
 
                     // Add fields to GridPane
                     gridPane.add(idText, 0, 0);
@@ -96,20 +96,20 @@ public class PubliciteClient implements Initializable {
                     vbox.getChildren().add(gridPane);
 
                     // Add hover effect for the entire cell
-                    vbox.setOnMouseEntered(e -> vbox.setStyle("-fx-background-color: " + (getIndex() % 2 == 0 ? "#e6ecf2" : "#dfe4e8") + ";" +
-                            "-fx-padding: 15;" +
-                            "-fx-background-radius: 10;" +
-                            "-fx-border-radius: 10;" +
-                            "-fx-border-color: #064625;" +
-                            "-fx-border-width: 1;" +
-                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 15, 0.7, 3, 3);"));
-                    vbox.setOnMouseExited(e -> vbox.setStyle("-fx-background-color: " + (getIndex() % 2 == 0 ? "#f0f4f8" : "#e8ecef") + ";" +
-                            "-fx-padding: 15;" +
-                            "-fx-background-radius: 10;" +
-                            "-fx-border-radius: 10;" +
-                            "-fx-border-color: #064625;" +
-                            "-fx-border-width: 1;" +
-                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0.5, 2, 2);"));
+                    vbox.setOnMouseEntered(e -> vbox.setStyle("-fx-background-color: linear-gradient(to right, #2a3b5a, #3b4c7a);" +
+                            "-fx-padding: 20;" +
+                            "-fx-background-radius: 15;" +
+                            "-fx-border-radius: 15;" +
+                            "-fx-border-color: #5a6e9a;" +
+                            "-fx-border-width: 1.5;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 15, 0.5, 5, 5);"));
+                    vbox.setOnMouseExited(e -> vbox.setStyle("-fx-background-color: linear-gradient(to right, #1a2a44, #2a3b5a);" +
+                            "-fx-padding: 20;" +
+                            "-fx-background-radius: 15;" +
+                            "-fx-border-radius: 15;" +
+                            "-fx-border-color: #4a5e7a;" +
+                            "-fx-border-width: 1.5;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0.3, 3, 3);"));
 
                     setGraphic(vbox);
                 }
