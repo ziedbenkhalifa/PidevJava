@@ -9,6 +9,7 @@ import tn.cinema.services.PubliciteService;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 public class AjouterPublicite {
 
@@ -27,8 +28,8 @@ public class AjouterPublicite {
     @FXML
     private TextField montantField;
 
-    private InterfacePublicites parentController; // For InterfacePublicites
-    private InterfaceDemandes demandeParentController; // For InterfaceDemandes
+    private InterfacePublicites parentController;
+    private InterfaceDemandes demandeParentController;
 
     private final PubliciteService publiciteService = new PubliciteService();
     private boolean isFromDemande = false;
@@ -57,6 +58,12 @@ public class AjouterPublicite {
             return;
         }
 
+        // Vérifier si la date de début est aujourd'hui ou plus tard
+        if (dateDebut.toLocalDate().isBefore(LocalDate.now())) {
+            showAlert("Date invalide", "La date de début doit être aujourd'hui ou une date future.");
+            return;
+        }
+
         // Validate Date fin
         try {
             dateFin = Date.valueOf(dateFinField.getText());
@@ -66,7 +73,7 @@ public class AjouterPublicite {
         }
 
         // Check if dateFin is strictly after dateDebut
-        if (!dateFin.after(dateDebut)) {
+        if (!dateFin.toLocalDate().isAfter(dateDebut.toLocalDate())) {
             showAlert("Dates invalides", "La date de fin doit être strictement postérieure à la date de début.");
             return;
         }
@@ -107,14 +114,12 @@ public class AjouterPublicite {
             publiciteService.ajouterpub(publicite);
             showAlert("Succès", "Publicité ajoutée avec succès !", Alert.AlertType.INFORMATION);
 
-            // Rafraîchir la liste dans l'interface parent
             if (isFromDemande && demandeParentController != null) {
                 demandeParentController.refreshList();
             } else if (parentController != null) {
                 parentController.refreshList();
             }
 
-            // Fermer la fenêtre
             Stage stage = (Stage) demandeIdField.getScene().getWindow();
             stage.close();
 
@@ -135,7 +140,6 @@ public class AjouterPublicite {
         alert.showAndWait();
     }
 
-    // Quand ouvert depuis InterfacePublicites
     public void setParentController(InterfacePublicites parentController) {
         this.parentController = parentController;
         this.demandeParentController = null;
@@ -144,7 +148,6 @@ public class AjouterPublicite {
         demandeIdField.setStyle("");
     }
 
-    // Quand ouvert depuis InterfaceDemandes
     public void setParentController(InterfaceDemandes demandeParentController) {
         this.demandeParentController = demandeParentController;
         this.parentController = null;

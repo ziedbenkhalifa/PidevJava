@@ -13,7 +13,7 @@ import tn.cinema.services.CommandeService;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-public class AjouterCommande extends Dashboard {
+public class AjouterCommande {
 
     @FXML
     private TextField tfUserId;
@@ -31,34 +31,41 @@ public class AjouterCommande extends Dashboard {
 
     @FXML
     public void initialize() {
-        // Initialisation des options de la combo box
         cbEtat.getItems().addAll("en attente", "confirmée", "annulée");
-        cbEtat.setValue("en attente"); // valeur par défaut
+        cbEtat.setValue("en attente");
     }
 
     @FXML
     void ajouterCommande(ActionEvent event) {
-        // Vérification si les champs ne sont pas vides
-        if (tfUserId.getText().isEmpty() || tfMontantPaye.getText().isEmpty() || cbEtat.getValue() == null) {
+        String userIdText = tfUserId.getText().trim();
+        String montantText = tfMontantPaye.getText().trim();
+        String etat = cbEtat.getValue();
+
+        // Vérification des champs vides
+        if (userIdText.isEmpty() || montantText.isEmpty() || etat == null || etat.isEmpty()) {
             afficherAlerte("Champs manquants", "⚠️ Tous les champs doivent être remplis.");
             return;
         }
 
-        // Vérification que l'ID utilisateur est un entier
+        // Validation de l'ID utilisateur
         int userId;
-        try {
-            userId = Integer.parseInt(tfUserId.getText());
-        } catch (NumberFormatException e) {
-            afficherAlerte("ID utilisateur invalide", "⚠️ L'ID utilisateur doit être un nombre valide.");
+        if (!userIdText.matches("\\d+")) {
+            afficherAlerte("ID utilisateur invalide", "⚠️ L'ID utilisateur doit être un nombre entier positif.");
             return;
+        } else {
+            userId = Integer.parseInt(userIdText);
+            if (userId <= 0) {
+                afficherAlerte("ID utilisateur invalide", "⚠️ L'ID utilisateur doit être supérieur à 0.");
+                return;
+            }
         }
 
-        // Vérification que le montant payé est un nombre valide
+        // Validation du montant
         double montantPaye;
         try {
-            montantPaye = Double.parseDouble(tfMontantPaye.getText());
-            if (montantPaye < 0) {
-                afficherAlerte("Montant invalide", "⚠️ Le montant payé doit être un nombre positif.");
+            montantPaye = Double.parseDouble(montantText);
+            if (montantPaye <= 0) {
+                afficherAlerte("Montant invalide", "⚠️ Le montant payé doit être strictement positif.");
                 return;
             }
         } catch (NumberFormatException e) {
@@ -66,15 +73,18 @@ public class AjouterCommande extends Dashboard {
             return;
         }
 
-        String etat = cbEtat.getValue();
+        // Vérification de l’état sélectionné
+        if (!cbEtat.getItems().contains(etat)) {
+            afficherAlerte("État invalide", "⚠️ Veuillez sélectionner un état valide.");
+            return;
+        }
 
-        // Créer une nouvelle commande et l'ajouter au service
+        // Création et ajout de la commande
         Commande commande = new Commande(userId, montantPaye, etat);
         commande.setDateCommande(LocalDateTime.now());
 
         commandeService.ajouter(commande);
 
-        // Réinitialiser les champs après l'ajout de la commande
         clearFields();
         afficherAlerte("Commande ajoutée", "✅ Commande ajoutée avec succès !");
     }
@@ -82,14 +92,10 @@ public class AjouterCommande extends Dashboard {
     @FXML
     void afficher(ActionEvent event) {
         try {
-            // Charger la scène FXML qui affiche la liste des commandes
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherCommande.fxml"));
             Parent root = loader.load();
-
-            // Obtenez la scène actuelle et changez son contenu (root)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.getScene().setRoot(root); // Remplacer le contenu de la scène actuelle par root
-
+            stage.getScene().setRoot(root);
         } catch (IOException e) {
             e.printStackTrace();
             afficherAlerte("Erreur", "Impossible de charger la page des commandes.");

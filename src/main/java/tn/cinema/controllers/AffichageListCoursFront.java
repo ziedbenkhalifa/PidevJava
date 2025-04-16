@@ -13,9 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import tn.cinema.entities.Cour;
-import tn.cinema.entities.User;
 import tn.cinema.services.CourService;
-import tn.cinema.utils.SessionManager;
 
 import java.io.IOException;
 import java.net.URL;
@@ -49,7 +47,7 @@ public class AffichageListCoursFront extends FrontzController implements Initial
             allCours = courService.recuperer();
 
             // Charger les participations pour le client par défaut
-            participatedCoursIds = courService.recupererParticipations(clientId);
+            participatedCoursIds = courService.recupererParticipations();
 
             // Afficher tous les cours directement
             displayCours(allCours);
@@ -133,15 +131,8 @@ public class AffichageListCoursFront extends FrontzController implements Initial
 
     private void handleParticiperAction(Cour cour) {
         try {
-            // Récupérer l'utilisateur connecté depuis la session
-            User loggedInUser = SessionManager.getInstance().getLoggedInUser();
-            if (loggedInUser == null) {
-                showAlert("Erreur", "Aucun utilisateur connecté. Veuillez vous connecter.");
-                return;
-            }
-
-            // Appeler le service avec uniquement l'ID du cours (user ID est géré en interne)
-            courService.ajouterParticipation(cour.getId());
+            // Ajouter le client à la liste des participants via le service
+            courService.ajouterParticipation( cour.getId());
 
             // Mettre à jour la liste des participations
             participatedCoursIds.add(cour.getId());
@@ -158,7 +149,7 @@ public class AffichageListCoursFront extends FrontzController implements Initial
     private void handleQuitterAction(Cour cour) {
         try {
             // Retirer le client de la liste des participants via le service
-            courService.supprimerParticipation(clientId, cour.getId());
+            courService.supprimerParticipation( cour.getId());
 
             // Mettre à jour la liste des participations
             participatedCoursIds.remove(Integer.valueOf(cour.getId()));
@@ -179,7 +170,6 @@ public class AffichageListCoursFront extends FrontzController implements Initial
         alert.setContentText(message);
         alert.showAndWait();
     }
-
 
     @FXML
     private void goCourAction() {

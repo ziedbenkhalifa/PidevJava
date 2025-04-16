@@ -81,7 +81,7 @@
                                 <Image url="@images/cinemaaaaaaa.jpg" />
                             </image>
                         </ImageView>
-                        <FlowPane fx:id="filmFlowPane" hgap="10.0" layoutX="120" layoutY="9.0" prefHeight="355.0" prefWidth="1106.0" style="-fx-background-color: transparent; -fx-padding: 10;" vgap="10.0" />
+                        <FlowPane fx:id="filmFlowPane" hgap="10.0" layoutX="103.0" layoutY="9.0" prefHeight="355.0" prefWidth="1079.0" style="-fx-background-color: transparent; -fx-padding: 10;" vgap="10.0" />
                     </children>
                 </AnchorPane>
             </children>
