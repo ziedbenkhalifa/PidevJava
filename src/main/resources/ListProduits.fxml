@@ -8,6 +8,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #080b21;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controlleur.ListProduits">
@@ -79,19 +80,45 @@
                 </Label>
                 <AnchorPane layoutX="16.0" layoutY="9.0" prefHeight="355.0" prefWidth="1234.0" style="-fx-background-color: #0b0f29; -fx-background-radius: 20;">
                     <children>
-                        <ImageView fitHeight="355.0" fitWidth="1227.0" layoutX="12.0" layoutY="3.0" opacity="0.28">
-                            <image>
-                                <Image url="@images/cinemaaaaaaa.jpg" />
-                            </image>
-                        </ImageView>
-            
-                    <!-- Section List Produits -->
-                    <VBox alignment="CENTER" layoutY="-1.0" prefHeight="402.0" prefWidth="1242.0" spacing="10" style="-fx-background-color: #c5cbd9; -fx-background-radius: 20;">
-                        <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="👥 Liste des Produits" />
-            
-                        <!-- Fix de l'ID du ListView -->
-                        <ListView fx:id="listViewProduits" prefHeight="422.0" prefWidth="722.0" />
-                    </VBox>
+
+                        <StackPane prefWidth="1242.0" prefHeight="402.0" style="-fx-background-radius: 20; -fx-padding: 20;"
+                                   xmlns="http://javafx.com/javafx"
+                                   xmlns:fx="http://javafx.com/fxml">
+
+                            <!-- صورة الخلفية -->
+                            <ImageView fitHeight="402.0" fitWidth="1242.0" opacity="0.2" preserveRatio="false">
+                                <image>
+                                    <Image url="@images/cinemaaaaaaa.jpg" />
+                                </image>
+                            </ImageView>
+
+                            <!-- المحتوى فوق الصورة -->
+                            <VBox alignment="CENTER" spacing="15"
+                                  style="-fx-background-color: transparent; -fx-padding: 20;">
+
+                                <Label text="🎬 Liste des Produits"
+                                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;
+              -fx-background-color: rgba(0, 0, 0, 0.3);
+              -fx-padding: 10 20;
+              -fx-background-radius: 10;" />
+
+
+                                <ListView fx:id="listViewProduits"
+                                          prefHeight="320.0" prefWidth="1100.0"
+                                          style="-fx-background-color: transparent;
+                 -fx-border-color: rgba(255,255,255,0.2);
+                 -fx-border-radius: 10;
+                 -fx-padding: 5;
+                 -fx-control-inner-background: transparent;
+                 -fx-cell-hover-color: rgba(255,255,255,0.05);
+                 -fx-selection-bar: #5e4083;
+                 -fx-selection-bar-text: white;
+                 -fx-background-insets: 0;" />
+
+                            </VBox>
+
+                        </StackPane>
+
                     </children>
                 </AnchorPane>
             </children>

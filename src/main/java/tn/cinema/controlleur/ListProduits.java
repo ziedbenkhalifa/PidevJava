@@ -144,10 +144,10 @@ public class ListProduits {
             produitBox.setAlignment(Pos.CENTER_LEFT);
             produitBox.setPadding(new Insets(15));
             produitBox.setStyle(
-                    "-fx-background-color: linear-gradient(to right, #ffffff, #f4f6f8);" +
+                    "-fx-background-color: linear-gradient(to right, #0b0f29, #0b0f29);" +
                             "-fx-background-radius: 12;" +
                             "-fx-border-radius: 12;" +
-                            "-fx-border-color: #dfe6e9;" +
+                            "-fx-border-color: #0b0f29;" +
                             "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);"
             );
 
