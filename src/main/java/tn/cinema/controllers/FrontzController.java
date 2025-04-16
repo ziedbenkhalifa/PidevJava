@@ -8,23 +8,111 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import tn.cinema.entities.Films;
+import tn.cinema.services.FilmsService;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 
 public class FrontzController extends BaseController {
 
     @FXML
-    private void handleMonCompteAction(ActionEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        super.handleMonCompteAction(stage);
-    }
+    private FlowPane filmFlowPane;
+
+    @FXML
+    private ImageView backgroundImageView;
+
     @FXML
     private Button publicitesButton;
     @FXML
     private Button demandeSubButton;
     @FXML
     private Button publiciteSubButton;
+
+    @FXML
+    private Button coursButton;
+    @FXML
+    private Button courSubButton;
+    @FXML
+    private Button seanceSubButton;
+
+    private FilmsService fs = new FilmsService();
+
+    @FXML
+    public void initialize() {
+        try {
+            List<Films> films = fs.recuperer();
+
+            for (Films item : films) {
+                VBox mainVBox = new VBox(10);
+                mainVBox.setStyle("-fx-padding: 10; -fx-alignment: center; -fx-background-color: transparent;");
+                mainVBox.setPrefWidth(300);
+
+                HBox imageHBox = new HBox();
+                imageHBox.setStyle("-fx-alignment: center;");
+
+                ImageView imageView = new ImageView();
+                try {
+                    Image image = new Image("file:" + item.getImg());
+                    imageView.setImage(image);
+                } catch (Exception e) {
+                    imageView.setImage(new Image("file:src/images/placeholder.jpg"));
+                }
+                imageView.setFitHeight(200);
+                imageView.setFitWidth(160);
+                imageView.setPreserveRatio(true);
+
+                imageHBox.getChildren().add(imageView);
+
+                VBox textVBox = new VBox(5);
+                textVBox.setStyle("-fx-padding: 5; -fx-alignment: center;");
+
+                Text title = new Text(item.getNom_film());
+                title.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: white;");
+
+                Text director = new Text("Réalisateur: " + item.getRealisateur());
+                director.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-fill: white;");
+
+                Text genre = new Text("Genre: " + item.getGenre());
+                genre.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-fill: white;");
+
+                textVBox.getChildren().addAll(title, director, genre);
+
+                mainVBox.getChildren().addAll(imageHBox, textVBox);
+
+                filmFlowPane.getChildren().add(mainVBox);
+            }
+
+            filmFlowPane.needsLayoutProperty().addListener((obs, old, newValue) -> {
+                if (!newValue) {
+                    double contentHeight = filmFlowPane.getHeight();
+                    if (contentHeight > 0) {
+                        backgroundImageView.setFitHeight(Math.max(contentHeight, 355));
+                    }
+                }
+            });
+
+        } catch (SQLException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+    @FXML
+    private void handleMonCompteAction(ActionEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        super.handleMonCompteAction(stage);
+    }
 
     @FXML
     public void toggleSubButtons(ActionEvent event) {
@@ -55,8 +143,6 @@ public class FrontzController extends BaseController {
 
     @FXML
     public void logout(ActionEvent event) throws IOException {
-        // Placeholder for logout logic
-        // Example: Navigate to login page
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
@@ -64,38 +150,33 @@ public class FrontzController extends BaseController {
         stage.setScene(scene);
         stage.show();
     }
+
     @FXML
     void filmsButtonClicked(ActionEvent event) throws IOException {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/FrontFilm.fxml")); // Adjust path if needed
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();   // Get current window
+            Parent root = FXMLLoader.load(getClass().getResource("/FrontFilm.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
-            stage.setScene(scene); // Set the new scene
+            stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace(); // For debug
+            e.printStackTrace();
         }
-
-
     }
+
     @FXML
     void affichage(ActionEvent event) {
         try {
-            // Charger la scène FXML qui affiche la liste des produits
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListProduits.fxml"));
             Parent root = loader.load();
-
-            // Obtenez la scène actuelle et changez son contenu (root)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.getScene().setRoot(root); // Remplacer le contenu de la scène actuelle par root
-
+            stage.getScene().setRoot(root);
         } catch (IOException e) {
             e.printStackTrace();
             afficherAlerte("Erreur", "Impossible de charger la page des produits.");
         }
     }
 
-    // Méthode pour afficher une alerte
     private void afficherAlerte(String titre, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titre);
@@ -103,16 +184,6 @@ public class FrontzController extends BaseController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
-
-    @FXML
-    private Button coursButton;
-
-    @FXML
-    private Button courSubButton;
-
-    @FXML
-    private Button seanceSubButton;
 
     @FXML
     private void toggleSubButtonss() {
@@ -149,8 +220,8 @@ public class FrontzController extends BaseController {
         }
     }
 
-    private void showAlertt(String title, String message) {
-        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+    private void showAlerty(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);

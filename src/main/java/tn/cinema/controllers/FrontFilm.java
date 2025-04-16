@@ -74,81 +74,17 @@ public class FrontFilm {
         // Handle toggle sub-buttons
     }
 
-    // Method to populate the ListView with films
-    private void populateFilmList(List<Films> filmsList) {
-        // Adding films to the ListView
-        list.getItems().addAll(filmsList);
-
-        // Set custom cell factory to display film details
-        list.setCellFactory(new Callback<ListView<Films>, javafx.scene.control.ListCell<Films>>() {
-            @Override
-            public javafx.scene.control.ListCell<Films> call(ListView<Films> param) {
-                return new javafx.scene.control.ListCell<Films>() {
-                    @Override
-                    protected void updateItem(Films item, boolean empty) {
-                        super.updateItem(item, empty);
-
-                        if (item != null && !empty) {
-                            // Main container
-                            HBox hbox = new HBox(15);
-                            hbox.setStyle("-fx-padding: 10; -fx-background-color: #ffffff; -fx-background-radius: 10;");
-                            hbox.setPrefHeight(80);
-
-                            // Image
-                            ImageView imageView = new ImageView();
-                            try {
-                                Image image = new Image("file:" + item.getImg(), 60, 60, true, true);
-                                imageView.setImage(image);
-                            } catch (Exception e) {
-                                imageView.setImage(new Image("file:src/images/placeholder.jpg", 60, 60, true, true));
-                            }
-                            imageView.setFitHeight(60);
-                            imageView.setFitWidth(60);
-                            imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 1); -fx-background-radius: 10;");
-
-                            // Text container
-                            VBox textContainer = new VBox(5);
-                            Text title = new Text(item.getNom_film());
-                            title.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
-
-                            Text director = new Text("Réalisateur: " + item.getRealisateur());
-                            director.setStyle("-fx-font-size: 13px; -fx-fill: #555;");
-
-                            Text genre = new Text("Genre: " + item.getGenre());
-                            genre.setStyle("-fx-font-size: 13px; -fx-fill: #777;");
-
-                            textContainer.getChildren().addAll(title, director, genre);
-
-                            // Combine everything
-                            hbox.getChildren().addAll(imageView, textContainer);
-
-                            setGraphic(hbox);
-                        } else {
-                            setGraphic(null);
-                        }
-                    }
-
-                };
-            }
-        });
-    }
-
-
     private FilmsService fs = new FilmsService();
 
     @FXML
     public void initialize() {
         try {
-            // Retrieve the list of films from the database (like in AfficherFilm)
-            List<Films> films = fs.recuperer();  // Assuming fs is your service class to interact with the database
-
-            // Convert the list of films into an ObservableList
+            // Retrieve the list of films from the database
+            List<Films> films = fs.recuperer();
             ObservableList<Films> observableList = FXCollections.observableList(films);
-
-            // Populate the ListView with the observable list
             list.setItems(observableList);
 
-            // Set custom cell factory for displaying film details (name, director, genre, image)
+            // Set custom cell factory for displaying film details
             list.setCellFactory(new Callback<ListView<Films>, javafx.scene.control.ListCell<Films>>() {
                 @Override
                 public javafx.scene.control.ListCell<Films> call(ListView<Films> param) {
@@ -156,12 +92,16 @@ public class FrontFilm {
                         @Override
                         protected void updateItem(Films item, boolean empty) {
                             super.updateItem(item, empty);
-                            if (item != null) {
-                                HBox hbox = new HBox(10);
-                                hbox.setStyle("-fx-padding: 10; -fx-background-color: #ffffff; -fx-background-radius: 10;");
-                                hbox.setPrefHeight(100);
+                            if (item != null && !empty) {
+                                // Main VBox container for vertical layout
+                                VBox mainVBox = new VBox(10);
+                                mainVBox.setStyle("-fx-padding: 10; -fx-alignment: center; -fx-background-color: #ffffff; -fx-background-radius: 10;");
 
-                                // Film Image
+                                // HBox for centering the image
+                                HBox imageHBox = new HBox();
+                                imageHBox.setStyle("-fx-alignment: center;");
+
+                                // ImageView
                                 ImageView imageView = new ImageView();
                                 try {
                                     Image image = new Image("file:" + item.getImg());
@@ -169,34 +109,35 @@ public class FrontFilm {
                                 } catch (Exception e) {
                                     imageView.setImage(new Image("file:src/images/placeholder.jpg"));
                                 }
-                                imageView.setFitHeight(80);
-                                imageView.setFitWidth(60);
+                                imageView.setFitHeight(240); // Match AfficherFilm image size
+                                imageView.setFitWidth(200);  // Match AfficherFilm image size
+                                imageView.setPreserveRatio(true);
 
-                                // Text Info
-                                VBox textBox = new VBox(5);
+                                imageHBox.getChildren().add(imageView);
+
+                                // Text content
+                                VBox textVBox = new VBox(5);
+                                textVBox.setStyle("-fx-padding: 5; -fx-alignment: center;");
+
                                 Text title = new Text(item.getNom_film());
-                                title.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+                                title.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: black;");
+
                                 Text director = new Text("Réalisateur: " + item.getRealisateur());
+                                director.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-fill: black;");
+
                                 Text genre = new Text("Genre: " + item.getGenre());
-                                textBox.getChildren().addAll(title, director, genre);
+                                genre.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-fill: black;");
 
-                                // Spacer to push button to the right
-                                Region spacer = new Region();
-                                HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+                                textVBox.getChildren().addAll(title, director, genre);
 
-                                // Right-side Button
+                                // Afficher Projection Button
                                 Button afficherProjectionBtn = new Button("Afficher Projection");
-                                afficherProjectionBtn.setStyle("-fx-background-color: #3e2063; -fx-text-fill: white; -fx-font-size: 12px;");
+                                afficherProjectionBtn.setStyle("-fx-background-color: #3e2063; -fx-text-fill: white; -fx-font-size: 12px; -fx-background-radius: 5;");
                                 afficherProjectionBtn.setOnAction(e -> {
                                     try {
                                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontProjection.fxml"));
                                         Parent root = loader.load();
-
-                                        // Optionally pass the selected film to the next controller
-                                        // FrontProjection controller = loader.getController();
-                                        // controller.setFilm(item); // if you want to pass the selected film
-
-                                        Stage stage = (Stage) list.getScene().getWindow(); // Gets the current stage
+                                        Stage stage = (Stage) list.getScene().getWindow();
                                         stage.setScene(new Scene(root));
                                         stage.show();
                                     } catch (IOException ex) {
@@ -209,10 +150,9 @@ public class FrontFilm {
                                     }
                                 });
 
-
-                                // Combine all in HBox
-                                hbox.getChildren().addAll(imageView, textBox, spacer, afficherProjectionBtn);
-                                setGraphic(hbox);
+                                // Add image, text, and button to main VBox
+                                mainVBox.getChildren().addAll(imageHBox, textVBox, afficherProjectionBtn);
+                                setGraphic(mainVBox);
                             } else {
                                 setGraphic(null);
                             }
@@ -221,13 +161,10 @@ public class FrontFilm {
                 }
             });
         } catch (SQLException e) {
-            // Handle any database errors
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
     }
-
-
 }

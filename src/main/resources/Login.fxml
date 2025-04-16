@@ -14,7 +14,7 @@
         <!-- Logo -->
         <ImageView fitHeight="98.0" fitWidth="109.0" layoutX="1.0" layoutY="2.0">
             <image>
-                <Image url="@images/showtime-removebg-preview (1).png" />
+                <Image url="@images/showtime-removebg-preview.png" />
             </image>
         </ImageView>
         <!-- User Icon -->

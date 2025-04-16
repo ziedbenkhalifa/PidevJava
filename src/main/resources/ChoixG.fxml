@@ -87,8 +87,8 @@
                     </children>
                 </VBox>
                   <Button disable="true" layoutX="339.0" layoutY="117.0" style="-fx-font-size: 24px; -fx-text-fill: #2c3e50; -fx-background-color: transparent;" text="🎬 Tableau de Gestion" />
-                    <Button fx:id="btnUtilisateur" layoutX="495.0" layoutY="233.0" onAction="#GestionProduit" prefHeight="60" prefWidth="200" style="-fx-font-size: 18px; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 10;" text="👤 Gérer les Produits" />
-                    <Button fx:id="btnCommande" layoutX="262.0" layoutY="233.0" onAction="#GestionCommande" prefHeight="60" prefWidth="200" style="-fx-font-size: 18px; -fx-background-color: #4a90e2; -fx-text-fill: white; -fx-background-radius: 10;" text="📋 Gérer les Commandes" />
+                    <Button fx:id="btnUtilisateur" layoutX="495.0" layoutY="233.0" onAction="#GestionProduit" prefHeight="60" prefWidth="272.0" style="-fx-font-size: 18px; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 10;" text="👤 Gérer les Produits" />
+                    <Button fx:id="btnCommande" layoutX="200.0" layoutY="233.0" onAction="#GestionCommande" prefHeight="60" prefWidth="262.0" style="-fx-font-size: 18px; -fx-background-color: #4a90e2; -fx-text-fill: white; -fx-background-radius: 10;" text="📋 Gérer les Commandes" />
 
             </children>
         </AnchorPane>
