@@ -11,6 +11,7 @@ import tn.cinema.services.PubliciteService;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 public class ModifierPublicite implements Initializable {
@@ -45,18 +46,59 @@ public class ModifierPublicite implements Initializable {
     @FXML
     private void modifierPublicite() {
         try {
+            // Validate that all fields are filled
+            String demandeIdText = demandeIdField.getText().trim();
+            String dateDebutText = dateDebutField.getText().trim();
+            String dateFinText = dateFinField.getText().trim();
+            String support = supportField.getText().trim();
+            String montantText = montantField.getText().trim();
+
+            if (demandeIdText.isEmpty() || dateDebutText.isEmpty() || dateFinText.isEmpty() || support.isEmpty() || montantText.isEmpty()) {
+                showAlert("Tous les champs doivent être remplis.");
+                return;
+            }
+
+            // Validate support format (must start with https://)
+            if (!support.matches("^https://\\S+")) {
+                showAlert("Le champ Support doit commencer par 'https://' suivi d'une adresse valide (ex. https://exemple.com).");
+                return;
+            }
+
+            // Validate date formats and relationships
+            LocalDate dateDebut;
+            LocalDate dateFin;
+            try {
+                dateDebut = LocalDate.parse(dateDebutText);
+                dateFin = LocalDate.parse(dateFinText);
+            } catch (java.time.format.DateTimeParseException e) {
+                showAlert("Veuillez entrer des dates valides au format yyyy-MM-dd.");
+                return;
+            }
+
+            // Check if dateDebut is >= current date
+            LocalDate currentDate = LocalDate.now();
+            if (dateDebut.isBefore(currentDate)) {
+                showAlert("La date de début doit être supérieure ou égale à la date d'aujourd'hui.");
+                return;
+            }
+
+            // Check if dateDebut < dateFin
+            if (!dateDebut.isBefore(dateFin)) {
+                showAlert("La date de début doit être antérieure à la date de fin.");
+                return;
+            }
+
             // Lecture et validation des champs
-            int demandeId = Integer.parseInt(demandeIdField.getText());
-            Date dateDebut = Date.valueOf(dateDebutField.getText());
-            Date dateFin = Date.valueOf(dateFinField.getText());
-            String support = supportField.getText();
-            double montant = Double.parseDouble(montantField.getText());
+            int demandeId = Integer.parseInt(demandeIdText);
+            Date sqlDateDebut = Date.valueOf(dateDebut);
+            Date sqlDateFin = Date.valueOf(dateFin);
+            double montant = Double.parseDouble(montantText);
 
             // Mise à jour de l'objet
             Publicite updatedPublicite = new Publicite();
             updatedPublicite.setDemandeId(demandeId);
-            updatedPublicite.setDateDebut(dateDebut);
-            updatedPublicite.setDateFin(dateFin);
+            updatedPublicite.setDateDebut(sqlDateDebut);
+            updatedPublicite.setDateFin(sqlDateFin);
             updatedPublicite.setSupport(support);
             updatedPublicite.setMontant(montant);
 
@@ -74,8 +116,6 @@ public class ModifierPublicite implements Initializable {
 
         } catch (NumberFormatException e) {
             showAlert("Veuillez entrer des valeurs numériques valides pour Demande ID et Montant.");
-        } catch (IllegalArgumentException e) {
-            showAlert("Veuillez entrer des dates valides au format yyyy-MM-dd.");
         } catch (SQLException e) {
             showAlert("Erreur lors de la modification de la publicité : " + e.getMessage());
         }

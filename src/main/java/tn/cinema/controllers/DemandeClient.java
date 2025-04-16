@@ -59,36 +59,36 @@ public class DemandeClient implements Initializable {
                 } else {
                     // Create a custom layout for each Demande item
                     VBox vbox = new VBox(10);
-                    vbox.setStyle("-fx-background-color: " + (getIndex() % 2 == 0 ? "#f0f4f8" : "#e8ecef") + ";" +
-                            "-fx-padding: 15;" +
-                            "-fx-background-radius: 10;" +
-                            "-fx-border-radius: 10;" +
-                            "-fx-border-color: #064625;" +
-                            "-fx-border-width: 1;" +
-                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0.5, 2, 2);");
+                    vbox.setStyle("-fx-background-color: linear-gradient(to right, #1a2a44, #2a3b5a);" +
+                            "-fx-padding: 20;" +
+                            "-fx-background-radius: 15;" +
+                            "-fx-border-radius: 15;" +
+                            "-fx-border-color: #4a5e7a;" +
+                            "-fx-border-width: 1.5;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0.3, 3, 3);");
 
                     // Use GridPane to organize Demande details
                     GridPane gridPane = new GridPane();
-                    gridPane.setHgap(10);
-                    gridPane.setVgap(5);
+                    gridPane.setHgap(15);
+                    gridPane.setVgap(8);
 
                     // Define fields to display (excluding userId and adminId)
                     Text idText = new Text("ID: " + demande.getId());
-                    idText.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
+                    idText.setStyle("-fx-font-weight: bold; -fx-font-size: 15; -fx-fill: #ffffff;");
                     Text nbJoursText = new Text("Nb Jours: " + demande.getNombreJours());
-                    nbJoursText.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
+                    nbJoursText.setStyle("-fx-font-weight: bold; -fx-font-size: 15; -fx-fill: #ffffff;");
                     Text descriptionText = new Text("Description: " + demande.getDescription());
-                    descriptionText.setStyle("-fx-font-size: 14;");
-                    descriptionText.setWrappingWidth(300);
+                    descriptionText.setStyle("-fx-font-size: 14; -fx-fill: #d7d7d9;");
+                    descriptionText.setWrappingWidth(350);
                     Text typeText = new Text("Type: " + demande.getType());
-                    typeText.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
+                    typeText.setStyle("-fx-font-weight: bold; -fx-font-size: 15; -fx-fill: #ffffff;");
                     Text lienSuppText = new Text("Lien Supp: " + (demande.getLienSupplementaire() != null ? demande.getLienSupplementaire() : "N/A"));
-                    lienSuppText.setStyle("-fx-font-size: 14;");
-                    lienSuppText.setWrappingWidth(300);
+                    lienSuppText.setStyle("-fx-font-size: 14; -fx-fill: #d7d7d9;");
+                    lienSuppText.setWrappingWidth(350);
                     Text statutText = new Text("Statut: " + transformStatutForUI(demande.getStatut()));
-                    statutText.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
+                    statutText.setStyle("-fx-font-weight: bold; -fx-font-size: 15; -fx-fill: #ffffff;");
                     Text dateText = new Text("Date: " + demande.getDateSoumission());
-                    dateText.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
+                    dateText.setStyle("-fx-font-weight: bold; -fx-font-size: 15; -fx-fill: #ffffff;");
 
                     // Add fields to GridPane (excluding userId and adminId)
                     gridPane.add(idText, 0, 0);
@@ -100,13 +100,13 @@ public class DemandeClient implements Initializable {
                     gridPane.add(dateText, 1, 3);
 
                     // Create buttons for Modifier and Supprimer
-                    HBox buttonsBox = new HBox(10);
-                    buttonsBox.setStyle("-fx-padding: 10 0 0 0; -fx-alignment: center-right;");
+                    HBox buttonsBox = new HBox(15);
+                    buttonsBox.setStyle("-fx-padding: 15 0 0 0; -fx-alignment: center-right;");
 
                     Button modifierButton = new Button("Modifier");
-                    modifierButton.setStyle("-fx-background-color: #294478; -fx-text-fill: #d7d7d9; -fx-background-radius: 5; -fx-font-size: 14;");
-                    modifierButton.setOnMouseEntered(e -> modifierButton.setStyle("-fx-background-color: #3b5a9a; -fx-text-fill: #d7d7d9; -fx-background-radius: 5; -fx-font-size: 14;"));
-                    modifierButton.setOnMouseExited(e -> modifierButton.setStyle("-fx-background-color: #294478; -fx-text-fill: #d7d7d9; -fx-background-radius: 5; -fx-font-size: 14;"));
+                    modifierButton.setStyle("-fx-background-color: #3b5a9a; -fx-text-fill: #ffffff; -fx-background-radius: 8; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 8 20;");
+                    modifierButton.setOnMouseEntered(e -> modifierButton.setStyle("-fx-background-color: #4a6cbb; -fx-text-fill: #ffffff; -fx-background-radius: 8; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 8 20;"));
+                    modifierButton.setOnMouseExited(e -> modifierButton.setStyle("-fx-background-color: #3b5a9a; -fx-text-fill: #ffffff; -fx-background-radius: 8; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 8 20;"));
                     modifierButton.setOnAction(event -> {
                         try {
                             openModifierDemande(demande);
@@ -118,9 +118,9 @@ public class DemandeClient implements Initializable {
                     });
 
                     Button supprimerButton = new Button("Supprimer");
-                    supprimerButton.setStyle("-fx-background-color: #ff4444; -fx-text-fill: #ffffff; -fx-background-radius: 5; -fx-font-size: 14;");
-                    supprimerButton.setOnMouseEntered(e -> supprimerButton.setStyle("-fx-background-color: #ff6666; -fx-text-fill: #ffffff; -fx-background-radius: 5; -fx-font-size: 14;"));
-                    supprimerButton.setOnMouseExited(e -> supprimerButton.setStyle("-fx-background-color: #ff4444; -fx-text-fill: #ffffff; -fx-background-radius: 5; -fx-font-size: 14;"));
+                    supprimerButton.setStyle("-fx-background-color: #ff4444; -fx-text-fill: #ffffff; -fx-background-radius: 8; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 8 20;");
+                    supprimerButton.setOnMouseEntered(e -> supprimerButton.setStyle("-fx-background-color: #ff6666; -fx-text-fill: #ffffff; -fx-background-radius: 8; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 8 20;"));
+                    supprimerButton.setOnMouseExited(e -> supprimerButton.setStyle("-fx-background-color: #ff4444; -fx-text-fill: #ffffff; -fx-background-radius: 8; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 8 20;"));
                     supprimerButton.setOnAction(event -> {
                         try {
                             openSupprimerDemande(demande);
@@ -137,20 +137,20 @@ public class DemandeClient implements Initializable {
                     vbox.getChildren().addAll(gridPane, buttonsBox);
 
                     // Add hover effect for the entire cell
-                    vbox.setOnMouseEntered(e -> vbox.setStyle("-fx-background-color: " + (getIndex() % 2 == 0 ? "#e6ecf2" : "#dfe4e8") + ";" +
-                            "-fx-padding: 15;" +
-                            "-fx-background-radius: 10;" +
-                            "-fx-border-radius: 10;" +
-                            "-fx-border-color: #064625;" +
-                            "-fx-border-width: 1;" +
-                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 15, 0.7, 3, 3);"));
-                    vbox.setOnMouseExited(e -> vbox.setStyle("-fx-background-color: " + (getIndex() % 2 == 0 ? "#f0f4f8" : "#e8ecef") + ";" +
-                            "-fx-padding: 15;" +
-                            "-fx-background-radius: 10;" +
-                            "-fx-border-radius: 10;" +
-                            "-fx-border-color: #064625;" +
-                            "-fx-border-width: 1;" +
-                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0.5, 2, 2);"));
+                    vbox.setOnMouseEntered(e -> vbox.setStyle("-fx-background-color: linear-gradient(to right, #2a3b5a, #3b4c7a);" +
+                            "-fx-padding: 20;" +
+                            "-fx-background-radius: 15;" +
+                            "-fx-border-radius: 15;" +
+                            "-fx-border-color: #5a6e9a;" +
+                            "-fx-border-width: 1.5;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 15, 0.5, 5, 5);"));
+                    vbox.setOnMouseExited(e -> vbox.setStyle("-fx-background-color: linear-gradient(to right, #1a2a44, #2a3b5a);" +
+                            "-fx-padding: 20;" +
+                            "-fx-background-radius: 15;" +
+                            "-fx-border-radius: 15;" +
+                            "-fx-border-color: #4a5e7a;" +
+                            "-fx-border-width: 1.5;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0.3, 3, 3);"));
 
                     setGraphic(vbox);
                 }
