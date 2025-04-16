@@ -106,9 +106,6 @@
             <!-- TextField for image path -->
             <TextField fx:id="image" layoutX="40.0" layoutY="240.0" promptText="Image" style="-fx-background-radius: 20; -fx-padding: 8 12 8 12; -fx-font-size: 14px; -fx-background-color: #ffffff; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0.5, 0, 2);" />
 
-            <!-- Date picker for selecting the product date -->
-            <DatePicker fx:id="date" layoutX="40.0" layoutY="288.0" promptText="Date" style="-fx-background-radius: 20; -fx-padding: 8 12 8 12; -fx-font-size: 14px; -fx-background-color: #ffffff; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0.5, 0, 2);" />
-
             <!-- Button for choosing an image -->
             <Button layoutX="230.0" layoutY="240.0" mnemonicParsing="false" onAction="#choisirImage" style="-fx-background-color: #56ccf2; -fx-text-fill: white; -fx-background-radius: 20; -fx-font-size: 14px; -fx-padding: 8 15 8 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0.5, 0, 2);" text="Choisir une image" />
 

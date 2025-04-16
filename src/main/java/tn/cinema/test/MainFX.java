@@ -11,7 +11,7 @@ public class MainFX extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/Dashboard.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/Front.fxml"));
             Scene scene = new Scene(root);
             primaryStage.setTitle("Ajouter Produit");
             primaryStage.setScene(scene);

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.cinema.controlleur.ListCommande">
+
+    <top>
+        <Label text="Votre Panier"
+               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 20; -fx-text-fill: #2c3e50;"
+               BorderPane.alignment="CENTER"/>
+    </top>
+
+    <center>
+        <ListView fx:id="listViewCommande"
+                  style="-fx-padding: 15;" />
+    </center>
+
+    <bottom>
+        <HBox spacing="20" alignment="CENTER_RIGHT" style="-fx-padding: 20;">
+            <Button text="Valider la commande"
+                    fx:id="btnValider"
+                    style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 10 20;" />
+        </HBox>
+    </bottom>
+</BorderPane>
+

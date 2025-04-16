@@ -218,28 +218,27 @@ public class AfficherProduit {
         btnNo.setOnMouseEntered(e -> btnNo.setStyle("-fx-background-color: #2980b9; -fx-text-fill: white;"));
         btnNo.setOnMouseExited(e -> btnNo.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;"));
 
-        // Action pour le bouton "Oui"
-        btnYes.setOnAction(event -> {
-            produitService.supprimer(p.getId());
-            produits.remove(p);
-            afficherProduits();
-            showConfirmationSuccess();
-        });
-
-        // Action pour le bouton "Non"
-        btnNo.setOnAction(event -> {
-            // Fermer la fenêtre sans rien faire
-            System.out.println("Suppression annulée.");
-        });
-
-        // Ajouter tous les éléments à la VBox
-        vbox.getChildren().addAll(confirmationMessage, btnYes, btnNo);
-
         // Créer une nouvelle scène pour afficher la confirmation
         Stage confirmationStage = new Stage();
         Scene confirmationScene = new Scene(vbox);
         confirmationStage.setScene(confirmationScene);
         confirmationStage.setTitle("Confirmation de suppression");
+
+        // Action pour le bouton "Oui"
+        btnYes.setOnAction(event -> {
+            produitService.supprimer(p.getId());
+            produits.remove(p);
+            afficherProduits();
+            confirmationStage.close();
+            showConfirmationSuccess();
+        });
+
+        // Action pour le bouton "Non"
+        btnNo.setOnAction(event -> confirmationStage.close());
+
+        // Ajouter tous les éléments à la VBox
+        vbox.getChildren().addAll(confirmationMessage, btnYes, btnNo);
+
         confirmationStage.show();
     }
 

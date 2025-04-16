@@ -3,6 +3,8 @@ package tn.cinema.controlleur;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
@@ -16,11 +18,15 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.animation.ScaleTransition;
 import javafx.animation.FadeTransition;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import tn.cinema.entities.Produit;
 import tn.cinema.services.ProduitService;
 import tn.cinema.entities.Commande;
 import tn.cinema.services.CommandeService;
+
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -150,62 +156,43 @@ public class ListProduits {
     }
 
     private void commanderProduit(Produit p) {
-        // Vérifier si une commande en cours existe
         int commandeId = getIdCommandeEnCours();
 
-        if (commandeId == -1) {  // Si aucune commande en cours n'existe
-            // Créer une nouvelle commande
-            Commande nouvelleCommande = new Commande();  // Créer une nouvelle commande
-            nouvelleCommande.setUserId(1);  // Remplacer par l'ID réel de l'utilisateur
+        if (commandeId == -1) {
+            // Création d'une nouvelle commande
+            Commande nouvelleCommande = new Commande();
+            nouvelleCommande.setDateCommande(LocalDate.now().atStartOfDay());
+            nouvelleCommande.setMontantPaye(p.getPrix()); // 💰 montant basé sur le produit
+            nouvelleCommande.setEtat("en cours");
 
-            // Convertir LocalDate en LocalDateTime (minuit comme heure par défaut)
-            LocalDateTime dateCommande = LocalDate.now().atStartOfDay();  // Utilisation de atStartOfDay()
-
-            nouvelleCommande.setDateCommande(dateCommande);  // Date de la commande avec heure
-
-            // Ajouter la commande à la base de données
+            // Ajouter la commande via le service (qui gère le userId via SessionManager)
             commandeService.ajouter(nouvelleCommande);
 
             // Récupérer l'ID de la nouvelle commande
-            commandeId = commandeService.recupererDerniereCommandeId();  // Méthode corrigée dans CommandeService
+            commandeId = commandeService.recupererDerniereCommandeId();
             if (commandeId == -1) {
-                System.out.println("❌ Impossible de récupérer l'ID de la nouvelle commande.");
+                System.err.println("❌ Impossible de récupérer l'ID de la commande.");
                 return;
             }
-            System.out.println("Nouvelle commande créée avec l'ID : " + commandeId);
         }
 
-        // Ajouter le produit à la commande existante
-        if (commandeId != -1) {
-            try {
-                // Ajouter le produit à la commande dans la base de données
-                commandeService.ajouterProduitACommande(commandeId, p.getId());
+        // Ajouter le produit à la commande
+        try {
+            commandeService.ajouterProduitACommande(commandeId, p.getId());
 
-                // Ajouter la commande à la liste des commandes en mémoire
-                Commande commandeExistante = commandeService.recupererParId(commandeId);
-                if (commandeExistante != null) {
-                    // Vous pouvez avoir une liste des commandes en mémoire si vous le souhaitez.
-                    // Par exemple, une liste observable des commandes que vous mettez à jour ici.
-                    // Si vous voulez l'ajouter à une liste dans le contrôleur :
-                    ObservableList<Commande> commandesList = FXCollections.observableArrayList();
-                    commandesList.add(commandeExistante);  // Ajouter la commande à la liste
-
-                    System.out.println("🛒 Produit commandé : " + p.getNom());
-
-                    // Afficher un message de confirmation
-                    showConfirmationMessage("Commande passée avec succès", "Le produit '" + p.getNom() + "' a été ajouté à votre commande.");
-                } else {
-                    System.out.println("❌ Impossible de récupérer la commande existante.");
-                }
-            } catch (Exception e) {
-                System.out.println("Erreur lors de l'ajout du produit à la commande : " + e.getMessage());
-                showErrorMessage("Erreur", "Une erreur est survenue lors de l'ajout du produit à votre commande.");
+            Commande commandeExistante = commandeService.recupererParId(commandeId);
+            if (commandeExistante != null) {
+                System.out.println("🛒 Produit ajouté à la commande : " + p.getNom());
+                showConfirmationMessage("Commande réussie", "Le produit '" + p.getNom() + "' a été ajouté à votre commande.");
+            } else {
+                System.err.println("❌ Impossible de retrouver la commande après l'ajout.");
             }
-        } else {
-            System.out.println("❌ Aucune commande valide trouvée.");
-            showErrorMessage("Erreur", "Aucune commande valide trouvée.");
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l'ajout du produit à la commande : " + e.getMessage());
+            showErrorMessage("Erreur", "Impossible d'ajouter le produit à la commande.");
         }
     }
+
 
     private void showConfirmationMessage(String title, String message) {
         // Création de l'alerte
@@ -245,5 +232,37 @@ public class ListProduits {
     private int getIdCommandeEnCours() {
         // Remplacer cette logique par la vraie logique de récupération de la commande en cours
         return -1;  // Valeur par défaut si aucune commande n'existe
+    }
+
+
+
+    @FXML
+    private void afficherMesCommandes() {
+        try {
+            // Vérifier si le fichier FXML existe
+            java.net.URL fxmlUrl = getClass().getResource("/MesCommandes.fxml");
+            if (fxmlUrl == null) {
+                showErrorMessage("Erreur", "Le fichier MesCommandes.fxml n'a pas été trouvé.");
+                return;
+            }
+
+            // Charger l'interface MesCommandes.fxml
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
+            Scene scene = new Scene(loader.load(), 800, 600); // Taille du popup
+
+            // Créer une nouvelle fenêtre modale
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL); // Bloque la fenêtre principale
+            popupStage.setTitle("Mes Commandes");
+            popupStage.setScene(scene);
+            popupStage.setResizable(false); // Empêche le redimensionnement
+
+            // Afficher le popup et attendre sa fermeture
+            popupStage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorMessage("Erreur", "Impossible de charger l'interface des commandes : " + e.getMessage());
+        }
     }
 }
