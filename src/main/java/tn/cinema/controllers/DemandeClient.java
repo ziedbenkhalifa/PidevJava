@@ -223,7 +223,13 @@ public class DemandeClient extends FrontzController implements Initializable {
     @FXML
     public void goBackToFront(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Front.fxml"));
+            // Adjust the path based on the actual location of Front.fxml
+            String fxmlPath = "/FrontZ.fxml"; // Update this if Front.fxml is in a different package, e.g., "/tn/cinema/views/Front.fxml"
+            URL fxmlUrl = getClass().getResource(fxmlPath);
+            if (fxmlUrl == null) {
+                throw new IOException("Cannot find resource: " + fxmlPath);
+            }
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
@@ -233,6 +239,8 @@ public class DemandeClient extends FrontzController implements Initializable {
             System.out.println("Navigated back to Front.fxml from DemandeClient");
         } catch (IOException e) {
             e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Erreur lors du retour au tableau de bord : " + e.getMessage());
+            alert.showAndWait();
             System.err.println("Error loading Front.fxml: " + e.getMessage());
         }
     }
