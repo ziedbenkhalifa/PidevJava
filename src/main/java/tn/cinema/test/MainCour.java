@@ -1,4 +1,4 @@
-package tn.cinema.test;
+/*package tn.cinema.test;
 
 import tn.cinema.entities.Cour;
 import tn.cinema.entities.Seance;
@@ -61,4 +61,4 @@ public class MainCour {
        // }
 
 
-    }}
+    }}*/

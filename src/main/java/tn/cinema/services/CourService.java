@@ -20,27 +20,27 @@ public class CourService implements IServices<Cour>{
 
     @Override
     public void ajouter(Cour cour) throws SQLException {
-         sql = "INSERT INTO cour(type_cour, cout, date_debut, date_fin) " +
+        sql = "INSERT INTO cour(type_cour, cout, date_debut, date_fin) " +
                 "VALUES (?, ?, ?, ?)";
 
-            ps = cnx.prepareStatement(sql);
+        ps = cnx.prepareStatement(sql);
 
-            ps.setString(1, cour.getTypeCour());
-            ps.setDouble(2, cour.getCout());
-            ps.setTimestamp(3, Timestamp.valueOf(cour.getDateDebut()));
-            ps.setTimestamp(4, Timestamp.valueOf(cour.getDateFin()));
-            ps.executeUpdate();
-            System.out.println("Cour ajouté");
+        ps.setString(1, cour.getTypeCour());
+        ps.setDouble(2, cour.getCout());
+        ps.setTimestamp(3, Timestamp.valueOf(cour.getDateDebut()));
+        ps.setTimestamp(4, Timestamp.valueOf(cour.getDateFin()));
+        ps.executeUpdate();
+        System.out.println("Cour ajouté");
 
     }
 
     @Override
     public void supprimer(int id) throws SQLException {
-           sql = "DELETE FROM cour WHERE id = ?";
-           ps = cnx.prepareStatement(sql);
-           ps.setInt(1, id);
-           ps.executeUpdate();
-            System.out.println("Cour supprimé");
+        sql = "DELETE FROM cour WHERE id = ?";
+        ps = cnx.prepareStatement(sql);
+        ps.setInt(1, id);
+        ps.executeUpdate();
+        System.out.println("Cour supprimé");
     }
 
     @Override
@@ -86,32 +86,32 @@ public class CourService implements IServices<Cour>{
 
     public void ajouterParticipation(int userId, int courId) throws SQLException {
         sql = "INSERT INTO participation (user_id, cour_id) VALUES (?, ?)";
-         ps = cnx.prepareStatement(sql);
-            ps.setInt(1, userId);
-            ps.setInt(2, courId);
-            ps.executeUpdate();
+        ps = cnx.prepareStatement(sql);
+        ps.setInt(1, userId);
+        ps.setInt(2, courId);
+        ps.executeUpdate();
 
     }
 
 
     public void supprimerParticipation(int userId, int courId) throws SQLException {
-         sql = "DELETE FROM participation WHERE user_id = ? AND cour_id = ?";
-         ps = cnx.prepareStatement(sql);
-            ps.setInt(1, userId);
-            ps.setInt(2, courId);
-            ps.executeUpdate();
+        sql = "DELETE FROM participation WHERE user_id = ? AND cour_id = ?";
+        ps = cnx.prepareStatement(sql);
+        ps.setInt(1, userId);
+        ps.setInt(2, courId);
+        ps.executeUpdate();
     }
 
 
     public List<Integer> recupererParticipations(int userId) throws SQLException {
         List<Integer> coursIds = new ArrayList<>();
-       sql = "SELECT cour_id FROM participation WHERE user_id = ?";
-       ps = cnx.prepareStatement(sql);
-    ps.setInt(1, userId);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                coursIds.add(rs.getInt("cour_id"));
-            }
+        sql = "SELECT cour_id FROM participation WHERE user_id = ?";
+        ps = cnx.prepareStatement(sql);
+        ps.setInt(1, userId);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            coursIds.add(rs.getInt("cour_id"));
+        }
 
         return coursIds;
     }
