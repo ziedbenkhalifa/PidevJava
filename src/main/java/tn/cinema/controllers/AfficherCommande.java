@@ -152,20 +152,74 @@ public class AfficherCommande {
         }
     }
 
-    private void supprimerCommande(Commande commande) {
-        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmation.setTitle("Suppression");
-        confirmation.setHeaderText("Supprimer cette commande ?");
-        confirmation.setContentText("Cette action est irréversible.");
+    private void supprimerCommande(Commande c) {
+        // Création de la boîte de confirmation personnalisée
+        VBox vbox = new VBox(15);
+        vbox.setStyle("-fx-background-color: #ffffff; -fx-border-radius: 15; -fx-padding: 20;");
+        vbox.setAlignment(Pos.CENTER);
 
-        Optional<ButtonType> result = confirmation.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            commandeService.supprimer(commande.getId());
-            commandes.remove(commande);
+        Label confirmationMessage = new Label("Êtes-vous sûr de vouloir supprimer cette commande ?");
+        confirmationMessage.setStyle("-fx-font-size: 16px; -fx-text-fill: #2c3e50;");
+
+        Button btnYes = new Button("Oui");
+        Button btnNo = new Button("Non");
+        btnYes.setStyle("-fx-font-size: 14px; -fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 10px 20px; -fx-background-radius: 8;");
+        btnNo.setStyle("-fx-font-size: 14px; -fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 10px 20px; -fx-background-radius: 8;");
+
+        btnYes.setOnMouseEntered(e -> btnYes.setStyle("-fx-background-color: #c0392b; -fx-text-fill: white;"));
+        btnYes.setOnMouseExited(e -> btnYes.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;"));
+        btnNo.setOnMouseEntered(e -> btnNo.setStyle("-fx-background-color: #2980b9; -fx-text-fill: white;"));
+        btnNo.setOnMouseExited(e -> btnNo.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;"));
+
+        // Créer une nouvelle scène pour afficher la confirmation
+        Stage confirmationStage = new Stage();
+        Scene confirmationScene = new Scene(vbox);
+        confirmationStage.setScene(confirmationScene);
+        confirmationStage.setTitle("Confirmation de suppression");
+
+        // Action pour le bouton "Oui"
+        btnYes.setOnAction(event -> {
+            commandeService.supprimer(c.getId());
+            commandes.remove(c);
             afficherCommandes();
+            confirmationStage.close();
+            showConfirmationSuccess();
+        });
 
-            showAlert("Succès", "Commande supprimée avec succès.");
-        }
+        // Action pour le bouton "Non"
+        btnNo.setOnAction(event -> confirmationStage.close());
+
+        vbox.getChildren().addAll(confirmationMessage, btnYes, btnNo);
+        confirmationStage.show();
+    }
+    private void showConfirmationSuccess() {
+        // Fenêtre de succès après suppression
+        VBox successBox = new VBox(15);
+        successBox.setStyle("-fx-background-color: #ffffff; -fx-border-radius: 15; -fx-padding: 20;");
+        successBox.setAlignment(Pos.CENTER);
+
+        Label successMessage = new Label("Le produit a été supprimé avec succès !");
+        successMessage.setStyle("-fx-font-size: 16px; -fx-text-fill: #27ae60;");
+
+        Button btnClose = new Button("Fermer");
+        btnClose.setStyle("-fx-font-size: 14px; -fx-background-color: #2ecc71; -fx-text-fill: white; -fx-padding: 10px 20px; -fx-background-radius: 8;");
+        btnClose.setOnMouseEntered(e -> btnClose.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white;"));
+        btnClose.setOnMouseExited(e -> btnClose.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;"));
+
+        btnClose.setOnAction(event -> {
+            // Fermer la fenêtre de succès
+            Stage stage = (Stage) btnClose.getScene().getWindow();
+            stage.close();
+        });
+
+        successBox.getChildren().addAll(successMessage, btnClose);
+
+        // Créer une nouvelle scène pour afficher le message de succès
+        Stage successStage = new Stage();
+        Scene successScene = new Scene(successBox);
+        successStage.setScene(successScene);
+        successStage.setTitle("Succès");
+        successStage.show();
     }
 
     private void showAlert(String titre, String message) {
