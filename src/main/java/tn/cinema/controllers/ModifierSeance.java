@@ -22,7 +22,7 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class ModifierSeance implements Initializable {
+public class ModifierSeance extends Dashboard implements Initializable {
 
     @FXML
     private DatePicker dateSeancePicker;

@@ -13,7 +13,7 @@ import tn.cinema.services.CommandeService;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-public class AjouterCommande {
+public class AjouterCommande extends Dashboard {
 
     @FXML
     private TextField tfUserId;

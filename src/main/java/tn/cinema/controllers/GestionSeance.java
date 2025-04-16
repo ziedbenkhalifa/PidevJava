@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class GestionSeance {
+public class GestionSeance extends Dashboard{
 
     @FXML
     private void handleGererSeances(ActionEvent event) {

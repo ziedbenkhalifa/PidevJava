@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-public class AfficherProjection {
+public class AfficherProjection extends Dashboard {
 
     @FXML
     private ListView<Projection> listProjection;

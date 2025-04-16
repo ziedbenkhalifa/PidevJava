@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class ListProduits {
+public class ListProduits extends FrontzController{
 
     @FXML
     private ListView<HBox> listViewProduits;

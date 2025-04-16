@@ -27,7 +27,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 import java.io.IOException;
 
-public class AfficherProduit {
+public class AfficherProduit extends Dashboard {
 
     @FXML
     private ListView<HBox> listViewProduits;

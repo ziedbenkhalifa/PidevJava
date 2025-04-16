@@ -18,7 +18,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-public class ModifierCour {
+public class ModifierCour extends Dashboard {
 
     @FXML
     private ComboBox<String> typeCourComboBox;

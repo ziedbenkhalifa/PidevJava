@@ -22,16 +22,28 @@
                         <Image url="@images/icons8-user-64.png" />
                     </image>
                 </ImageView>
-                <Button layoutX="56.0" layoutY="181.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion User" textFill="#d7d7d9" />
-                <Button layoutX="57.0" layoutY="237.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Film" textFill="#d7d7d9" />
-                <Button fx:id="gestionPubButton" layoutX="57.0" layoutY="346.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Pub" textFill="#d7d7d9" />
-                <Button layoutX="57.0" layoutY="399.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Cour" textFill="#d7d7d9" />
-                <Button layoutX="58.0" layoutY="293.0" mnemonicParsing="false" onAction="#GestionProduit" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Produit" textFill="#d7d7d9" />
-                <Button layoutX="55.0" layoutY="454.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Salle" textFill="#d7d7d9" />
-                <Button layoutX="74.0" layoutY="31.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="126.0" style="-fx-background-color: #021b50;" text="Mon Compte" textFill="#d7d7d9">
-                    <font><Font size="16.0" /></font>
+                <Button fx:id="gestionUserButton" layoutX="56.0" layoutY="181.0" mnemonicParsing="false" onAction="#handleGestionUserAction" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion User" textFill="#d7d7d9" />
+                <Button layoutX="57.0" layoutY="235.0" mnemonicParsing="false" onAction="#gestionFilm" prefHeight="26.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Film" textFill="#d7d7d9" />
+                <Button fx:id="gestionPubButton" layoutX="57.0" layoutY="346.0" mnemonicParsing="false" onAction="#goToInterfaceChoixGP" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Pub" textFill="#d7d7d9" />
+                <Button layoutX="57.0" layoutY="399.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" onAction="#handleGestinCour" text="Gestion Cour" textFill="#d7d7d9" />
+                <Button layoutX="58.0" layoutY="293.0" mnemonicParsing="false" onAction="#affichage" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Produit" textFill="#d7d7d9" />
+                <Button
+                        fx:id="btnAjouterEquipement"
+                        layoutX="55.0"
+                        layoutY="454.0"
+                        mnemonicParsing="false"
+                        prefHeight="24.0"
+                        prefWidth="120.0"
+                        style="-fx-background-color: #3e2063;"
+                        text="Gestion Salle"
+                        textFill="#d7d7d9"
+                        onAction="#ouvrirInterfaceAjout"
+                />
+                <Button fx:id="monCompteButton" layoutX="74.0" layoutY="31.0" mnemonicParsing="false" onAction="#handleMonCompteAction" prefHeight="64.0" prefWidth="126.0" style="-fx-background-color: #021b50;" text="Mon Compte" textFill="#d7d7d9">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
                 </Button>
-
                 <!-- Icônes -->
                 <ImageView fitHeight="87.0" fitWidth="100.0" layoutX="8.0" layoutY="542.0">
                     <image><Image url="@images/showtime-removebg-preview.png" /></image>
