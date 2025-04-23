@@ -5,46 +5,40 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
 
 <AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #080b21;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.AffichageListCoursFront">
     <children>
-        <!-- Navbar (identique à Front.fxml) -->
+        <!-- Navbar -->
         <AnchorPane layoutX="31.0" layoutY="14.0" prefHeight="188.0" prefWidth="1257.0" style="-fx-background-color: #021b50; -fx-background-radius: 30;">
             <children>
                 <Button fx:id="filmsButton" layoutX="195.0" layoutY="46.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Films" textFill="WHITE" />
                 <Button fx:id="produitsButton" layoutX="326.0" layoutY="46.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Produits" textFill="WHITE" />
                 <Button fx:id="coursButton" layoutX="449.0" layoutY="46.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Cours" textFill="WHITE" onAction="#toggleSubButtons" />
-
-                <!-- Sous-boutons pour Cour et Séance (placés sur la même ligne) -->
                 <Button fx:id="courSubButton" layoutX="391.0" layoutY="80.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #5a3a8b;" text="Cour" textFill="WHITE" visible="false" onAction="#goCourAction" />
                 <Button fx:id="seanceSubButton" layoutX="507.0" layoutY="80.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #5a3a8b;" text="Séance" textFill="WHITE" visible="false" />
-
                 <Button fx:id="publicitesButton" layoutX="573.0" layoutY="46.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Publicités" textFill="WHITE" />
-
+                <Button fx:id="participationButton" layoutX="870.0" layoutY="46.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Participation" textFill="WHITE" onAction="#goParticipationAction" />
                 <Button fx:id="monCompteButton" layoutX="992.0" layoutY="46.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #021b50;" text="Mon Compte" textFill="WHITE" />
-                <Button fx:id="logoutButton" layoutX="1117.0" layoutY="46.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #fa4651;" text="LogOut" textFill="WHITE" />
+                <Button fx:id="logoutButton" layoutX="1117.0" layoutY="46.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #fa4651;" text="LogOut" textFill="WHITE" onAction="#logoutAction" />
                 <ImageView fitHeight="34.0" fitWidth="34.0" layoutX="1031.0" layoutY="14.0">
                     <image>
                         <Image url="@images/userwhite.png" />
                     </image>
                 </ImageView>
-
                 <!-- Barre de recherche -->
                 <AnchorPane layoutX="12.0" layoutY="118.0" prefHeight="61.0" prefWidth="1234.0" style="-fx-background-color: #080b21;">
                     <children>
-                        <TextField layoutX="130.0" layoutY="9.0" prefHeight="43.0" prefWidth="1089.0" promptText="         Search Projection"
-                                   style="-fx-background-color: #021b50;">
+                        <TextField fx:id="searchField" layoutX="130.0" layoutY="9.0" prefHeight="43.0" prefWidth="1089.0" promptText="         Search Cour" style="-fx-background-color: #021b50;">
                             <font>
                                 <Font name="System Bold" size="18.0" />
                             </font>
                         </TextField>
-                        <Button layoutX="1064.0" layoutY="19.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="121.0"
-                                style="-fx-background-color: #080b21;" text="Appliquer" textFill="WHITE" />
+                        <Button fx:id="applySearchButton" layoutX="1064.0" layoutY="19.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="121.0" style="-fx-background-color: #080b21;" text="Appliquer" textFill="WHITE" onAction="#applySearchAction" />
                     </children>
                 </AnchorPane>
             </children>
         </AnchorPane>
-
         <!-- Logo -->
         <ImageView fitHeight="204.0" fitWidth="207.0" layoutX="-7.0" layoutY="19.0">
             <image>
@@ -56,10 +50,8 @@
                 <Font name="System Bold" size="18.0" />
             </font>
         </Label>
-
         <!-- Section principale (contenu des cours) -->
-        <AnchorPane layoutX="17.0" layoutY="225.0" prefHeight="416.0" prefWidth="1268.0"
-                    style="-fx-background-color: #021b50; -fx-background-radius: 20;">
+        <AnchorPane layoutX="17.0" layoutY="225.0" prefHeight="416.0" prefWidth="1268.0" style="-fx-background-color: #021b50; -fx-background-radius: 20;">
             <children>
                 <!-- Footer -->
                 <Button layoutX="846.0" layoutY="373.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Contact" textFill="WHITE" />
@@ -84,10 +76,8 @@
                         <Font name="System Bold" size="14.0" />
                     </font>
                 </Label>
-
                 <!-- Contenu dynamique des cours -->
-                <AnchorPane layoutX="16.0" layoutY="9.0" prefHeight="355.0" prefWidth="1234.0"
-                            style="-fx-background-color: #0b0f29; -fx-background-radius: 20;">
+                <AnchorPane layoutX="16.0" layoutY="9.0" prefHeight="355.0" prefWidth="1234.0" style="-fx-background-color: #0b0f29; -fx-background-radius: 20;">
                     <children>
                         <ImageView fitHeight="355.0" fitWidth="1227.0" layoutX="3.0" layoutY="0.0" opacity="0.28">
                             <image>
@@ -99,22 +89,26 @@
                                 <Font name="System Bold" size="28.0" />
                             </font>
                         </Label>
-                        <ScrollPane layoutX="50.0" layoutY="60.0" prefHeight="280.0" prefWidth="1130.0"
-                                    style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
+                        <!-- ComboBox pour le filtre -->
+                        <ComboBox fx:id="typeFilterComboBox" layoutX="50.0" layoutY="50.0" prefWidth="150.0" styleClass="combo-box-white-text" onAction="#filterByType">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="Tous" />
+                                    <String fx:value="cinema" />
+                                    <String fx:value="theatre" />
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                        <ScrollPane layoutX="50.0" layoutY="90.0" prefHeight="250.0" prefWidth="1130.0" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
                             <content>
-                                <GridPane fx:id="coursGrid" hgap="20.0" vgap="20.0"
-                                          style="-fx-background-color: transparent; -fx-padding: 10;">
+                                <GridPane fx:id="coursGrid" hgap="20.0" vgap="20.0" style="-fx-background-color: transparent; -fx-padding: 10;">
                                     <!-- Elements ajoutés dynamiquement -->
-
                                 </GridPane>
                             </content>
                         </ScrollPane>
                     </children>
                 </AnchorPane>
-                <Button fx:id="retourButton" layoutX="20.0" layoutY="370.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0"
-                        style="-fx-background-color: #a9a9a9; -fx-text-fill: black; -fx-font-weight: bold;" text="← Retour"
-                        onAction="#retourAccueilAction" />
-
+                <Button fx:id="retourButton" layoutX="20.0" layoutY="370.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #a9a9a9; -fx-text-fill: black; -fx-font-weight: bold;" text="← Retour" onAction="#retourAccueilAction" />
             </children>
         </AnchorPane>
     </children>

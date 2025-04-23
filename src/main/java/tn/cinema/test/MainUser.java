@@ -1,6 +1,6 @@
 package tn.cinema.test;
 
-import tn.cinema.entities.User;
+/*import tn.cinema.entities.User;
 import tn.cinema.tools.Mydatabase;
 import tn.cinema.services.UserService;
 
@@ -20,19 +20,19 @@ public class MainUser {
                 "photo_profil.jpg",                     // Photo (nom du fichier)
                 "face_token_123456"                     // Face Token (exemple)
         );
-       // us.ajouter(u);
+        //us.ajouter(u);
         //us.supprimer(36);
         // Appel de la méthode pour modifier l'utilisateur avec id=3
-       us.modifier(
-                14,
+        us.modifier(
+                42,
                 "Hammmmmmouda Ben Salem",
-        new Date(95, 4, 23),
-         "hammouda.bensalem@example.com",
-          "Client",
-          "NouveauMotDePasse!",
-          "nouvelle_photo.jpg",
-          "new_face_token"
-         );
+                new Date(95, 4, 23),
+                "hammouda.bensalem@example.com",
+                "Client",
+                "NouveauMotDePasse!",
+                "nouvelle_photo.jpg",
+                "new_face_token"
+        );
 
         /*List<User> users = us.recuperer(); // Appel de la méthode recuperer()
 
@@ -43,5 +43,5 @@ public class MainUser {
         }
         System.out.println("------------------------");
         System.out.println("Total utilisateurs : " + users.size());*/
-    }
-}
+//   }
+//}

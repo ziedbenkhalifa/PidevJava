@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-public class AjouterCour {
+public class AjouterCour extends Dashboard {
 
     @FXML
     private ComboBox<String> typeCourComboBox;
@@ -34,36 +34,40 @@ public class AjouterCour {
     private DatePicker dateDebutPicker;
 
     @FXML
-    private TextField dateDebutTimeField; // New field for time input
+    private TextField dateDebutTimeField; // Champ pour l'heure de début
 
     @FXML
     private DatePicker dateFinPicker;
 
     @FXML
-    private TextField dateFinTimeField; // New field for time input
+    private TextField dateFinTimeField; // Champ pour l'heure de fin
 
-    CourService courService = new CourService();
+    private CourService courService = new CourService();
 
     @FXML
     private void ajoutercour() throws SQLException {
         try {
-
+            // Validation du type de cours
             String typeCour = typeCourComboBox.getValue();
             if (typeCour == null || typeCour.trim().isEmpty()) {
                 throw new IllegalArgumentException("Type de Cour doit être sélectionné.");
             }
 
+            // Validation du coût (doit être entre 50 et 999)
             double cout;
             try {
                 cout = Double.parseDouble(coutField.getText());
-                if (cout < 0) {
-                    throw new IllegalArgumentException("Le Coût doit être un nombre positif.");
+                if (cout <= 0) {
+                    throw new IllegalArgumentException("Le Coût doit être un nombre supérieur à 0.");
+                }
+                if (cout < 50 || cout > 999) {
+                    throw new IllegalArgumentException("Le Coût doit être compris entre 50 et 999.");
                 }
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Le Coût doit être un nombre valide.");
             }
 
-
+            // Validation de la date de début
             LocalDate dateDebut = dateDebutPicker.getValue();
             if (dateDebut == null) {
                 throw new IllegalArgumentException("La Date de Début doit être sélectionnée.");
@@ -80,11 +84,16 @@ public class AjouterCour {
             }
             LocalDateTime dateDebutTimeFinal = LocalDateTime.of(dateDebut, dateDebutTime);
 
-
-            if (dateDebutTimeFinal.isBefore(LocalDateTime.now())) {
+            // Vérification si la date de début est aujourd'hui ou dans le futur
+            LocalDateTime now = LocalDateTime.now();
+            LocalDate today = LocalDate.now();
+            if (dateDebut.isBefore(today)) {
                 throw new IllegalArgumentException("La Date de Début doit être aujourd'hui ou dans le futur.");
+            } else if (dateDebut.isEqual(today) && dateDebutTimeFinal.isBefore(now)) {
+                throw new IllegalArgumentException("L'heure de début pour aujourd'hui doit être postérieure à l'heure actuelle (" + now.format(DateTimeFormatter.ofPattern("HH:mm")) + ").");
             }
 
+            // Validation de la date de fin
             LocalDate dateFin = dateFinPicker.getValue();
             if (dateFin == null) {
                 throw new IllegalArgumentException("La Date de Fin doit être sélectionnée.");
@@ -101,16 +110,24 @@ public class AjouterCour {
             }
             LocalDateTime dateFinTimeFinal = LocalDateTime.of(dateFin, dateFinTime);
 
-
-            if (dateFinTimeFinal.isBefore(dateDebutTimeFinal)) {
-                throw new IllegalArgumentException("La Date de Fin doit être postérieure à la Date de Début.");
+            // Vérification si la date de fin est aujourd'hui ou dans le futur
+            if (dateFin.isBefore(today)) {
+                throw new IllegalArgumentException("La Date de Fin doit être aujourd'hui ou dans le futur.");
+            } else if (dateFin.isEqual(today) && dateFinTimeFinal.isBefore(now)) {
+                throw new IllegalArgumentException("L'heure de fin pour aujourd'hui doit être postérieure à l'heure actuelle (" + now.format(DateTimeFormatter.ofPattern("HH:mm")) + ").");
             }
 
+            // Vérification que la date de fin est postérieure à la date de début
+            if (dateFinTimeFinal.isBefore(dateDebutTimeFinal) || dateFinTimeFinal.isEqual(dateDebutTimeFinal)) {
+                throw new IllegalArgumentException("La Date de Fin doit être strictement postérieure à la Date de Début.");
+            }
+
+            // Création et ajout du cours
             Cour cour = new Cour(typeCour, cout, dateDebutTimeFinal, dateFinTimeFinal);
             courService.ajouter(cour);
             System.out.println("Cours ajouté: " + cour);
 
-
+            // Chargement de la page suivante
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherCour.fxml"));
             Parent root = loader.load();
 
@@ -119,7 +136,6 @@ public class AjouterCour {
             ac.setRcout(cout);
             ac.setRdatedebut(dateDebut);
             ac.setRdatefin(dateFin);
-
 
             List<Cour> coursList = courService.recuperer();
             ac.setRlistItems(coursList);

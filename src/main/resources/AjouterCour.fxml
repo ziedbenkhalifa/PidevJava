@@ -129,7 +129,7 @@
                                 <!-- Coût -->
                                 <HBox alignment="CENTER_LEFT" spacing="20">
                                     <Label prefWidth="120" style="-fx-font-size: 14;" text="Coût:" textFill="WHITE" />
-                                    <TextField fx:id="coutField" prefWidth="250" promptText="Entrez le coût" style="-fx-background-color: #857c95;-fx-text-fill: black; -fx-prompt-text-fill: #000000; -fx-background-radius: 5;" />
+                                    <TextField fx:id="coutField" prefWidth="250" promptText="Entrer un cout entre 50-999" style="-fx-background-color: #857c95;-fx-text-fill: black; -fx-prompt-text-fill: #000000; -fx-background-radius: 5;" />
                                 </HBox>
 
                                 <!-- Date de Début avec champ pour l'heure -->
