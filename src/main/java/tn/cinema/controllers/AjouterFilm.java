@@ -9,7 +9,6 @@ import javafx.stage.FileChooser;
 import tn.cinema.entities.Films;
 import tn.cinema.services.FilmsService;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;

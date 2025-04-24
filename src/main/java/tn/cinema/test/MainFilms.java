@@ -1,7 +1,5 @@
 package tn.cinema.test;
 
-import tn.cinema.entities.Films;
-import tn.cinema.entities.Projection;
 import tn.cinema.services.FilmsService;
 import tn.cinema.services.ProjectionService;
 
@@ -12,8 +10,8 @@ public class MainFilms {
     public static void main(String[] args) {
         FilmsService fs=new FilmsService();
         ProjectionService ps = new ProjectionService();
-        Films f=new Films("test2","test2","test","test", LocalDate.of(2001, 1, 1));
-        Projection p=new Projection(20,LocalDate.of(2025,12,15), 12.250F);
+        //Films f=new Films("test2","test2","test","test", LocalDate.of(2001, 1, 1));
+       // Projection p=new Projection(20,LocalDate.of(2025,12,15), 12.250F);
         try {
             //fs.ajouter(f);
             // ps.ajouter(p);

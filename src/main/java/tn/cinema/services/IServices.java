@@ -8,4 +8,5 @@ public interface IServices<T> {
     void supprimer(int id) throws SQLException;
     void modifier(T t) throws SQLException;
     List<T> recuperer() throws SQLException;
+
 }

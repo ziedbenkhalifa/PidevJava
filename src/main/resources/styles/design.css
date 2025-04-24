@@ -1,0 +1,8 @@
+ #gestionProduitBtn {
+    -fx-background-color: #294478;
+    -fx-text-fill: #d7d7d9;
+}
+
+#gestionProduitBtn:hover {
+    -fx-background-color: #3a5a9e;
+}

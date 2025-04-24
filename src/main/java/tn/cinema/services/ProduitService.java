@@ -23,7 +23,7 @@ public class ProduitService implements IServices<Produit> {
             stmt.setString(3, produit.getCategorie());
             stmt.setString(4, produit.getDescription());
             stmt.setString(5, produit.getImage());
-            stmt.setDate(6, new java.sql.Date(produit.getDate().getTime()));
+            stmt.setTimestamp(6, Timestamp.valueOf(produit.getDate()));
 
             stmt.executeUpdate();
             System.out.println("✅ Produit ajouté avec succès !");
@@ -57,7 +57,7 @@ public class ProduitService implements IServices<Produit> {
             stmt.setString(3, produit.getCategorie());
             stmt.setString(4, produit.getDescription());
             stmt.setString(5, produit.getImage());
-            stmt.setDate(6, new java.sql.Date(produit.getDate().getTime()));
+            stmt.setTimestamp(6, Timestamp.valueOf(produit.getDate()));
             stmt.setInt(7, produit.getId());
 
             int rows = stmt.executeUpdate();
@@ -85,7 +85,7 @@ public class ProduitService implements IServices<Produit> {
                         rs.getString("categorie"),
                         rs.getString("description"),
                         rs.getString("image"),
-                        rs.getDate("date")  // Changer le nom de la colonne "date" à "dateAjout"
+                        rs.getTimestamp("date").toLocalDateTime()
                 );
                 produits.add(produit);
             }
@@ -94,5 +94,52 @@ public class ProduitService implements IServices<Produit> {
         }
         return produits;
     }
-
+    public Produit recupererParId(int id) {
+        String query = "SELECT * FROM produit WHERE id=?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Produit(
+                            rs.getInt("id"),
+                            rs.getString("nom"),
+                            rs.getDouble("prix"),
+                            rs.getString("categorie"),
+                            rs.getString("description"),
+                            rs.getString("image"),
+                            rs.getTimestamp("date").toLocalDateTime()
+                    );
+                } else {
+                    System.out.println("⚠️ Aucun produit trouvé avec l'ID: " + id);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur lors de la récupération du produit : " + e.getMessage());
+        }
+        return null;
+    }
+    /*public List<Produit> rechercherParNom(String keyword) {
+        List<Produit> produits = new ArrayList<>();
+        String query = "SELECT * FROM produit WHERE nom LIKE ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, "%" + keyword + "%");
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Produit produit = new Produit(
+                            rs.getInt("id"),
+                            rs.getString("nom"),
+                            rs.getDouble("prix"),
+                            rs.getString("categorie"),
+                            rs.getString("description"),
+                            rs.getString("image"),
+                            rs.getTimestamp("date").toLocalDateTime()
+                    );
+                    produits.add(produit);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur lors de la recherche : " + e.getMessage());
+        }
+        return produits;
+    }*/
 }

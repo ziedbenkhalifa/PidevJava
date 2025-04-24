@@ -1,7 +1,9 @@
 package tn.cinema.services;
 
 import tn.cinema.entities.Commande;
+import tn.cinema.entities.User;
 import tn.cinema.tools.Mydatabase;
+import tn.cinema.utils.SessionManager;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -16,10 +18,19 @@ public class CommandeService implements IServices<Commande> {
 
     @Override
     public void ajouter(Commande commande) {
+        // Récupérer l'utilisateur connecté depuis la session
+        User loggedInUser = SessionManager.getInstance().getLoggedInUser();
+        if (loggedInUser == null) {
+            System.err.println("❌ Aucun utilisateur connecté. Impossible d'ajouter une commande.");
+            return;
+        }
+
+        int userId = loggedInUser.getId(); // On récupère l'ID depuis la session
+
         String query = "INSERT INTO commande (user_id, datecommande, montantpaye, etat) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setInt(1, commande.getUserId());
-            stmt.setDate(2, new java.sql.Date(commande.getDateCommande().getTime()));
+            stmt.setInt(1, userId);
+            stmt.setTimestamp(2, Timestamp.valueOf(commande.getDateCommande()));
             stmt.setDouble(3, commande.getMontantPaye());
             stmt.setString(4, commande.getEtat());
 
@@ -51,7 +62,7 @@ public class CommandeService implements IServices<Commande> {
         String query = "UPDATE commande SET user_id=?, datecommande=?, montantpaye=?, etat=? WHERE id=?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, commande.getUserId());
-            stmt.setDate(2, new java.sql.Date(commande.getDateCommande().getTime()));
+            stmt.setTimestamp(2, Timestamp.valueOf(commande.getDateCommande()));
             stmt.setDouble(3, commande.getMontantPaye());
             stmt.setString(4, commande.getEtat());
             stmt.setInt(5, commande.getId());
@@ -77,7 +88,7 @@ public class CommandeService implements IServices<Commande> {
                 Commande commande = new Commande(
                         rs.getInt("id"),
                         rs.getInt("user_id"),
-                        rs.getDate("datecommande"),
+                        rs.getTimestamp("datecommande").toLocalDateTime(),
                         rs.getDouble("montantpaye"),
                         rs.getString("etat")
                 );
@@ -88,4 +99,96 @@ public class CommandeService implements IServices<Commande> {
         }
         return commandes;
     }
+    public Commande recupererParId(int id) {
+        String query = "SELECT * FROM commande WHERE id=?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Commande(
+                            rs.getInt("id"),
+                            rs.getInt("user_id"),
+                            rs.getTimestamp("datecommande").toLocalDateTime(),
+                            rs.getDouble("montantpaye"),
+                            rs.getString("etat")
+                    );
+                } else {
+                    System.out.println("⚠️ Aucune commande trouvée avec l'ID : " + id);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur lors de la récupération : " + e.getMessage());
+        }
+        return null;
+    }
+    public void ajouterProduitACommande(int commandeId, int produitId) {
+        String sql = "INSERT INTO commande_produit (commande_id, produit_id) VALUES (?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, commandeId);
+            stmt.setInt(2, produitId);
+            stmt.executeUpdate();
+            System.out.println("✅ Produit ajouté à la commande !");
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur lors de l'ajout du produit à la commande : " + e.getMessage());
+        }
+
+
+    }
+    // Exemple de méthode dans CommandeService pour récupérer la dernière commande
+    public int recupererDerniereCommandeId() {
+        String sql = "SELECT id FROM commande ORDER BY id DESC LIMIT 1"; // Récupérer la commande avec l'ID le plus élevé
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur lors de la récupération de la dernière commande : " + e.getMessage());
+        }
+        return -1;  // Retourner -1 si aucune commande n'est trouvée
+    }
+    public int getIdCommandeEnCours() {
+        String sql = "SELECT id FROM commande WHERE status = 'en cours' LIMIT 1";  // Filtrer par statut
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur lors de la récupération de la commande en cours : " + e.getMessage());
+        }
+        return -1;  // Retourner -1 si aucune commande en cours n'est trouvée
+    }
+    public List<Commande> recupererCommandesUtilisateurConnecte() {
+        List<Commande> commandes = new ArrayList<>();
+        User loggedInUser = SessionManager.getInstance().getLoggedInUser();
+
+        if (loggedInUser == null) {
+            System.err.println("❌ Aucun utilisateur connecté. Impossible de récupérer les commandes.");
+            return commandes;
+        }
+
+        String query = "SELECT * FROM commande WHERE user_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, loggedInUser.getId());
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Commande commande = new Commande(
+                            rs.getInt("id"),
+                            rs.getInt("user_id"),
+                            rs.getTimestamp("datecommande").toLocalDateTime(),
+                            rs.getDouble("montantpaye"),
+                            rs.getString("etat")
+                    );
+                    commandes.add(commande);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur lors de la récupération des commandes de l'utilisateur connecté : " + e.getMessage());
+        }
+
+        return commandes;
+    }
+
+
 }

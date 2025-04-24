@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #021b50;" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.Login">
+    <children>
+        <!-- Logo -->
+        <ImageView fitHeight="98.0" fitWidth="109.0" layoutX="1.0" layoutY="2.0">
+            <image>
+                <Image url="@images/showtime-removebg-preview.png" />
+            </image>
+        </ImageView>
+        <!-- User Icon -->
+        <ImageView fitHeight="140.0" fitWidth="137.0" layoutX="221.0" layoutY="14.0">
+            <image>
+                <Image url="@images/usermodifier.png" />
+            </image>
+        </ImageView>
+        <!-- Email Field -->
+        <TextField fx:id="emailField" layoutX="150.0" layoutY="175.0" prefHeight="40.0" prefWidth="300.0" promptText="Enter your email" style="-fx-background-color: white; -fx-text-fill: #333333; -fx-font-size: 14px; -fx-background-radius: 5; -fx-border-radius: 5;" />
+        <!-- Password Field -->
+        <PasswordField fx:id="passwordField" layoutX="150.0" layoutY="225.0" prefHeight="40.0" prefWidth="300.0" promptText="Enter your password" style="-fx-background-color: white; -fx-text-fill: #333333; -fx-font-size: 14px; -fx-background-radius: 5; -fx-border-radius: 5;" />
+        <!-- Buttons Container -->
+        <HBox alignment="CENTER" layoutX="150.0" layoutY="285.0" spacing="20.0">
+            <children>
+                <!-- Login Button -->
+                <Button fx:id="loginButton" onAction="#handleLoginAction" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #04a9f4; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 5; -fx-cursor: hand;" text="Login">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Button>
+            </children>
+        </HBox>
+          <!-- Sign Up Button -->
+          <Button fx:id="signUpButton" layoutX="331.0" layoutY="285.0" onAction="#handleSignUpAction" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #294478; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 5; -fx-cursor: hand;" text="Sign Up">
+              <font>
+                  <Font size="16.0" />
+              </font>
+          </Button>
+    </children>
+</AnchorPane>

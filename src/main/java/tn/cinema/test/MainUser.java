@@ -1,17 +1,16 @@
 package tn.cinema.test;
 
 import tn.cinema.entities.User;
-import tn.cinema.tools.Mydatabase;
 import tn.cinema.services.UserService;
+import tn.cinema.tools.Mydatabase;
 
 import java.sql.Date;
-import java.util.List;
 
 public class MainUser {
     public static void main(String[] args){
         Mydatabase connexion = Mydatabase.getInstance();
         UserService us = new UserService();
-        User u = new User(
+      /*  User u = new User(
                 "Ali Ben Salem",                        // Nom
                 new Date(95, 4, 23),                    // Date de naissance (23 mai 1995)
                 "ali.bensalem@example.com",             // Email
@@ -32,7 +31,7 @@ public class MainUser {
                 "NouveauMotDePasse!",
                 "nouvelle_photo.jpg",
                 "new_face_token"
-        );
+        );*/
 
         /*List<User> users = us.recuperer(); // Appel de la méthode recuperer()
 

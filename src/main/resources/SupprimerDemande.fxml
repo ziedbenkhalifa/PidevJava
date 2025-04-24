@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<?import javafx.scene.layout.HBox?>
+<VBox prefHeight="200.0" prefWidth="400.0" spacing="20" style="-fx-background-color: #c5cbd9; -fx-padding: 20;" alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.SupprimerDemande">
+    <children>
+        <Label fx:id="confirmationLabel" text="Êtes-vous sûr de vouloir supprimer cette demande ?" style="-fx-text-fill: #064625;" wrapText="true">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Label>
+        <HBox spacing="20" alignment="CENTER">
+            <Button fx:id="confirmerButton" text="Confirmer" style="-fx-background-color: #ff4444; -fx-background-radius: 10;" textFill="#ffffff" onAction="#onConfirmerClick">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Button>
+            <Button fx:id="annulerButton" text="Annuler" style="-fx-background-color: #294478; -fx-background-radius: 10;" textFill="#d7d7d9" onAction="#onAnnulerClick">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Button>
+        </HBox>
+    </children>
+</VBox>

@@ -1,17 +1,15 @@
 package tn.cinema.controllers;
 
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-import javafx.event.ActionEvent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -25,8 +23,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-public class AfficherFilm {
-
+public class AfficherFilm extends Dashboard {
 
     @FXML
     private ListView<Films> listFilm;
@@ -52,9 +49,6 @@ public class AfficherFilm {
             alert.showAndWait();
         }
     }
-
-
-
 
     @FXML
     void delete(ActionEvent event) {
@@ -91,7 +85,6 @@ public class AfficherFilm {
         }
     }
 
-
     @FXML
     void edit(ActionEvent event) {
         Films selectedFilm = listFilm.getSelectionModel().getSelectedItem();
@@ -118,8 +111,6 @@ public class AfficherFilm {
         }
     }
 
-
-
     private FilmsService fs = new FilmsService();
 
     @FXML
@@ -134,9 +125,13 @@ public class AfficherFilm {
                 protected void updateItem(Films item, boolean empty) {
                     super.updateItem(item, empty);
                     if (item != null && !empty) {
-                        // HBox container
-                        HBox hbox = new HBox(10);
-                        hbox.setStyle("-fx-padding: 10; -fx-alignment: center-left;");
+                        // Main VBox container for vertical layout
+                        VBox mainVBox = new VBox(10);
+                        mainVBox.setStyle("-fx-padding: 10; -fx-alignment: center;");
+
+                        // HBox for centering the image
+                        HBox imageHBox = new HBox();
+                        imageHBox.setStyle("-fx-alignment: center;");
 
                         // ImageView
                         ImageView imageView = new ImageView();
@@ -146,26 +141,30 @@ public class AfficherFilm {
                         } catch (Exception e) {
                             imageView.setImage(new Image("file:src/images/placeholder.jpg"));
                         }
-                        imageView.setFitHeight(100);
-                        imageView.setFitWidth(80);
+                        imageView.setFitHeight(250); // Increased image size
+                        imageView.setFitWidth(200);  // Increased image size
+                        imageView.setPreserveRatio(true);
+
+                        imageHBox.getChildren().add(imageView);
 
                         // Text content
-                        VBox vbox = new VBox(5);
-                        vbox.setStyle("-fx-padding: 5;");
+                        VBox textVBox = new VBox(5);
+                        textVBox.setStyle("-fx-padding: 5; -fx-alignment: center;");
 
                         Text title = new Text(item.getNom_film());
-                        title.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+                        title.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: black;");
 
                         Text director = new Text("Réalisateur: " + item.getRealisateur());
-                        director.setStyle("-fx-font-size: 13px;");
+                        director.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-fill: black;");
 
                         Text genre = new Text("Genre: " + item.getGenre());
-                        genre.setStyle("-fx-font-size: 13px;");
+                        genre.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-fill: black;");
 
-                        vbox.getChildren().addAll(title, director, genre);
+                        textVBox.getChildren().addAll(title, director, genre);
 
-                        hbox.getChildren().addAll(imageView, vbox);
-                        setGraphic(hbox);
+                        // Add image and text to main VBox
+                        mainVBox.getChildren().addAll(imageHBox, textVBox);
+                        setGraphic(mainVBox);
                     } else {
                         setGraphic(null);
                     }
@@ -179,7 +178,6 @@ public class AfficherFilm {
             alert.showAndWait();
         }
     }
-
 
     @FXML
     void gestionFilm(ActionEvent event) {

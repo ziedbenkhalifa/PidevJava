@@ -27,7 +27,7 @@ public class Publicite {
         this.demandeId = demandeId;
     }
 
-    public java.sql.Date getDateDebut() {
+    public Date getDateDebut() {
         return dateDebut;
     }
 
@@ -35,7 +35,7 @@ public class Publicite {
         this.dateDebut = dateDebut;
     }
 
-    public java.sql.Date getDateFin() {
+    public Date getDateFin() {
         return dateFin;
     }
 

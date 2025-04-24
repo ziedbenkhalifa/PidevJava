@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Mydatabase {
-    public final String URL="jdbc:mysql://localhost:3306/gestion films";
+    public final String URL="jdbc:mysql://localhost:3306/2a7_s6";
     public final String USER="root";
     public final String PWD="";
     private Connection cnx;
@@ -16,7 +16,7 @@ public class Mydatabase {
             cnx= DriverManager.getConnection(URL,USER,PWD);
             System.out.println("connexion etablie");
         } catch (SQLException e) {
-            // throw new RuntimeException(e);
+           // throw new RuntimeException(e);
             System.out.println(e.getMessage());
         }
     }

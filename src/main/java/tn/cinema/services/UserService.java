@@ -4,6 +4,7 @@ import tn.cinema.entities.User;
 import tn.cinema.tools.Mydatabase;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,8 @@ public class UserService implements IServices<User> {
         String query = "INSERT INTO user (nom, date_de_naissance, email, role, mot_de_passe, photo, face_token) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pst = cnx.prepareStatement(query)) {
             pst.setString(1, u.getNom());
-            pst.setDate(2, new java.sql.Date(u.getDateDeNaissance().getTime()));
+            // Convert LocalDate to java.sql.Date
+            pst.setDate(2, Date.valueOf(u.getDateDeNaissance()));
             pst.setString(3, u.getEmail());
             pst.setString(4, u.getRole());
             pst.setString(5, u.getMotDePasse());
@@ -57,11 +59,12 @@ public class UserService implements IServices<User> {
 
     }
 
-    public void modifier(int id, String nom, Date dateDeNaissance, String email, String role, String motDePasse, String photo, String faceToken) {
+    public void modifier(int id, String nom, LocalDate dateDeNaissance, String email, String role,
+                         String motDePasse, String photo, String faceToken) {
         String query = "UPDATE user SET nom = ?, date_de_naissance = ?, email = ?, role = ?, mot_de_passe = ?, photo = ?, face_token = ? WHERE id = ?";
         try (PreparedStatement pst = cnx.prepareStatement(query)) {
             pst.setString(1, nom);
-            pst.setDate(2, new java.sql.Date(dateDeNaissance.getTime()));
+            pst.setDate(2, Date.valueOf(dateDeNaissance));
             pst.setString(3, email);
             pst.setString(4, role);
             pst.setString(5, motDePasse);
@@ -90,7 +93,7 @@ public class UserService implements IServices<User> {
                 User u = new User(
                         rs.getInt("id"),
                         rs.getString("nom"),
-                        rs.getDate("date_de_naissance"),
+                        rs.getDate("date_de_naissance").toLocalDate(),  // Convert to LocalDate
                         rs.getString("email"),
                         rs.getString("role"),
                         rs.getString("mot_de_passe"),

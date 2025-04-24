@@ -1,35 +1,35 @@
 package tn.cinema.entities;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Commande {
     private int id;
     private int userId;
-    private Date dateCommande;
+    private LocalDateTime dateCommande;
     private double montantPaye;
     private String etat;
 
-    //
     public Commande() {
     }
 
     public Commande(int userId, double montantPaye, String etat) {
         this.userId = userId;
-        this.dateCommande = new Date();
+        this.dateCommande = LocalDateTime.now();
         this.montantPaye = montantPaye;
         this.etat = etat;
     }
-    public Commande(int id, int userId, Date dateCommande, double montantPaye, String etat) {
+
+    public Commande(int id, int userId, LocalDateTime dateCommande, double montantPaye, String etat) {
         this.id = id;
         this.userId = userId;
         this.dateCommande = dateCommande;
         this.montantPaye = montantPaye;
         this.etat = etat;
     }
-    public Commande( double montantPaye, String etat) {
-        this.userId = userId;
-        this.dateCommande = new Date();
+
+    public Commande(double montantPaye, String etat) {
+        this.dateCommande = LocalDateTime.now();
         this.montantPaye = montantPaye;
         this.etat = etat;
     }
@@ -51,11 +51,11 @@ public class Commande {
         this.userId = userId;
     }
 
-    public Date getDateCommande() {
+    public LocalDateTime getDateCommande() {
         return dateCommande;
     }
 
-    public void setDateCommande(Date dateCommande) {
+    public void setDateCommande(LocalDateTime dateCommande) {
         this.dateCommande = dateCommande;
     }
 
@@ -75,7 +75,6 @@ public class Commande {
         this.etat = etat;
     }
 
-    // MÃ©thode toString
     @Override
     public String toString() {
         return "Commande{" +

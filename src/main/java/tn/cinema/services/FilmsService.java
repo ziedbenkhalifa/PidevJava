@@ -23,7 +23,7 @@ public class FilmsService implements IServices<Films>{
         ps.setString(2, films.getRealisateur());
         ps.setString(3, films.getGenre());
         ps.setString(4, films.getImg());
-        ps.setDate(5, java.sql.Date.valueOf(films.getDate_production()));
+        ps.setDate(5, Date.valueOf(films.getDate_production()));
         ps.executeUpdate();
         System.out.println("Film added");
     }
@@ -45,7 +45,7 @@ public class FilmsService implements IServices<Films>{
         ps.setString(2, film.getRealisateur());
         ps.setString(3, film.getGenre());
         ps.setString(4, film.getImg());
-        ps.setDate(5, java.sql.Date.valueOf(film.getDate_production()));
+        ps.setDate(5, Date.valueOf(film.getDate_production()));
         ps.setInt(6, film.getId());
         ps.executeUpdate();
     }
