@@ -1,5 +1,6 @@
 package tn.cinema.controllers;
 
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,18 +16,14 @@ import java.sql.SQLException;
 
 public class AjouterFilm {
 
-
     @FXML
     private DatePicker dateFilm;
 
     @FXML
-    private TextField genre;
+    private ComboBox<String> genreCombo;
 
     @FXML
     private Button chooseImgButton;
-
-    @FXML
-    private TextField img;
 
     @FXML
     private Label imgLabel;
@@ -41,6 +38,17 @@ public class AjouterFilm {
 
     private FilmsService fs = new FilmsService();
 
+    private Films filmToEdit;
+
+    @FXML
+    void initialize() {
+        // Populate ComboBox with genre options
+        genreCombo.setItems(FXCollections.observableArrayList(
+                "Action", "Horror", "Comidie", "Science Fiction", "Drama", "Romance"
+        ));
+        // Set default prompt text style
+        genreCombo.setPromptText("Sélectionner un genre");
+    }
 
     @FXML
     void chooseImage(ActionEvent event) {
@@ -55,38 +63,36 @@ public class AjouterFilm {
         if (file != null) {
             selectedImageFile = file;
             imgLabel.setText(file.getName());
-            img.setText(file.getAbsolutePath()); // You can still store the path in the hidden field if needed
         }
     }
+
     @FXML
     void ajout(ActionEvent event) {
         if (dateFilm.getValue() == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
-            alert.setContentText("Please select a date for the film.");
+            alert.setContentText("Veuillez sélectionner une date pour le film.");
             alert.showAndWait();
             return;
         }
 
         if (nomFilm.getText().isEmpty() || realisateur.getText().isEmpty() ||
-                genre.getText().isEmpty() || dateFilm.getValue() == null ||
-                (selectedImageFile == null && img.getText().isEmpty())) {
+                genreCombo.getValue() == null || dateFilm.getValue() == null ||
+                selectedImageFile == null) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Champs manquants");
-            alert.setContentText("Veuillez remplir tous les champs.");
+            alert.setContentText("Veuillez remplir tous les champs et sélectionner une image.");
             alert.showAndWait();
             return;
         }
-
-
 
         try {
             // Add the film to the database
             fs.ajouter(new Films(
                     nomFilm.getText(),
                     realisateur.getText(),
-                    genre.getText(),
-                    selectedImageFile != null ? selectedImageFile.getAbsolutePath() : "",
+                    genreCombo.getValue(),
+                    selectedImageFile.getAbsolutePath(),
                     dateFilm.getValue()
             ));
 
@@ -106,22 +112,6 @@ public class AjouterFilm {
         }
     }
 
-    private Films filmToEdit;
-
-
-    public void edit(Films film) {
-        this.filmToEdit = film;
-
-        // Pré-remplir les champs avec les valeurs du film sélectionné
-        nomFilm.setText(film.getNom_film());
-        realisateur.setText(film.getRealisateur());
-        genre.setText(film.getGenre());
-        imgLabel.setText(film.getImg() != null ? new File(film.getImg()).getName() : "Aucune image");
-        selectedImageFile = new File(film.getImg());
-
-        dateFilm.setValue(film.getDate_production());
-    }
-
     @FXML
     void edit(ActionEvent event) {
         if (filmToEdit == null) {
@@ -133,11 +123,11 @@ public class AjouterFilm {
         }
 
         if (nomFilm.getText().isEmpty() || realisateur.getText().isEmpty() ||
-                genre.getText().isEmpty() || dateFilm.getValue() == null ||
-                (selectedImageFile == null && img.getText().isEmpty())) {
+                genreCombo.getValue() == null || dateFilm.getValue() == null ||
+                selectedImageFile == null) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Champs manquants");
-            alert.setContentText("Veuillez remplir tous les champs.");
+            alert.setContentText("Veuillez remplir tous les champs et sélectionner une image.");
             alert.showAndWait();
             return;
         }
@@ -145,19 +135,13 @@ public class AjouterFilm {
         try {
             filmToEdit.setNom_film(nomFilm.getText());
             filmToEdit.setRealisateur(realisateur.getText());
-            filmToEdit.setGenre(genre.getText());
-            filmToEdit.setImg(
-                    selectedImageFile != null ? selectedImageFile.getAbsolutePath() : img.getText()
-            );
-
+            filmToEdit.setGenre(genreCombo.getValue());
+            filmToEdit.setImg(selectedImageFile.getAbsolutePath());
             filmToEdit.setDate_production(dateFilm.getValue());
 
-            fs.modifier(filmToEdit); // Appelle la méthode de mise à jour
+            fs.modifier(filmToEdit); // Update the film in the database
 
-            System.out.println("Image path saved: " + (selectedImageFile != null ? selectedImageFile.getAbsolutePath() : img.getText()));
-
-
-            // Recharge AfficherFilm.fxml après modification
+            // Load the AfficherFilm view
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherFilm.fxml"));
             Parent root = loader.load();
             nomFilm.getScene().setRoot(root);
@@ -170,6 +154,33 @@ public class AjouterFilm {
         }
     }
 
+    @FXML
+    void cancel(ActionEvent event) {
+        try {
+            // Load the AfficherFilm view
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherFilm.fxml"));
+            Parent root = loader.load();
 
+            // Get the current scene and set the new root
+            nomFilm.getScene().setRoot(root);
 
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setContentText("Impossible de revenir à la liste des films : " + e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+    public void edit(Films film) {
+        this.filmToEdit = film;
+
+        // Pre-fill the fields with the selected film's values
+        nomFilm.setText(film.getNom_film());
+        realisateur.setText(film.getRealisateur());
+        genreCombo.setValue(film.getGenre());
+        imgLabel.setText(film.getImg() != null ? new File(film.getImg()).getName() : "Aucune image");
+        selectedImageFile = film.getImg() != null ? new File(film.getImg()) : null;
+        dateFilm.setValue(film.getDate_production());
+    }
 }

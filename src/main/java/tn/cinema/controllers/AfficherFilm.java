@@ -8,8 +8,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -21,12 +24,24 @@ import tn.cinema.services.FilmsService;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AfficherFilm extends Dashboard {
 
     @FXML
     private ListView<Films> listFilm;
+
+    @FXML
+    private TextField searchField;
+
+    @FXML
+    private Button statButton;
+
+    private FilmsService fs = new FilmsService();
+    private ObservableList<Films> allFilms;
 
     @FXML
     void ajout(ActionEvent event) {
@@ -68,8 +83,8 @@ public class AfficherFilm extends Dashboard {
 
             // Refresh the list
             List<Films> films = fs.recuperer();
-            ObservableList<Films> observableList = FXCollections.observableList(films);
-            listFilm.setItems(observableList);
+            allFilms = FXCollections.observableArrayList(films);
+            listFilm.setItems(allFilms);
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Succès");
@@ -111,15 +126,78 @@ public class AfficherFilm extends Dashboard {
         }
     }
 
-    private FilmsService fs = new FilmsService();
+    @FXML
+    void showStats(ActionEvent event) {
+        try {
+            // Fetch all films
+            List<Films> films = fs.recuperer();
+
+            // Count movies by genre
+            Map<String, Integer> genreCounts = new HashMap<>();
+            String[] genres = {"Action", "Horror", "Comidie", "Science Fiction", "Drama", "Romance"};
+            for (String genre : genres) {
+                genreCounts.put(genre, 0);
+            }
+            for (Films film : films) {
+                String genre = film.getGenre();
+                if (genreCounts.containsKey(genre)) {
+                    genreCounts.put(genre, genreCounts.get(genre) + 1);
+                }
+            }
+
+            // Create PieChart
+            ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+            for (Map.Entry<String, Integer> entry : genreCounts.entrySet()) {
+                if (entry.getValue() > 0) { // Only include genres with at least one movie
+                    pieChartData.add(new PieChart.Data(entry.getKey(), entry.getValue()));
+                }
+            }
+            PieChart pieChart = new PieChart(pieChartData);
+            pieChart.setTitle("Statistiques des films par genre");
+            pieChart.setLabelsVisible(true);
+            pieChart.setLegendVisible(true);
+
+            // Style the chart
+            pieChart.setStyle("-fx-background-color: #0b0f29; -fx-font-size: 14px;");
+            pieChart.lookup(".chart-title").setStyle("-fx-text-fill: white;");
+            pieChart.lookup(".chart-legend").setStyle("-fx-text-fill: white; -fx-background-color: #021b50;");
+            // Style pie slice labels
+            pieChart.getData().forEach(data -> {
+                if (data.getNode() != null) {
+                    data.getNode().setStyle("-fx-pie-label-visible: true;");
+                    Node label = data.getNode().lookup(".chart-pie-label");
+                    if (label != null) {
+                        label.setStyle("-fx-fill: white; -fx-font-size: 12px;");
+                    }
+                }
+            });
+
+            // Create a new stage for the chart
+            Stage statsStage = new Stage();
+            statsStage.setTitle("Statistiques des films");
+            VBox chartContainer = new VBox(pieChart);
+            chartContainer.setStyle("-fx-background-color: #0b0f29; -fx-padding: 20;");
+            Scene scene = new Scene(chartContainer, 600, 400);
+            statsStage.setScene(scene);
+            statsStage.show();
+
+        } catch (SQLException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setContentText("Erreur lors de la récupération des films : " + e.getMessage());
+            alert.showAndWait();
+        }
+    }
 
     @FXML
     void initialize() {
         try {
+            // Retrieve the list of films from the database
             List<Films> films = fs.recuperer();
-            ObservableList<Films> observableList = FXCollections.observableList(films);
-            listFilm.setItems(observableList);
+            allFilms = FXCollections.observableArrayList(films);
+            listFilm.setItems(allFilms);
 
+            // Set custom cell factory for ListView
             listFilm.setCellFactory(param -> new javafx.scene.control.ListCell<Films>() {
                 @Override
                 protected void updateItem(Films item, boolean empty) {
@@ -152,13 +230,13 @@ public class AfficherFilm extends Dashboard {
                         textVBox.setStyle("-fx-padding: 5; -fx-alignment: center;");
 
                         Text title = new Text(item.getNom_film());
-                        title.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: black;");
+                        title.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: white;");
 
                         Text director = new Text("Réalisateur: " + item.getRealisateur());
-                        director.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-fill: black;");
+                        director.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-fill: #d3b4b4;");
 
                         Text genre = new Text("Genre: " + item.getGenre());
-                        genre.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-fill: black;");
+                        genre.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-fill: #d3b4b4;");
 
                         textVBox.getChildren().addAll(title, director, genre);
 
@@ -171,11 +249,32 @@ public class AfficherFilm extends Dashboard {
                 }
             });
 
+            // Add dynamic search functionality
+            searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+                filterFilms(newValue);
+            });
+
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
             alert.setContentText(e.getMessage());
             alert.showAndWait();
+        }
+    }
+
+    private void filterFilms(String searchText) {
+        if (searchText == null || searchText.trim().isEmpty()) {
+            listFilm.setItems(allFilms);
+        } else {
+            String lowerCaseFilter = searchText.toLowerCase();
+            ObservableList<Films> filteredList = allFilms.stream()
+                    .filter(film ->
+                            film.getNom_film().toLowerCase().contains(lowerCaseFilter) ||
+                                    film.getRealisateur().toLowerCase().contains(lowerCaseFilter) ||
+                                    film.getGenre().toLowerCase().contains(lowerCaseFilter)
+                    )
+                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
+            listFilm.setItems(filteredList);
         }
     }
 

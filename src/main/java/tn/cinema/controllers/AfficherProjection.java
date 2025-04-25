@@ -8,9 +8,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -21,21 +23,30 @@ import tn.cinema.services.ProjectionService;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AfficherProjection extends Dashboard {
 
     @FXML
     private ListView<Projection> listProjection;
 
-    private ProjectionService ps = new ProjectionService();
+    @FXML
+    private TextField searchField;
 
-    // Load projections when the view is initialized
+    @FXML
+    private Button statButton;
+
+    private ProjectionService ps = new ProjectionService();
+    private ObservableList<Projection> allProjections;
+
     @FXML
     void initialize() {
         try {
-            List<Projection> projections = ps.recuperer();  // Get all projections
-            ObservableList<Projection> observableList = FXCollections.observableList(projections);
-            listProjection.setItems(observableList);
+            // Retrieve the list of projections from the database
+            List<Projection> projections = ps.recuperer();
+            allProjections = FXCollections.observableArrayList(projections);
+            listProjection.setItems(allProjections);
 
             // Set custom cell factory
             listProjection.setCellFactory(param -> new ListCell<>() {
@@ -53,13 +64,13 @@ public class AfficherProjection extends Dashboard {
 
                         // Displaying date, capaciter, and prix
                         Text date = new Text("Date: " + item.getDate_projection());
-                        date.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+                        date.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: black;");
 
                         Text capacite = new Text("Capacité: " + item.getCapaciter());
-                        capacite.setStyle("-fx-font-size: 13px;");
+                        capacite.setStyle("-fx-font-size: 13px; -fx-fill: black;");
 
                         Text prix = new Text("Prix: " + item.getPrix() + " DT");
-                        prix.setStyle("-fx-font-size: 13px;");
+                        prix.setStyle("-fx-font-size: 13px; -fx-fill: black;");
 
                         vbox.getChildren().addAll(date, capacite, prix);
                         hbox.getChildren().add(vbox);
@@ -71,6 +82,11 @@ public class AfficherProjection extends Dashboard {
                 }
             });
 
+            // Add dynamic search functionality
+            searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+                filterProjections(newValue);
+            });
+
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
@@ -79,6 +95,81 @@ public class AfficherProjection extends Dashboard {
         }
     }
 
+    // Filter projections based on search text
+    private void filterProjections(String searchText) {
+        if (searchText == null || searchText.trim().isEmpty()) {
+            listProjection.setItems(allProjections);
+        } else {
+            String lowerCaseFilter = searchText.toLowerCase();
+            ObservableList<Projection> filteredList = allProjections.stream()
+                    .filter(projection ->
+                            projection.getDate_projection().toString().toLowerCase().contains(lowerCaseFilter) ||
+                                    String.valueOf(projection.getCapaciter()).contains(lowerCaseFilter) ||
+                                    String.valueOf(projection.getPrix()).contains(lowerCaseFilter)
+                    )
+                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
+            listProjection.setItems(filteredList);
+        }
+    }
+
+    @FXML
+    void showStats(ActionEvent event) {
+        try {
+            // Fetch all projections
+            List<Projection> projections = ps.recuperer();
+
+            // Count projections by date
+            Map<String, Integer> dateCounts = projections.stream()
+                    .collect(Collectors.groupingBy(
+                            projection -> projection.getDate_projection().toString(),
+                            Collectors.summingInt(e -> 1)
+                    ));
+
+            // Create BarChart
+            CategoryAxis xAxis = new CategoryAxis();
+            NumberAxis yAxis = new NumberAxis();
+            xAxis.setLabel("Date");
+            yAxis.setLabel("Nombre de projections");
+            BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+            barChart.setTitle("Nombre de projections par jour");
+
+            // Add data to series
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            series.setName("Projections");
+            dateCounts.entrySet().stream()
+                    .filter(entry -> entry.getValue() > 0) // Only include dates with at least one projection
+                    .forEach(entry -> series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue())));
+            barChart.getData().add(series);
+
+            // Style the chart
+            barChart.setStyle("-fx-background-color: #0b0f29; -fx-font-size: 14px;");
+            barChart.lookup(".chart-title").setStyle("-fx-text-fill: white;");
+            barChart.lookup(".chart-legend").setStyle("-fx-text-fill: white; -fx-background-color: #021b50;");
+            xAxis.setStyle("-fx-tick-label-fill: white;");
+            yAxis.setStyle("-fx-tick-label-fill: white;");
+            // Style bars
+            series.getData().forEach(data -> {
+                if (data.getNode() != null) {
+                    data.getNode().setStyle("-fx-bar-fill: #3e2063;");
+                }
+            });
+
+            // Create a new stage for the chart
+            Stage statsStage = new Stage();
+            statsStage.setTitle("Statistiques des projections");
+            VBox chartContainer = new VBox(barChart);
+            chartContainer.setStyle("-fx-background-color: #0b0f29; -fx-padding: 20;");
+            Scene scene = new Scene(chartContainer, 600, 400);
+            statsStage.setScene(scene);
+            statsStage.show();
+
+        } catch (SQLException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setContentText("Erreur lors de la récupération des projections : " + e.getMessage());
+            alert.showAndWait();
+        }
+    }
 
     // Navigate to the 'AjouterProjection' form
     @FXML
@@ -121,8 +212,8 @@ public class AfficherProjection extends Dashboard {
 
             // Refresh the list
             List<Projection> projections = ps.recuperer();
-            ObservableList<Projection> observableList = FXCollections.observableList(projections);
-            listProjection.setItems(observableList);
+            allProjections.setAll(projections);
+            listProjection.setItems(allProjections);
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Succès");
@@ -165,8 +256,7 @@ public class AfficherProjection extends Dashboard {
         }
     }
 
-    // Navigate to another management screen (optional)
-
+    // Navigate to another management screen
     @FXML
     void gestionFilm(ActionEvent event) {
         try {
