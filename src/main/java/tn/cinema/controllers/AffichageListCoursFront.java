@@ -1,5 +1,10 @@
 package tn.cinema.controllers;
 
+import jakarta.mail.*;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,16 +26,12 @@ import tn.cinema.utils.SessionManager;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Contrôleur pour l'affichage de la liste des cours dans l'interface front.
- */
 public class AffichageListCoursFront implements Initializable {
 
     @FXML
@@ -41,6 +42,10 @@ public class AffichageListCoursFront implements Initializable {
     private Button seanceSubButton;
     @FXML
     private ComboBox<String> typeFilterComboBox;
+    @FXML
+    private DatePicker dateFilterPicker;
+    @FXML
+    private Button clearDateButton;
     @FXML
     private Button filmsButton;
     @FXML
@@ -58,37 +63,29 @@ public class AffichageListCoursFront implements Initializable {
     @FXML
     private Button retourButton;
     @FXML
-    private TextField searchField; // Champ de recherche
+    private TextField searchField;
     @FXML
-    private Button applySearchButton; // Bouton Appliquer
+    private Button applySearchButton;
+    @FXML
+    private Label noResultsLabel;
 
     private CourService courService = new CourService();
-    private List<Cour> allCours = new ArrayList<>();
-    private List<Integer> participatedCoursIds;
+    public List<Cour> allCours = new ArrayList<>();
+    private List<Integer> participatedCoursIds = new ArrayList<>();
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    /**
-     * Initialisation du contrôleur, appelée après le chargement du FXML.
-     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            // Récupérer l'utilisateur connecté depuis la session
             User loggedInUser = SessionManager.getInstance().getLoggedInUser();
             if (loggedInUser == null) {
                 showAlert("Erreur", "Aucun utilisateur connecté. Veuillez vous connecter.");
                 return;
             }
 
-            int userId = loggedInUser.getId();
-
-            // Charger tous les cours
             allCours = courService.recuperer();
-
-            // Débogage : Afficher toutes les valeurs de typeCour, coût et dates
             System.out.println("=== Début du chargement des cours ===");
             System.out.println("Nombre total de cours récupérés : " + allCours.size());
-            System.out.println("Valeurs dans allCours :");
             for (Cour cour : allCours) {
                 System.out.println("Cours ID: " + cour.getId() + ", Type: '" + (cour.getTypeCour() != null ? cour.getTypeCour() : "NULL") +
                         "', Coût: " + cour.getCout() + " DT, Date Début: " + (cour.getDateDebut() != null ? cour.getDateDebut().format(DATE_FORMATTER) : "NULL") +
@@ -96,24 +93,15 @@ public class AffichageListCoursFront implements Initializable {
             }
             System.out.println("=== Fin du chargement des cours ===");
 
-            // Trier les cours par coût croissant pour l'affichage initial
             allCours.sort(Comparator.comparingDouble(Cour::getCout));
-
-            // Charger les participations de l'utilisateur connecté
-            participatedCoursIds = courService.recupererParticipations(userId);
-
-            // Afficher tous les cours par défaut (triés par coût)
+            refreshParticipations();
             displayCours(allCours);
 
-            // Sélectionner "Tous" par défaut dans le ComboBox
+            // Le ComboBox est déjà rempli dans le FXML, on sélectionne simplement l'option par défaut
             typeFilterComboBox.getSelectionModel().select("Tous");
 
-            // Ajouter un écouteur pour la recherche en temps réel
-            searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-                applySearchAction();
-            });
+            searchField.textProperty().addListener((observable, oldValue, newValue) -> applyFilters());
 
-            // Gérer la fermeture de la fenêtre principale
             if (coursGrid != null && coursGrid.getScene() != null && coursGrid.getScene().getWindow() != null) {
                 Stage stage = (Stage) coursGrid.getScene().getWindow();
                 stage.setOnCloseRequest(event -> {
@@ -126,13 +114,127 @@ public class AffichageListCoursFront implements Initializable {
         }
     }
 
-    /**
-     * Affiche les cours dans le GridPane.
-     * @param coursList Liste des cours à afficher.
-     */
-    private void displayCours(List<Cour> coursList) {
+    public void refreshParticipations() {
+        try {
+            User loggedInUser = SessionManager.getInstance().getLoggedInUser();
+            if (loggedInUser != null) {
+                participatedCoursIds = courService.recupererParticipations(loggedInUser.getId());
+                System.out.println("Participations rafraîchies pour utilisateur ID " + loggedInUser.getId() + ": " + participatedCoursIds);
+            } else {
+                participatedCoursIds = new ArrayList<>();
+                System.out.println("Aucun utilisateur connecté, participatedCoursIds vidé.");
+                throw new IllegalStateException("Aucun utilisateur connecté.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors du rafraîchissement des participations : " + e.getMessage());
+            participatedCoursIds = new ArrayList<>();
+        }
+    }
+
+    private void applyFilters() {
+        String selectedType = typeFilterComboBox.getSelectionModel().getSelectedItem();
+        LocalDate selectedDate = dateFilterPicker.getValue();
+        String searchQuery = searchField.getText().trim().toLowerCase();
+        List<Cour> filteredCours = new ArrayList<>(allCours);
+
+        System.out.println("=== Début application des filtres ===");
+        System.out.println("Type sélectionné: " + selectedType);
+        System.out.println("Date sélectionnée: " + selectedDate);
+        System.out.println("Recherche: " + searchQuery);
+
+        // Étape 1 : Filtrer par date si une date est sélectionnée
+        if (selectedDate != null) {
+            filteredCours = filteredCours.stream()
+                    .filter(cour -> {
+                        if (cour.getDateDebut() == null || cour.getDateFin() == null) {
+                            return false;
+                        }
+                        LocalDate startDate = cour.getDateDebut().toLocalDate();
+                        LocalDate endDate = cour.getDateFin().toLocalDate();
+                        boolean matches = !selectedDate.isBefore(startDate) && !selectedDate.isAfter(endDate);
+                        return matches;
+                    })
+                    .collect(Collectors.toList());
+
+            // Si aucun cours ne correspond à la date, arrêter le filtrage et afficher "Aucun cours trouvé"
+            if (filteredCours.isEmpty()) {
+                System.out.println("Aucun cours trouvé pour la date sélectionnée: " + selectedDate);
+                displayCours(filteredCours); // Affichera "Aucun cours trouvé"
+                return;
+            }
+        }
+
+        // Étape 2 : Filtrer par type si un type spécifique est sélectionné
+        if (selectedType != null && !"Tous".equals(selectedType)) {
+            String filterType = selectedType.toLowerCase().trim();
+            filteredCours = filteredCours.stream()
+                    .filter(cour -> {
+                        String typeCour = cour.getTypeCour() != null ? cour.getTypeCour().toLowerCase().trim() : "";
+                        return typeCour.equals(filterType);
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        // Étape 3 : Filtrer par recherche si une requête est entrée
+        if (!searchQuery.isEmpty()) {
+            filteredCours = filteredCours.stream()
+                    .filter(cour -> {
+                        String typeCour = cour.getTypeCour() != null ? cour.getTypeCour().toLowerCase().trim() : "";
+                        String cout = String.valueOf(cour.getCout()).toLowerCase();
+                        return typeCour.contains(searchQuery) || cout.contains(searchQuery);
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        // Étape 4 : Trier par coût
+        filteredCours.sort(Comparator.comparingDouble(Cour::getCout));
+        System.out.println("Nombre de cours trouvés: " + filteredCours.size());
+        for (Cour cour : filteredCours) {
+            System.out.println("Cours filtré ID: " + cour.getId() + ", Type: '" + (cour.getTypeCour() != null ? cour.getTypeCour() : "NULL") +
+                    "', Coût: " + cour.getCout() + " DT");
+        }
+        System.out.println("=== Fin du filtrage ===");
+
+        displayCours(filteredCours);
+    }
+
+    @FXML
+    private void filterByDate() {
+        applyFilters();
+    }
+
+    @FXML
+    private void clearDateFilter() {
+        dateFilterPicker.setValue(null);
+        applyFilters();
+    }
+
+    @FXML
+    private void filterByType() {
+        applyFilters();
+    }
+
+    @FXML
+    private void applySearchAction() {
+        applyFilters();
+    }
+
+    public void displayCours(List<Cour> coursList) {
         coursGrid.getChildren().clear();
 
+        if (coursList.isEmpty()) {
+            LocalDate selectedDate = dateFilterPicker.getValue();
+            if (selectedDate != null) {
+                noResultsLabel.setText("Aucun cours trouvé pour la date : " + selectedDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            } else {
+                noResultsLabel.setText("Aucun cours trouvé");
+            }
+            noResultsLabel.setVisible(true);
+            System.out.println("Aucun cours à afficher - Affichage du label : " + noResultsLabel.getText());
+            return;
+        }
+
+        noResultsLabel.setVisible(false);
         int row = 0;
         int col = 0;
 
@@ -159,7 +261,9 @@ public class AffichageListCoursFront implements Initializable {
             showButton.setOnAction(event -> handleShowAction(cour));
 
             Button actionButton;
-            if (participatedCoursIds.contains(cour.getId())) {
+            boolean isParticipated = participatedCoursIds.contains(cour.getId());
+            System.out.println("Affichage cours ID: " + cour.getId() + ", Participé: " + isParticipated);
+            if (isParticipated) {
                 actionButton = new Button("QUITTER");
                 actionButton.setStyle("-fx-background-color: #dc3545; -fx-text-fill: white; -fx-background-radius: 5;");
                 actionButton.setOnAction(event -> handleQuitterAction(cour));
@@ -184,10 +288,6 @@ public class AffichageListCoursFront implements Initializable {
         }
     }
 
-    /**
-     * Gère l'action d'afficher les détails d'un cours.
-     * @param cour Le cours à afficher.
-     */
     private void handleShowAction(Cour cour) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherDetailsCour.fxml"));
@@ -204,10 +304,6 @@ public class AffichageListCoursFront implements Initializable {
         }
     }
 
-    /**
-     * Gère l'action de participation à un cours.
-     * @param cour Le cours auquel participer.
-     */
     private void handleParticiperAction(Cour cour) {
         try {
             User loggedInUser = SessionManager.getInstance().getLoggedInUser();
@@ -216,20 +312,77 @@ public class AffichageListCoursFront implements Initializable {
                 return;
             }
 
-            courService.ajouterParticipation(cour.getId());
-            participatedCoursIds.add(cour.getId());
+            // Vérifier si l'utilisateur est déjà inscrit
+            List<Integer> currentParticipations = courService.recupererParticipations(loggedInUser.getId());
+            if (currentParticipations.contains(cour.getId())) {
+                showAlert("Information", "Vous êtes déjà inscrit à ce cours : " + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini"));
+                return;
+            }
 
-            showAlert("Succès", "Vous avez participé au cours : " + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini"));
+            courService.ajouterParticipation(cour.getId());
+            refreshParticipations();
+            System.out.println("Participation ajoutée pour cours ID: " + cour.getId());
+
+            String userEmail = loggedInUser.getEmail();
+            String subject = "Confirmation de participation au cours";
+            String plainText = "Bonjour " + loggedInUser.getNom() + ",\n\n" +
+                    "Votre participation au cours \"" + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") + "\" a été confirmée avec succès !\n\n" +
+                    "Détails du cours :\n" +
+                    "- Cours : " + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") + "\n" +
+                    "- Coût : " + cour.getCout() + " DT\n" +
+                    "- Date de début : " + (cour.getDateDebut() != null ? cour.getDateDebut().format(DATE_FORMATTER) : "Non défini") + "\n" +
+                    "- Date de fin : " + (cour.getDateFin() != null ? cour.getDateFin().format(DATE_FORMATTER) : "Non défini") + "\n" +
+                    "- Email : " + userEmail + "\n\n" +
+                    "Nous vous remercions de votre participation et avons hâte de vous accueillir !\n" +
+                    "Cordialement,\nL'équipe Cinema";
+
+            String htmlContent = "<!DOCTYPE html>" +
+                    "<html><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'>" +
+                    "<style>body { font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }" +
+                    ".container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }" +
+                    ".header { background: #007bff; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }" +
+                    ".header h1 { color: #ffffff; margin: 10px 0; font-size: 24px; }" +
+                    ".content { padding: 20px; }" +
+                    ".content h2 { color: #333; font-size: 20px; }" +
+                    ".content p { color: #555; line-height: 1.6; }" +
+                    ".details-table { width: 100%; border-collapse: collapse; margin: 20px 0; }" +
+                    ".details-table th, .details-table td { padding: 10px; border: 1px solid #ddd; text-align: left; }" +
+                    ".details-table th { background: #007bff; color: #ffffff; }" +
+                    ".footer { background: #f4f4f4; padding: 10px; text-align: center; border-radius: 0 0 8px 8px; }" +
+                    ".footer p { color: #777; font-size: 12px; }" +
+                    ".footer a { color: #007bff; text-decoration: none; }" +
+                    "</style></head><body><div class='container'><div class='header'><h1>Confirmation de participation</h1></div>" +
+                    "<div class='content'><h2>Bonjour " + loggedInUser.getNom() + ",</h2>" +
+                    "<p>Votre participation au cours <strong>" + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") + "</strong> a été confirmée avec succès !</p>" +
+                    "<p>Voici les détails de votre participation :</p>" +
+                    "<table class='details-table'>" +
+                    "<tr><th>Cours</th><td>" + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") + "</td></tr>" +
+                    "<tr><th>Coût</th><td>" + cour.getCout() + " DT</td></tr>" +
+                    "<tr><th>Date de début</th><td>" + (cour.getDateDebut() != null ? cour.getDateDebut().format(DATE_FORMATTER) : "Non défini") + "</td></tr>" +
+                    "<tr><th>Date de fin</th><td>" + (cour.getDateFin() != null ? cour.getDateFin().format(DATE_FORMATTER) : "Non défini") + "</td></tr>" +
+                    "<tr><th>Email</th><td>" + userEmail + "</td></tr></table>" +
+                    "<p>Nous vous remercions de votre participation et avons hâte de vous accueillir !</p></div>" +
+                    "<div class='footer'><p>Contactez-nous : <a href='mailto:support@cinema.com'>support@cinema.com</a></p>" +
+                    "<p>© 2025 Cinema. Tous droits réservés.</p></div></div></body></html>";
+
+            new Thread(() -> {
+                try {
+                    sendEmail(userEmail, subject, plainText, htmlContent);
+                    Platform.runLater(() -> showAlert("Succès", "Vous avez participé au cours : " +
+                            (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") +
+                            ". Un email de confirmation a été envoyé à " + userEmail));
+                } catch (MessagingException e) {
+                    Platform.runLater(() -> showAlert("Avertissement", "Participation enregistrée, mais l'email de confirmation n'a pas pu être envoyé."));
+                    e.printStackTrace();
+                }
+            }).start();
+
             displayCours(allCours);
         } catch (SQLException e) {
             showAlert("Erreur", "Erreur lors de la participation au cours : " + e.getMessage());
         }
     }
 
-    /**
-     * Gère l'action de quitter un cours.
-     * @param cour Le cours à quitter.
-     */
     private void handleQuitterAction(Cour cour) {
         try {
             User loggedInUser = SessionManager.getInstance().getLoggedInUser();
@@ -240,20 +393,69 @@ public class AffichageListCoursFront implements Initializable {
 
             int userId = loggedInUser.getId();
             courService.supprimerParticipation(userId, cour.getId());
-            participatedCoursIds.remove(Integer.valueOf(cour.getId()));
+            refreshParticipations();
+            System.out.println("Participation supprimée pour cours ID: " + cour.getId());
 
-            showAlert("Succès", "Vous avez quitté le cours : " + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini"));
+            String userEmail = loggedInUser.getEmail();
+            String subject = "Confirmation d'annulation de participation au cours";
+            String plainText = "Bonjour " + loggedInUser.getNom() + ",\n\n" +
+                    "Votre participation au cours \"" + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") + "\" a été annulée avec succès.\n\n" +
+                    "Détails du cours :\n" +
+                    "- Cours : " + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") + "\n" +
+                    "- Coût : " + cour.getCout() + " DT\n" +
+                    "- Date de début : " + (cour.getDateDebut() != null ? cour.getDateDebut().format(DATE_FORMATTER) : "Non défini") + "\n" +
+                    "- Date de fin : " + (cour.getDateFin() != null ? cour.getDateFin().format(DATE_FORMATTER) : "Non défini") + "\n" +
+                    "- Email : " + userEmail + "\n\n" +
+                    "Nous sommes désolés de vous voir partir. Si vous changez d'avis, vous pouvez vous réinscrire à tout moment.\n" +
+                    "Cordialement,\nL'équipe Cinema";
+
+            String htmlContent = "<!DOCTYPE html>" +
+                    "<html><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'>" +
+                    "<style>body { font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }" +
+                    ".container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }" +
+                    ".header { background: #dc3545; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }" +
+                    ".header h1 { color: #ffffff; margin: 10px 0; font-size: 24px; }" +
+                    ".content { padding: 20px; }" +
+                    ".content h2 { color: #333; font-size: 20px; }" +
+                    ".content p { color: #555; line-height: 1.6; }" +
+                    ".details-table { width: 100%; border-collapse: collapse; margin: 20px 0; }" +
+                    ".details-table th, .details-table td { padding: 10px; border: 1px solid #ddd; text-align: left; }" +
+                    ".details-table th { background: #dc3545; color: #ffffff; }" +
+                    ".footer { background: #f4f4f4; padding: 10px; text-align: center; border-radius: 0 0 8px 8px; }" +
+                    ".footer p { color: #777; font-size: 12px; }" +
+                    ".footer a { color: #dc3545; text-decoration: none; }" +
+                    "</style></head><body><div class='container'><div class='header'><h1>Confirmation d'annulation</h1></div>" +
+                    "<div class='content'><h2>Bonjour " + loggedInUser.getNom() + ",</h2>" +
+                    "<p>Votre participation au cours <strong>" + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") + "</strong> a été annulée avec succès.</p>" +
+                    "<p>Voici les détails du cours annulé :</p>" +
+                    "<table class='details-table'>" +
+                    "<tr><th>Cours</th><td>" + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") + "</td></tr>" +
+                    "<tr><th>Coût</th><td>" + cour.getCout() + " DT</td></tr>" +
+                    "<tr><th>Date de début</th><td>" + (cour.getDateDebut() != null ? cour.getDateDebut().format(DATE_FORMATTER) : "Non défini") + "</td></tr>" +
+                    "<tr><th>Date de fin</th><td>" + (cour.getDateFin() != null ? cour.getDateFin().format(DATE_FORMATTER) : "Non défini") + "</td></tr>" +
+                    "<tr><th>Email</th><td>" + userEmail + "</td></tr></table>" +
+                    "<p>Nous sommes désolés de vous voir partir. Si vous changez d'avis, vous pouvez vous réinscrire à tout moment.</p></div>" +
+                    "<div class='footer'><p>Contactez-nous : <a href='mailto:support@cinema.com'>support@cinema.com</a></p>" +
+                    "<p>© 2025 Cinema. Tous droits réservés.</p></div></div></body></html>";
+
+            new Thread(() -> {
+                try {
+                    sendEmail(userEmail, subject, plainText, htmlContent);
+                    Platform.runLater(() -> showAlert("Succès", "Vous avez quitté le cours : " +
+                            (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") +
+                            ". Un email de confirmation a été envoyé à " + userEmail));
+                } catch (MessagingException e) {
+                    Platform.runLater(() -> showAlert("Avertissement", "Annulation enregistrée, mais l'email de confirmation n'a pas pu être envoyé."));
+                    e.printStackTrace();
+                }
+            }).start();
+
             displayCours(allCours);
         } catch (SQLException e) {
             showAlert("Erreur", "Erreur lors de l'annulation de la participation : " + e.getMessage());
         }
     }
 
-    /**
-     * Affiche une alerte avec un titre et un message.
-     * @param title Titre de l'alerte.
-     * @param message Message de l'alerte.
-     */
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -262,14 +464,14 @@ public class AffichageListCoursFront implements Initializable {
         alert.showAndWait();
     }
 
-    /**
-     * Navigue vers la page des cours.
-     */
     @FXML
     private void goCourAction() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageListCoursFront.fxml"));
             Parent root = loader.load();
+            AffichageListCoursFront controller = loader.getController();
+            controller.refreshParticipations();
+            controller.displayCours(controller.allCours);
             Stage stage = (Stage) courSubButton.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
@@ -278,9 +480,21 @@ public class AffichageListCoursFront implements Initializable {
         }
     }
 
-    /**
-     * Alterne la visibilité des sous-boutons (Cour, Séance).
-     */
+    @FXML
+    private void goSeanceAction() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageListSeancesFront.fxml"));
+            Parent root = loader.load();
+            AffichageListSeancesFront controller = loader.getController();
+            controller.initializeWithCour(null); // Affiche toutes les séances (pas de cours spécifique sélectionné)
+            Stage stage = (Stage) seanceSubButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de la navigation vers la page Séances : " + e.getMessage());
+        }
+    }
+
     @FXML
     private void toggleSubButtons() {
         boolean areSubButtonsVisible = courSubButton.isVisible();
@@ -288,10 +502,6 @@ public class AffichageListCoursFront implements Initializable {
         seanceSubButton.setVisible(!areSubButtonsVisible);
     }
 
-    /**
-     * Retourne à la page d'accueil.
-     * @param event Événement déclenché.
-     */
     @FXML
     private void retourAccueilAction(ActionEvent event) {
         try {
@@ -306,9 +516,6 @@ public class AffichageListCoursFront implements Initializable {
         }
     }
 
-    /**
-     * Affiche les participations de l'utilisateur.
-     */
     @FXML
     private void goParticipationAction() {
         try {
@@ -319,12 +526,14 @@ public class AffichageListCoursFront implements Initializable {
             }
 
             List<Integer> participationIds = courService.recupererParticipations(loggedInUser.getId());
+            System.out.println("Participations récupérées pour popup (utilisateur ID " + loggedInUser.getId() + "): " + participationIds);
             List<Cour> participatedCourses = new ArrayList<>();
             for (Cour cour : allCours) {
                 if (participationIds.contains(cour.getId())) {
                     participatedCourses.add(cour);
                 }
             }
+            System.out.println("Cours participés pour popup: " + participatedCourses.size());
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/PopupParticipation.fxml"));
             Parent root = loader.load();
@@ -341,123 +550,59 @@ public class AffichageListCoursFront implements Initializable {
             popupStage.setResizable(false);
             popupStage.show();
 
-            // Gérer la fermeture de la popup
             popupStage.setOnCloseRequest(event -> popupStage.close());
         } catch (Exception e) {
             showAlert("Erreur", "Erreur lors de l'affichage des participations : " + e.getMessage());
         }
     }
 
-    /**
-     * Filtre les cours par type (ComboBox).
-     */
-    @FXML
-    private void filterByType() {
-        String selectedType = typeFilterComboBox.getSelectionModel().getSelectedItem();
-        List<Cour> filteredCours;
-        String searchQuery = searchField.getText().trim().toLowerCase();
-
-        if ("Tous".equals(selectedType)) {
-            filteredCours = new ArrayList<>(allCours);
-        } else {
-            String filterType = selectedType.toLowerCase().trim();
-            filteredCours = allCours.stream()
-                    .filter(cour -> {
-                        String typeCour = cour.getTypeCour() != null ? cour.getTypeCour().toLowerCase().trim() : "";
-                        return typeCour.contains(filterType);
-                    })
-                    .collect(Collectors.toList());
-        }
-
-        // Appliquer la recherche si le champ de recherche n'est pas vide
-        if (!searchQuery.isEmpty()) {
-            filteredCours = filteredCours.stream()
-                    .filter(cour -> {
-                        String typeCour = cour.getTypeCour() != null ? cour.getTypeCour().toLowerCase().trim() : "";
-                        String cout = String.valueOf(cour.getCout()).toLowerCase();
-                        String dateDebut = cour.getDateDebut() != null ? cour.getDateDebut().format(DATE_FORMATTER).toLowerCase() : "";
-                        String dateFin = cour.getDateFin() != null ? cour.getDateFin().format(DATE_FORMATTER).toLowerCase() : "";
-                        return typeCour.contains(searchQuery) || cout.contains(searchQuery) ||
-                                dateDebut.contains(searchQuery) || dateFin.contains(searchQuery);
-                    })
-                    .collect(Collectors.toList());
-        }
-
-        // Trier les cours filtrés par coût croissant
-        filteredCours.sort(Comparator.comparingDouble(Cour::getCout));
-
-        // Débogage : Afficher les cours filtrés et triés
-        System.out.println("=== Filtre appliqué: " + selectedType + ", Recherche: " + searchQuery + " ===");
-        System.out.println("Nombre de cours trouvés: " + filteredCours.size());
-        for (Cour cour : filteredCours) {
-            System.out.println("Cours filtré ID: " + cour.getId() + ", Type: '" + (cour.getTypeCour() != null ? cour.getTypeCour() : "NULL") +
-                    "', Coût: " + cour.getCout() + " DT, Date Début: " + (cour.getDateDebut() != null ? cour.getDateDebut().format(DATE_FORMATTER) : "NULL") +
-                    ", Date Fin: " + (cour.getDateFin() != null ? cour.getDateFin().format(DATE_FORMATTER) : "NULL"));
-        }
-        System.out.println("=== Fin du filtrage ===");
-        displayCours(filteredCours);
-    }
-
-    /**
-     * Applique la recherche basée sur le texte saisi.
-     */
-    @FXML
-    private void applySearchAction() {
-        String searchQuery = searchField.getText().trim().toLowerCase();
-        String selectedType = typeFilterComboBox.getSelectionModel().getSelectedItem();
-        List<Cour> filteredCours;
-
-        // Commencer avec tous les cours ou ceux filtrés par type
-        if ("Tous".equals(selectedType)) {
-            filteredCours = new ArrayList<>(allCours);
-        } else {
-            String filterType = selectedType.toLowerCase().trim();
-            filteredCours = allCours.stream()
-                    .filter(cour -> {
-                        String typeCour = cour.getTypeCour() != null ? cour.getTypeCour().toLowerCase().trim() : "";
-                        return typeCour.contains(filterType);
-                    })
-                    .collect(Collectors.toList());
-        }
-
-        // Appliquer la recherche si le champ n'est pas vide
-        if (!searchQuery.isEmpty()) {
-            filteredCours = filteredCours.stream()
-                    .filter(cour -> {
-                        String typeCour = cour.getTypeCour() != null ? cour.getTypeCour().toLowerCase().trim() : "";
-                        String cout = String.valueOf(cour.getCout()).toLowerCase();
-                        String dateDebut = cour.getDateDebut() != null ? cour.getDateDebut().format(DATE_FORMATTER).toLowerCase() : "";
-                        String dateFin = cour.getDateFin() != null ? cour.getDateFin().format(DATE_FORMATTER).toLowerCase() : "";
-                        return typeCour.contains(searchQuery) || cout.contains(searchQuery) ||
-                                dateDebut.contains(searchQuery) || dateFin.contains(searchQuery);
-                    })
-                    .collect(Collectors.toList());
-        }
-
-        // Trier les cours filtrés par coût
-        filteredCours.sort(Comparator.comparingDouble(Cour::getCout));
-
-        // Débogage : Afficher les résultats de la recherche
-        System.out.println("=== Recherche appliquée: " + searchQuery + " ===");
-        System.out.println("Nombre de cours trouvés: " + filteredCours.size());
-        for (Cour cour : filteredCours) {
-            System.out.println("Cours trouvé ID: " + cour.getId() + ", Type: '" + (cour.getTypeCour() != null ? cour.getTypeCour() : "NULL") +
-                    "', Coût: " + cour.getCout() + " DT, Date Début: " + (cour.getDateDebut() != null ? cour.getDateDebut().format(DATE_FORMATTER) : "NULL") +
-                    ", Date Fin: " + (cour.getDateFin() != null ? cour.getDateFin().format(DATE_FORMATTER) : "NULL"));
-        }
-        System.out.println("=== Fin de la recherche ===");
-
-        // Mettre à jour l'affichage
-        displayCours(filteredCours);
-    }
-
-    /**
-     * Déconnexion de l'utilisateur.
-     */
     @FXML
     private void logoutAction() {
         SessionManager.getInstance().setLoggedInUser(null);
         Platform.exit();
         System.exit(0);
+    }
+
+    private void sendEmail(String to, String subject, String plainText, String htmlContent) throws MessagingException {
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.ssl.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "465");
+        props.put("mail.smtp.timeout", "10000");
+        props.put("mail.smtp.connectiontimeout", "10000");
+        props.put("mail.debug", "true");
+
+        final String username = "farahboukesra4@gmail.com";
+        final String password = "afgdmorpxwnlinxa";
+
+        Session session = Session.getInstance(props, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
+
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(username));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+            message.setSubject(subject);
+
+            Multipart multipart = new MimeMultipart("alternative");
+            MimeBodyPart textPart = new MimeBodyPart();
+            textPart.setText(plainText);
+            MimeBodyPart htmlPart = new MimeBodyPart();
+            htmlPart.setContent(htmlContent, "text/html; charset=utf-8");
+            multipart.addBodyPart(textPart);
+            multipart.addBodyPart(htmlPart);
+            message.setContent(multipart);
+
+            Transport.send(message);
+            System.out.println("Email sent successfully!");
+        } catch (MessagingException e) {
+            System.err.println("Failed to send email: " + e.getMessage());
+            throw e;
+        }
     }
 }

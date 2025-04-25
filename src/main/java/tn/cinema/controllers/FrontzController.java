@@ -210,15 +210,14 @@ public class FrontzController extends BaseController {
     }
 
     @FXML
-    private void handleSeanceAction() {
+    private void goSeanceAction() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/affichageListSeances.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageListSeancesFront.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) seanceSubButton.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
             showAlert("Erreur", "Erreur lors de la navigation vers la page Séances : " + e.getMessage());
         }
     }

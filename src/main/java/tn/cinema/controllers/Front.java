@@ -43,9 +43,9 @@ public class Front {
     }
 
     @FXML
-    private void handleSeanceAction() {
+    private void goSeanceAction() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/affichageListSeances.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageListSeancesFront.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) seanceSubButton.getScene().getWindow();
             stage.setScene(new Scene(root));

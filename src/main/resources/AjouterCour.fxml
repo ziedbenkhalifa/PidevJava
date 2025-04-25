@@ -116,8 +116,8 @@
                                     <ComboBox fx:id="typeCourComboBox" prefWidth="250" style="-fx-background-color: #89849c;-fx-prompt-text-fill: #857c95; -fx-background-radius: 5;">
                                         <items>
                                             <FXCollections fx:factory="observableArrayList" >
-                                                <String fx:value="Théâtre" />
-                                                <String fx:value="Cinéma" />
+                                                <String fx:value="theatre" />
+                                                <String fx:value="cinema" />
                                             </FXCollections>
                                         </items>
                                         <styleClass>
