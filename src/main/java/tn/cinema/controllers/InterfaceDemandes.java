@@ -20,21 +20,24 @@ import tn.cinema.services.PubliciteService;
 
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class InterfaceDemandes extends Dashboard implements Initializable {
-    @FXML
-    private ListView<Demande> demandeListView;
-
-    @FXML
-    private Button ajouterDemandeButton;
-
-    @FXML
-    private Button backButton;
+    @FXML private ListView<Demande> demandeListView;
+    @FXML private TreeView<String> demandeTreeView;
+    @FXML private TabPane viewTabPane;
+    @FXML private ComboBox<String> filterComboBox;
+    @FXML private TextField searchField;
+    @FXML private Button searchButton;
+    @FXML private Button resetButton;
+    @FXML private ToggleButton viewToggleButton;
+    @FXML private Button ajouterDemandeButton;
+    @FXML private Button backButton;
 
     private DemandeService demandeService = new DemandeService();
     private PubliciteService publiciteService;
-
     private ObservableList<Demande> demandes;
 
     @Override
@@ -45,6 +48,23 @@ public class InterfaceDemandes extends Dashboard implements Initializable {
             e.printStackTrace();
         }
 
+        // Initialiser le ComboBox de filtrage
+        filterComboBox.getItems().addAll("Tous", "Approuvée", "En attente", "Rejetée");
+        filterComboBox.setValue("Tous");
+
+        // Configurer la recherche en temps réel
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.isEmpty()) {
+                applyFilters();
+            }
+        });
+
+        // Configurer le filtre
+        filterComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            applyFilters();
+        });
+
+        // Configurer le ListView
         demandeListView.setCellFactory(listView -> new ListCell<Demande>() {
             @Override
             protected void updateItem(Demande demande, boolean empty) {
@@ -68,7 +88,7 @@ public class InterfaceDemandes extends Dashboard implements Initializable {
                     gridPane.setVgap(5);
 
                     Text idText = new Text("ID: " + demande.getId());
-                    Text emailText = new Text("Email: " + demande.getEmail()); // <-- Affiche l'email ici
+                    Text emailText = new Text("Email: " + demande.getEmail());
                     Text nbJoursText = new Text("Nb Jours: " + demande.getNombreJours());
                     Text descriptionText = new Text("Description: " + demande.getDescription());
                     descriptionText.setWrappingWidth(300);
@@ -83,7 +103,7 @@ public class InterfaceDemandes extends Dashboard implements Initializable {
                     }
 
                     gridPane.add(idText, 0, 0);
-                    gridPane.add(emailText, 1, 0); // <-- Affiche l'email à la place de l'ID
+                    gridPane.add(emailText, 1, 0);
                     gridPane.add(nbJoursText, 0, 1);
                     gridPane.add(descriptionText, 1, 1, 2, 1);
                     gridPane.add(typeText, 0, 2);
@@ -168,6 +188,31 @@ public class InterfaceDemandes extends Dashboard implements Initializable {
             }
         });
 
+        // Configurer le TreeView
+        demandeTreeView.setCellFactory(tv -> new TreeCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(item);
+                    TreeItem<String> treeItem = getTreeItem();
+                    if (treeItem != null && treeItem.getParent() != null && treeItem.getParent().getParent() == null) {
+                        // Niveau statut
+                        setStyle("-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #ffd2ac;");
+                    } else if (treeItem != null && treeItem.getParent() != null) {
+                        // Niveau demande
+                        setStyle("-fx-font-size: 13; -fx-text-fill: white;");
+                    } else {
+                        // Racine
+                        setStyle("-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: #ffd2ac;");
+                    }
+                }
+            }
+        });
+
         loadDemandes();
     }
 
@@ -175,8 +220,121 @@ public class InterfaceDemandes extends Dashboard implements Initializable {
         try {
             demandes = FXCollections.observableArrayList(demandeService.recuperer());
             demandeListView.setItems(demandes);
+            updateTreeView();
         } catch (SQLException e) {
             e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Erreur lors du chargement des demandes: " + e.getMessage()).showAndWait();
+        }
+    }
+
+    private void updateTreeView() {
+        TreeItem<String> rootItem = new TreeItem<>("Toutes les Demandes");
+        rootItem.setExpanded(true);
+
+        // Grouper par statut
+        Map<String, TreeItem<String>> statutItems = new HashMap<>();
+        statutItems.put("Approuvée", new TreeItem<>("Approuvée"));
+        statutItems.put("En attente", new TreeItem<>("En attente"));
+        statutItems.put("Rejetée", new TreeItem<>("Rejetée"));
+
+        for (Demande demande : demandes) {
+            String statut = transformStatutForUI(demande.getStatut());
+            String demandeText = String.format("%s - %s (Jours: %d)", demande.getEmail(),
+                    demande.getDescription(), demande.getNombreJours());
+            TreeItem<String> demandeItem = new TreeItem<>(demandeText);
+            statutItems.get(statut).getChildren().add(demandeItem);
+        }
+
+        for (TreeItem<String> item : statutItems.values()) {
+            rootItem.getChildren().add(item);
+        }
+
+        demandeTreeView.setRoot(rootItem);
+    }
+
+    private void applyFilters() {
+        String searchText = searchField.getText().toLowerCase();
+        String filterValue = filterComboBox.getValue();
+
+        if (demandes == null) return;
+
+        ObservableList<Demande> filteredList = FXCollections.observableArrayList();
+
+        for (Demande demande : demandes) {
+            boolean matchesSearch = searchText.isEmpty();
+            boolean matchesFilter = filterValue.equals("Tous");
+
+            // Filtre de recherche
+            if (!searchText.isEmpty()) {
+                matchesSearch = demande.getEmail().toLowerCase().contains(searchText) ||
+                        demande.getDescription().toLowerCase().contains(searchText) ||
+                        demande.getType().toLowerCase().contains(searchText) ||
+                        (demande.getLienSupplementaire() != null &&
+                                demande.getLienSupplementaire().toLowerCase().contains(searchText));
+            }
+
+            // Filtre par statut
+            if (!filterValue.equals("Tous")) {
+                String statutUI = transformStatutForUI(demande.getStatut());
+                matchesFilter = statutUI.equals(filterValue);
+            }
+
+            if (matchesSearch && matchesFilter) {
+                filteredList.add(demande);
+            }
+        }
+
+        demandeListView.setItems(filteredList);
+        updateTreeViewWithFilteredData(filteredList);
+    }
+
+    private void updateTreeViewWithFilteredData(ObservableList<Demande> filteredList) {
+        TreeItem<String> rootItem = new TreeItem<>("Demandes filtrées");
+        rootItem.setExpanded(true);
+
+        Map<String, TreeItem<String>> statutItems = new HashMap<>();
+        statutItems.put("Approuvée", new TreeItem<>("Approuvée"));
+        statutItems.put("En attente", new TreeItem<>("En attente"));
+        statutItems.put("Rejetée", new TreeItem<>("Rejetée"));
+
+        for (Demande demande : filteredList) {
+            String statut = transformStatutForUI(demande.getStatut());
+            String demandeText = String.format("%s - %s (Jours: %d)", demande.getEmail(),
+                    demande.getDescription(), demande.getNombreJours());
+            TreeItem<String> demandeItem = new TreeItem<>(demandeText);
+            statutItems.get(statut).getChildren().add(demandeItem);
+        }
+
+        for (TreeItem<String> item : statutItems.values()) {
+            if (!item.getChildren().isEmpty()) {
+                rootItem.getChildren().add(item);
+            }
+        }
+
+        demandeTreeView.setRoot(rootItem);
+    }
+
+    @FXML
+    private void handleSearch() {
+        applyFilters();
+    }
+
+    @FXML
+    private void handleReset() {
+        searchField.clear();
+        filterComboBox.setValue("Tous");
+        demandeListView.setItems(demandes);
+        updateTreeView();
+    }
+
+    @FXML
+    private void toggleView() {
+        if (viewTabPane.getSelectionModel().getSelectedIndex() == 0) {
+            viewTabPane.getSelectionModel().select(1);
+            viewToggleButton.setText("Vue Liste");
+        } else {
+            viewTabPane.getSelectionModel().select(0);
+            viewToggleButton.setText("Vue Arborescence");
         }
     }
 
@@ -239,22 +397,6 @@ public class InterfaceDemandes extends Dashboard implements Initializable {
             case "en_attente": return "En attente";
             case "rejete": return "Rejetée";
             default: return statut;
-        }
-    }
-
-    @FXML
-    private Button backButtonn;
-    public void goBackToLogin(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Dashboard.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) backButtonn.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Dashboard");
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

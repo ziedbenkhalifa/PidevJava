@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.TreeView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -12,11 +17,9 @@
 
 <AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #162c4f;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.InterfacePublicites">
     <children>
-
         <!-- Barre latérale -->
         <AnchorPane layoutY="-8.0" prefHeight="651.0" prefWidth="200.0" style="-fx-background-color: #021b50; -fx-background-radius: 10;">
             <children>
-                <!-- Logo utilisateur -->
                 <ImageView layoutX="12.0" layoutY="31.0">
                     <image>
                         <Image url="@images/icons8-user-64.png" />
@@ -28,18 +31,7 @@
                 <Button fx:id="gestionPubButton" layoutX="57.0" layoutY="346.0" mnemonicParsing="false" onAction="#goToInterfaceChoixGP" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Pub" textFill="#d7d7d9" />
                 <Button layoutX="57.0" layoutY="399.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" onAction="#handleGestinCour" text="Gestion Cour" textFill="#d7d7d9" />
                 <Button layoutX="58.0" layoutY="293.0" mnemonicParsing="false" onAction="#affichage" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Produit" textFill="#d7d7d9" />
-                <Button
-                        fx:id="btnAjouterEquipement"
-                        layoutX="55.0"
-                        layoutY="454.0"
-                        mnemonicParsing="false"
-                        prefHeight="24.0"
-                        prefWidth="120.0"
-                        style="-fx-background-color: #3e2063;"
-                        text="Gestion Salle"
-                        textFill="#d7d7d9"
-                        onAction="#ouvrirInterfaceAjout"
-                />
+                <Button fx:id="btnAjouterEquipement" layoutX="55.0" layoutY="454.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Salle" textFill="#d7d7d9" onAction="#ouvrirInterfaceAjout"/>
                 <Button fx:id="monCompteButton" layoutX="74.0" layoutY="31.0" mnemonicParsing="false" onAction="#handleMonCompteAction" prefHeight="64.0" prefWidth="126.0" style="-fx-background-color: #021b50;" text="Mon Compte" textFill="#d7d7d9">
                     <font>
                         <Font size="16.0" />
@@ -64,7 +56,6 @@
                     <image><Image url="@images/cinema.png" /></image>
                 </ImageView>
 
-                <!-- Logo Showtime -->
                 <ImageView fitHeight="87.0" fitWidth="100.0" layoutX="8.0" layoutY="542.0">
                     <image><Image url="@images/showtime-removebg-preview.png" /></image>
                 </ImageView>
@@ -95,24 +86,44 @@
                 </ImageView>
 
                 <!-- Boutons & titre -->
+                <Label layoutX="44.0" layoutY="58.0" prefHeight="31.0" prefWidth="274.0" text="Liste des Publicités" textFill="#ffd2ac">
+                    <font><Font size="24.0" /></font>
+                </Label>
+
+                <!-- Nouveaux éléments de filtrage et recherche -->
+                <ComboBox fx:id="filterComboBox" layoutX="44.0" layoutY="110.0" prefWidth="150.0" promptText="Filtrer par type" style="-fx-background-color: #294478; -fx-text-fill: white; -fx-background-radius: 5;" />
+                <TextField fx:id="searchField" layoutX="210.0" layoutY="110.0" prefWidth="250.0" promptText="Rechercher..." style="-fx-background-color: white; -fx-background-radius: 5;" />
+                <Button fx:id="searchButton" layoutX="470.0" layoutY="110.0" mnemonicParsing="false" onAction="#handleSearch" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #294478; -fx-background-radius: 5;" text="Rechercher" textFill="#d7d7d9" />
+                <Button fx:id="resetButton" layoutX="560.0" layoutY="110.0" mnemonicParsing="false" onAction="#handleReset" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #294478; -fx-background-radius: 5;" text="Réinitialiser" textFill="#d7d7d9" />
+                <ToggleButton fx:id="viewToggleButton" layoutX="650.0" layoutY="110.0" mnemonicParsing="false" onAction="#toggleView" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: #294478; -fx-background-radius: 5;" text="Vue Arborescence" textFill="#d7d7d9" />
+
                 <Button fx:id="ajouterPubliciteButton" layoutX="791.0" layoutY="59.0" mnemonicParsing="false" onAction="#onAjouterPubliciteClick" prefHeight="30.0" prefWidth="150.0" style="-fx-background-color: #294478; -fx-background-radius: 10;" text="Ajouter Publicité" textFill="#d7d7d9">
                     <font><Font size="14.0" /></font>
                 </Button>
                 <Button fx:id="backButton" layoutX="954.0" layoutY="59.0" mnemonicParsing="false" onAction="#goBackToInterfaceChoixGP" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #294478; -fx-background-radius: 10;" text="Back" textFill="#d7d7d9">
                     <font><Font size="14.0" /></font>
                 </Button>
-                <Label layoutX="44.0" layoutY="58.0" prefHeight="31.0" prefWidth="274.0" text="Liste des Publicités" textFill="#ffd2ac">
-                    <font><Font size="24.0" /></font>
-                </Label>
 
-                <!-- Liste des publicités -->
-                <ListView fx:id="publiciteListView" layoutX="5.0" layoutY="100.0" prefHeight="434.0" prefWidth="1049.0">
-                    <placeholder>
-                        <Label style="-fx-text-fill: #064625;" text="Aucune publicité disponible" />
-                    </placeholder>
-                </ListView>
+                <!-- Conteneur pour les vues -->
+                <TabPane fx:id="viewTabPane" layoutX="5.0" layoutY="150.0" prefHeight="384.0" prefWidth="1049.0">
+                    <tabs>
+                        <Tab closable="false" text="Vue Liste">
+                            <content>
+                                <ListView fx:id="publiciteListView" prefHeight="384.0" prefWidth="1049.0">
+                                    <placeholder>
+                                        <Label style="-fx-text-fill: #064625;" text="Aucune publicité disponible" />
+                                    </placeholder>
+                                </ListView>
+                            </content>
+                        </Tab>
+                        <Tab closable="false" text="Vue Arborescence">
+                            <content>
+                                <TreeView fx:id="publiciteTreeView" prefHeight="384.0" prefWidth="1049.0" />
+                            </content>
+                        </Tab>
+                    </tabs>
+                </TabPane>
             </children>
         </AnchorPane>
-
     </children>
 </AnchorPane>

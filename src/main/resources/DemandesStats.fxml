@@ -149,16 +149,16 @@
                                         <TableView fx:id="profitabilityTable" prefHeight="200">
                                             <style>
                                                 <![CDATA[
-                        -fx-background-color: #413052;
+                        -fx-background-color: #021b50;
                         -fx-text-fill: white;
-                        -fx-table-cell-border-color: #5d4a6b;
+                        -fx-table-cell-border-color: #021b50;
                     ]]>
                                             </style>
                                             <columns>
                                                 <TableColumn fx:id="emailColumn" prefWidth="300" text="Email Client">
                                                     <style>
                                                         <![CDATA[
-                                -fx-background-color: #413052;
+                                -fx-background-color: #021b50;
                                 -fx-text-fill: white;
                                 -fx-alignment: CENTER_LEFT;
                             ]]>
@@ -167,7 +167,7 @@
                                                 <TableColumn fx:id="daysColumn" prefWidth="150" text="Jours">
                                                     <style>
                                                         <![CDATA[
-                                -fx-background-color: #413052;
+                                -fx-background-color: #021b50;
                                 -fx-text-fill: white;
                                 -fx-alignment: CENTER;
                             ]]>
@@ -176,7 +176,7 @@
                                                 <TableColumn fx:id="profitabilityColumn" prefWidth="200" text="Rentabilité (TND)">
                                                     <style>
                                                         <![CDATA[
-                                -fx-background-color: #281b36;
+                                -fx-background-color: #021b50;
                                 -fx-text-fill: white;
                                 -fx-alignment: CENTER_RIGHT;
                             ]]>

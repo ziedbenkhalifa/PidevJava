@@ -143,7 +143,7 @@ public class DemandesStats extends Dashboard implements Initializable {
         try {
             Region header = (Region) profitabilityTable.lookup("TableHeaderRow");
             if (header != null) {
-                header.setStyle("-fx-background-color: #413052;");
+                header.setStyle("-fx-background-color: #021b50;");
 
                 for (Node child : header.getChildrenUnmodifiable()) {
                     if (child instanceof Label) {

@@ -20,27 +20,44 @@ import tn.cinema.services.PubliciteService;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class InterfacePublicites extends Dashboard implements Initializable {
-    @FXML
-    private ListView<Publicite> publiciteListView;
-
-    @FXML
-    private Button ajouterPubliciteButton;
-
-    @FXML
-    private Button backButton;
-
-    @FXML
-    private Button backButtonn;
+    @FXML private ListView<Publicite> publiciteListView;
+    @FXML private TreeView<String> publiciteTreeView;
+    @FXML private TabPane viewTabPane;
+    @FXML private ComboBox<String> filterComboBox;
+    @FXML private TextField searchField;
+    @FXML private Button searchButton;
+    @FXML private Button resetButton;
+    @FXML private ToggleButton viewToggleButton;
+    @FXML private Button ajouterPubliciteButton;
+    @FXML private Button backButton;
+    @FXML private Button backButtonn;
 
     private PubliciteService publiciteService = new PubliciteService();
-
     private ObservableList<Publicite> publicites;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Initialize filter ComboBox with years
+        filterComboBox.getItems().add("Tous");
+        filterComboBox.setValue("Tous");
+
+        // Set up real-time search
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.isEmpty()) {
+                applyFilters();
+            }
+        });
+
+        // Set up filter listener
+        filterComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            applyFilters();
+        });
+
+        // Configure ListView
         publiciteListView.setCellFactory(listView -> new ListCell<Publicite>() {
             @Override
             protected void updateItem(Publicite publicite, boolean empty) {
@@ -65,7 +82,6 @@ public class InterfacePublicites extends Dashboard implements Initializable {
 
                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-                    // Fonction pour styliser les textes en blanc
                     String labelStyle = "-fx-font-weight: bold; -fx-font-size: 14; -fx-fill: #ffffff;";
                     String valueStyle = "-fx-font-size: 14; -fx-fill: #ffffff;";
 
@@ -115,7 +131,6 @@ public class InterfacePublicites extends Dashboard implements Initializable {
                     HBox buttonsBox = new HBox(10);
                     buttonsBox.setStyle("-fx-padding: 15 0 0 0; -fx-alignment: center-right;");
 
-                    // ✅ Modifier Button - en vert
                     Button modifierButton = new Button("Modifier");
                     modifierButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 8; -fx-font-size: 14; -fx-padding: 5 15;");
                     modifierButton.setOnMouseEntered(e -> {
@@ -138,7 +153,6 @@ public class InterfacePublicites extends Dashboard implements Initializable {
                         }
                     });
 
-                    // Supprimer Button - inchangé
                     Button supprimerButton = new Button("Supprimer");
                     supprimerButton.setStyle("-fx-background-color: #ff4444; -fx-text-fill: #ffffff; -fx-background-radius: 8; -fx-font-size: 14; -fx-padding: 5 15;");
                     supprimerButton.setOnMouseEntered(e -> {
@@ -190,6 +204,31 @@ public class InterfacePublicites extends Dashboard implements Initializable {
             }
         });
 
+        // Configure TreeView
+        publiciteTreeView.setCellFactory(tv -> new TreeCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(item);
+                    TreeItem<String> treeItem = getTreeItem();
+                    if (treeItem != null && treeItem.getParent() != null && treeItem.getParent().getParent() == null) {
+                        // Year level
+                        setStyle("-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #ffd2ac;");
+                    } else if (treeItem != null && treeItem.getParent() != null) {
+                        // Publicite level
+                        setStyle("-fx-font-size: 13; -fx-text-fill: white;");
+                    } else {
+                        // Root
+                        setStyle("-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: #ffd2ac;");
+                    }
+                }
+            }
+        });
+
         loadPublicites();
     }
 
@@ -197,6 +236,8 @@ public class InterfacePublicites extends Dashboard implements Initializable {
         try {
             publicites = FXCollections.observableArrayList(publiciteService.recupererpub());
             publiciteListView.setItems(publicites);
+            updateFilterComboBox();
+            updateTreeView();
             System.out.println("Nombre de publicités récupérées : " + publicites.size());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -204,14 +245,135 @@ public class InterfacePublicites extends Dashboard implements Initializable {
         }
     }
 
+    private void updateFilterComboBox() {
+        // Get unique years from dateDebut
+        Set<Integer> years = publicites.stream()
+                .map(pub -> {
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(pub.getDateDebut());
+                    return cal.get(Calendar.YEAR);
+                })
+                .collect(Collectors.toSet());
+        filterComboBox.getItems().clear();
+        filterComboBox.getItems().add("Tous");
+        years.stream()
+                .sorted()
+                .forEach(year -> filterComboBox.getItems().add(String.valueOf(year)));
+        filterComboBox.setValue("Tous");
+    }
+
+    private void updateTreeView() {
+        TreeItem<String> rootItem = new TreeItem<>("Toutes les Publicités");
+        rootItem.setExpanded(true);
+
+        Map<Integer, TreeItem<String>> yearItems = new HashMap<>();
+        for (Publicite publicite : publicites) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(publicite.getDateDebut());
+            int year = cal.get(Calendar.YEAR);
+            yearItems.computeIfAbsent(year, k -> new TreeItem<>(String.valueOf(year)));
+
+            String publiciteText = String.format("%s - %s (Début: %s)",
+                    publicite.getId(), publicite.getSupport(), new SimpleDateFormat("dd/MM/yyyy").format(publicite.getDateDebut()));
+            TreeItem<String> publiciteItem = new TreeItem<>(publiciteText);
+            yearItems.get(year).getChildren().add(publiciteItem);
+        }
+
+        yearItems.values().stream()
+                .sorted(Comparator.comparing(TreeItem::getValue))
+                .forEach(item -> rootItem.getChildren().add(item));
+
+        publiciteTreeView.setRoot(rootItem);
+    }
+
+    private void applyFilters() {
+        String searchText = searchField.getText().toLowerCase();
+        String filterValue = filterComboBox.getValue();
+
+        if (publicites == null) return;
+
+        ObservableList<Publicite> filteredList = FXCollections.observableArrayList();
+
+        for (Publicite publicite : publicites) {
+            boolean matchesSearch = searchText.isEmpty();
+            boolean matchesFilter = filterValue.equals("Tous");
+
+            if (!searchText.isEmpty()) {
+                matchesSearch = publicite.getSupport().toLowerCase().contains(searchText) ||
+                        String.valueOf(publicite.getId()).contains(searchText) ||
+                        String.valueOf(publicite.getMontant()).contains(searchText);
+            }
+
+            if (!filterValue.equals("Tous")) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(publicite.getDateDebut());
+                int year = cal.get(Calendar.YEAR);
+                matchesFilter = String.valueOf(year).equals(filterValue);
+            }
+
+            if (matchesSearch && matchesFilter) {
+                filteredList.add(publicite);
+            }
+        }
+
+        publiciteListView.setItems(filteredList);
+        updateTreeViewWithFilteredData(filteredList);
+    }
+
+    private void updateTreeViewWithFilteredData(ObservableList<Publicite> filteredList) {
+        TreeItem<String> rootItem = new TreeItem<>("Publicités filtrées");
+        rootItem.setExpanded(true);
+
+        Map<Integer, TreeItem<String>> yearItems = new HashMap<>();
+        for (Publicite publicite : filteredList) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(publicite.getDateDebut());
+            int year = cal.get(Calendar.YEAR);
+            yearItems.computeIfAbsent(year, k -> new TreeItem<>(String.valueOf(year)));
+
+            String publiciteText = String.format("%s - %s (Début: %s)",
+                    publicite.getId(), publicite.getSupport(), new SimpleDateFormat("dd/MM/yyyy").format(publicite.getDateDebut()));
+            TreeItem<String> publiciteItem = new TreeItem<>(publiciteText);
+            yearItems.get(year).getChildren().add(publiciteItem);
+        }
+
+        yearItems.values().stream()
+                .sorted(Comparator.comparing(TreeItem::getValue))
+                .forEach(item -> rootItem.getChildren().add(item));
+
+        publiciteTreeView.setRoot(rootItem);
+    }
+
+    @FXML
+    private void handleSearch() {
+        applyFilters();
+    }
+
+    @FXML
+    private void handleReset() {
+        searchField.clear();
+        filterComboBox.setValue("Tous");
+        publiciteListView.setItems(publicites);
+        updateTreeView();
+    }
+
+    @FXML
+    private void toggleView() {
+        if (viewTabPane.getSelectionModel().getSelectedIndex() == 0) {
+            viewTabPane.getSelectionModel().select(1);
+            viewToggleButton.setText("Vue Liste");
+        } else {
+            viewTabPane.getSelectionModel().select(0);
+            viewToggleButton.setText("Vue Arborescence");
+        }
+    }
+
     @FXML
     private void onAjouterPubliciteClick() throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterPublicite.fxml"));
         Parent root = loader.load();
-
         AjouterPublicite controller = loader.getController();
         controller.setParentController(this);
-
         Stage stage = new Stage();
         stage.setTitle("Ajouter une Publicité");
         stage.setScene(new Scene(root));
@@ -221,11 +383,9 @@ public class InterfacePublicites extends Dashboard implements Initializable {
     private void openModifierPublicite(Publicite publicite) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierPublicite.fxml"));
         Parent root = loader.load();
-
         ModifierPublicite controller = loader.getController();
         controller.setPublicite(publicite);
         controller.setParentController(this);
-
         Stage stage = new Stage();
         stage.setTitle("Modifier la Publicité");
         stage.setScene(new Scene(root));
@@ -235,11 +395,9 @@ public class InterfacePublicites extends Dashboard implements Initializable {
     private void openSupprimerPublicite(Publicite publicite) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/SupprimerPublicite.fxml"));
         Parent root = loader.load();
-
         SupprimerPublicite controller = loader.getController();
         controller.setPublicite(publicite);
         controller.setParentController(this);
-
         Stage stage = new Stage();
         stage.setTitle("Supprimer la Publicité");
         stage.setScene(new Scene(root));
@@ -266,6 +424,7 @@ public class InterfacePublicites extends Dashboard implements Initializable {
         }
     }
 
+    @FXML
     public void goBackToLogin(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Dashboard.fxml"));
