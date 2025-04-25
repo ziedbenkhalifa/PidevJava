@@ -2,7 +2,7 @@ package tn.cinema.entities;
 
 import java.util.Date;
 import java.util.Objects;
-
+import tn.cinema.entities.User;
 import static java.sql.Types.NULL;
 
 public class Demande {
@@ -15,6 +15,7 @@ public class Demande {
     private String lienSupplementaire;
     private String statut ;
     private Date dateSoumission;
+    private String email;
     public int getId() {
         return id;
     }
@@ -89,6 +90,10 @@ public class Demande {
     public Demande(){
         this.dateSoumission = new Date();
     }
+
+    public String getEmail() {
+        return email;
+    }
     public Demande(int id,int userId,Integer adminId,int nombreJours,String description, String type,String lienSupplementaire,String statut){
         this.id=id;
         this.userId=userId;
@@ -146,6 +151,19 @@ public class Demande {
         this.dateSoumission=dateSoumission;
 
     }
+    public Demande(int id,int userId,String email,Integer adminId,int nombreJours,String description, String type,String lienSupplementaire,String statut,Date dateSoumission){
+        this.id=id;
+        this.userId=userId;
+        this.email=email;
+        this.adminId=adminId;
+        this.nombreJours=nombreJours;
+        this.description=description;
+        this.type=type;
+        this.lienSupplementaire=lienSupplementaire;
+        this.statut=statut;
+        this.dateSoumission=dateSoumission;
+
+    }
 
     @Override
     public String toString() {
@@ -173,4 +191,5 @@ public class Demande {
     public int hashCode() {
         return Objects.hash(id, userId, adminId, nombreJours, description, type, lienSupplementaire, statut, dateSoumission);
     }
+
 }

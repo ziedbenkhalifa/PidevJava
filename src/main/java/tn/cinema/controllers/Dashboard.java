@@ -18,6 +18,12 @@ public class Dashboard {
     private Button gestionPubButton;
 
     @FXML
+    private Button demandesStatsButton; // Added for Demandes Stats
+
+    @FXML
+    private Button publicitesStatsButton;
+
+    @FXML
     private void goToInterfaceChoixGP() {
         try {
             // Load InterfaceChoixGP.fxml
@@ -233,7 +239,37 @@ public class Dashboard {
         }
     }
 
+    @FXML
+    private void goToDemandesStats() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandesStats.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) demandesStatsButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Statistiques des Demandes");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error loading DemandesStats.fxml: " + e.getMessage());
+        }
+    }
 
+    @FXML
+    private void goToPublicitesStats() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/PublicitesStats.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) publicitesStatsButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Statistiques des Publicités");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error loading PublicitesStats.fxml: " + e.getMessage());
+        }
+    }
 
 
 

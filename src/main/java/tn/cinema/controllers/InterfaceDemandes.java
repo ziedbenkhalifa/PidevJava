@@ -33,22 +33,18 @@ public class InterfaceDemandes extends Dashboard implements Initializable {
     private Button backButton;
 
     private DemandeService demandeService = new DemandeService();
-    private PubliciteService publiciteService; // Moved to class level
+    private PubliciteService publiciteService;
 
     private ObservableList<Demande> demandes;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Initialize publiciteService
         try {
             publiciteService = new PubliciteService();
-            System.out.println("PubliciteService initialized successfully: " + (publiciteService != null));
         } catch (Exception e) {
-            System.err.println("Failed to initialize PubliciteService: " + e.getMessage());
             e.printStackTrace();
         }
 
-        // Set up the ListView with a custom cell factory
         demandeListView.setCellFactory(listView -> new ListCell<Demande>() {
             @Override
             protected void updateItem(Demande demande, boolean empty) {
@@ -59,7 +55,7 @@ public class InterfaceDemandes extends Dashboard implements Initializable {
                     setStyle("");
                 } else {
                     VBox vbox = new VBox(10);
-                    vbox.setStyle("-fx-background-color: #021b50;" + // Couleur de fond bleu foncé
+                    vbox.setStyle("-fx-background-color: #021b50;" +
                             "-fx-padding: 15;" +
                             "-fx-background-radius: 10;" +
                             "-fx-border-radius: 10;" +
@@ -72,7 +68,7 @@ public class InterfaceDemandes extends Dashboard implements Initializable {
                     gridPane.setVgap(5);
 
                     Text idText = new Text("ID: " + demande.getId());
-                    Text userIdText = new Text("User ID: " + demande.getUserId());
+                    Text emailText = new Text("Email: " + demande.getEmail()); // <-- Affiche l'email ici
                     Text nbJoursText = new Text("Nb Jours: " + demande.getNombreJours());
                     Text descriptionText = new Text("Description: " + demande.getDescription());
                     descriptionText.setWrappingWidth(300);
@@ -82,13 +78,12 @@ public class InterfaceDemandes extends Dashboard implements Initializable {
                     Text statutText = new Text("Statut: " + transformStatutForUI(demande.getStatut()));
                     Text dateText = new Text("Date: " + demande.getDateSoumission());
 
-                    // Texte en blanc
-                    for (Text text : new Text[]{idText, userIdText, nbJoursText, descriptionText, typeText, lienSuppText, statutText, dateText}) {
+                    for (Text text : new Text[]{idText, emailText, nbJoursText, descriptionText, typeText, lienSuppText, statutText, dateText}) {
                         text.setStyle("-fx-fill: white; -fx-font-weight: bold; -fx-font-size: 14;");
                     }
 
                     gridPane.add(idText, 0, 0);
-                    gridPane.add(userIdText, 1, 0);
+                    gridPane.add(emailText, 1, 0); // <-- Affiche l'email à la place de l'ID
                     gridPane.add(nbJoursText, 0, 1);
                     gridPane.add(descriptionText, 1, 1, 2, 1);
                     gridPane.add(typeText, 0, 2);
@@ -99,7 +94,6 @@ public class InterfaceDemandes extends Dashboard implements Initializable {
                     HBox buttonsBox = new HBox(10);
                     buttonsBox.setStyle("-fx-padding: 10 0 0 0; -fx-alignment: center-right;");
 
-                    // MODIFIER (vert)
                     Button modifierButton = new Button("Modifier");
                     modifierButton.setStyle("-fx-background-color: #28a745; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-size: 14;");
                     modifierButton.setOnMouseEntered(e -> modifierButton.setStyle("-fx-background-color: #34c759; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-size: 14;"));
@@ -113,7 +107,6 @@ public class InterfaceDemandes extends Dashboard implements Initializable {
                         }
                     });
 
-                    // SUPPRIMER
                     Button supprimerButton = new Button("Supprimer");
                     supprimerButton.setStyle("-fx-background-color: #ff4444; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-size: 14;");
                     supprimerButton.setOnMouseEntered(e -> supprimerButton.setStyle("-fx-background-color: #ff6666; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-size: 14;"));
@@ -155,7 +148,6 @@ public class InterfaceDemandes extends Dashboard implements Initializable {
 
                     vbox.getChildren().addAll(gridPane, buttonsBox);
 
-                    // Hover effects sans changer la couleur de fond initiale
                     vbox.setOnMouseEntered(e -> vbox.setStyle("-fx-background-color: #032264;" +
                             "-fx-padding: 15;" +
                             "-fx-background-radius: 10;" +
@@ -176,36 +168,24 @@ public class InterfaceDemandes extends Dashboard implements Initializable {
             }
         });
 
-
-        // Load data
         loadDemandes();
     }
 
     private void loadDemandes() {
         try {
             demandes = FXCollections.observableArrayList(demandeService.recuperer());
-            for (Demande demande : demandes) {
-                System.out.println("Loaded Demande - ID: " + demande.getId() + ", Statut: \"" + demande.getStatut() + "\"");
-            }
             demandeListView.setItems(demandes);
-            System.out.println("Nombre de demandes récupérées : " + demandes.size());
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Erreur lors du chargement des demandes : " + e.getMessage());
         }
     }
 
     @FXML
     private void onAjouterDemandeClick() throws Exception {
-        // Load AjouterDemande.fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterDemande.fxml"));
         Parent root = loader.load();
-
-        // Get the controller for AjouterDemande
         AjouterDemande controller = loader.getController();
         controller.setParentController(this);
-
-        // Create a new stage for the AjouterDemande window
         Stage stage = new Stage();
         stage.setTitle("Ajouter une Demande");
         stage.setScene(new Scene(root));
@@ -215,11 +195,9 @@ public class InterfaceDemandes extends Dashboard implements Initializable {
     private void openModifierDemande(Demande demande) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierDemande.fxml"));
         Parent root = loader.load();
-
         ModifierDemande controller = loader.getController();
         controller.setDemande(demande);
         controller.setParentController(this);
-
         Stage stage = new Stage();
         stage.setTitle("Modifier la Demande");
         stage.setScene(new Scene(root));
@@ -229,11 +207,9 @@ public class InterfaceDemandes extends Dashboard implements Initializable {
     private void openSupprimerDemande(Demande demande) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/SupprimerDemande.fxml"));
         Parent root = loader.load();
-
         SupprimerDemande controller = loader.getController();
         controller.setDemande(demande);
         controller.setParentController(this);
-
         Stage stage = new Stage();
         stage.setTitle("Supprimer la Demande");
         stage.setScene(new Scene(root));
@@ -243,11 +219,9 @@ public class InterfaceDemandes extends Dashboard implements Initializable {
     private void openAjouterPubliciteFromDemande(Demande demande) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterPublicite.fxml"));
         Parent root = loader.load();
-
         AjouterPublicite controller = loader.getController();
         controller.setParentController(this);
         controller.setDemandeId(demande.getId());
-
         Stage stage = new Stage();
         stage.setTitle("Ajouter une Publicité");
         stage.setScene(new Scene(root));
@@ -261,32 +235,13 @@ public class InterfaceDemandes extends Dashboard implements Initializable {
     private String transformStatutForUI(String statut) {
         if (statut == null) return "Inconnu";
         switch (statut.toLowerCase()) {
-            case "approuvee":
-                return "Approuvée";
-            case "en_attente":
-                return "En attente";
-            case "rejete":
-                return "Rejetée";
-            default:
-                return statut;
+            case "approuvee": return "Approuvée";
+            case "en_attente": return "En attente";
+            case "rejete": return "Rejetée";
+            default: return statut;
         }
     }
 
-    @FXML
-    private void goBackToInterfaceChoixGP() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/InterfaceChoixGP.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) backButton.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Gestion Publicités");
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Error loading InterfaceChoixGP.fxml: " + e.getMessage());
-        }
-    }
     @FXML
     private Button backButtonn;
     public void goBackToLogin(ActionEvent actionEvent) {
@@ -300,7 +255,20 @@ public class InterfaceDemandes extends Dashboard implements Initializable {
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("Error loading Dashboard.fxml: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void goBackToInterfaceChoixGP() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/InterfaceChoixGP.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) backButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Gestion Publicités");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

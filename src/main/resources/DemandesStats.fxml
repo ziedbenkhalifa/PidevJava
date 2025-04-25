@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #0d1a40;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.DemandesStats">
+    <children>
+        <!-- Navbar (Sidebar) -->
+        <AnchorPane layoutY="-8.0" prefHeight="651.0" prefWidth="200.0" style="-fx-background-color: #021b50; -fx-background-radius: 10;">
+            <children>
+                <ImageView layoutX="12.0" layoutY="31.0">
+                    <image>
+                        <Image url="@images/icons8-user-64.png" />
+                    </image>
+                </ImageView>
+                <Button fx:id="gestionUserButton" layoutX="56.0" layoutY="181.0" mnemonicParsing="false" onAction="#handleGestionUserAction" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion User" textFill="#d7d7d9" />
+                <Button layoutX="57.0" layoutY="235.0" mnemonicParsing="false" onAction="#gestionFilm" prefHeight="26.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Film" textFill="#d7d7d9" />
+                <Button fx:id="gestionPubButton" layoutX="57.0" layoutY="346.0" mnemonicParsing="false" onAction="#goToInterfaceChoixGP" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Pub" textFill="#d7d7d9" />
+                <Button layoutX="57.0" layoutY="399.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" onAction="#handleGestinCour" text="Gestion Cour" textFill="#d7d7d9" />
+                <Button layoutX="58.0" layoutY="293.0" mnemonicParsing="false" onAction="#affichage" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Produit" textFill="#d7d7d9" />
+                <Button
+                        fx:id="btnAjouterEquipement"
+                        layoutX="55.0"
+                        layoutY="454.0"
+                        mnemonicParsing="false"
+                        prefHeight="24.0"
+                        prefWidth="120.0"
+                        style="-fx-background-color: #3e2063;"
+                        text="Gestion Salle"
+                        textFill="#d7d7d9"
+                        onAction="#ouvrirInterfaceAjout"
+                />
+                <Button fx:id="monCompteButton" layoutX="74.0" layoutY="31.0" mnemonicParsing="false" onAction="#handleMonCompteAction" prefHeight="64.0" prefWidth="126.0" style="-fx-background-color: #021b50;" text="Mon Compte" textFill="#d7d7d9">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Button>
+                <ImageView fitHeight="87.0" fitWidth="100.0" layoutX="8.0" layoutY="542.0">
+                    <image>
+                        <Image url="@images/showtime-removebg-preview.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="31.0" fitWidth="29.0" layoutX="15.0" layoutY="178.0">
+                    <image>
+                        <Image url="@images/usermodifier.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitWidth="29.0" layoutX="13.0" layoutY="236.0">
+                    <image>
+                        <Image url="@images/film-slate.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="31.0" fitWidth="36.0" layoutX="9.0" layoutY="289.0">
+                    <image>
+                        <Image url="@images/new-product.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="12.0" layoutY="339.0">
+                    <image>
+                        <Image url="@images/mmmmmm.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="8.0" layoutY="392.0">
+                    <image>
+                        <Image url="@images/gggggggggggggggggggggggg.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="31.0" fitWidth="29.0" layoutX="12.0" layoutY="451.0">
+                    <image>
+                        <Image url="@images/cinema.png" />
+                    </image>
+                </ImageView>
+            </children>
+        </AnchorPane>
+
+        <!-- Header -->
+        <Pane layoutX="215.0" layoutY="14.0" prefHeight="67.0" prefWidth="1076.0" style="-fx-background-color: #1a2b5f; -fx-background-radius: 30;">
+            <children>
+                <Label layoutX="41.0" layoutY="18.0" text="STATISTIQUES DES DEMANDES" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Label>
+            </children>
+        </Pane>
+
+        <!-- Main Content with Horizontal Scroll -->
+        <ScrollPane layoutX="215.0" layoutY="89.0" prefHeight="554.0" prefWidth="1068.0" style="-fx-background: transparent; -fx-background-color: transparent;">
+            <content>
+                <AnchorPane minWidth="1068.0" style="-fx-background-color: transparent;">
+                    <children>
+                        <!-- Stats Container -->
+                        <VBox fx:id="statsContainer" layoutX="20.0" layoutY="20.0" spacing="20.0" style="-fx-padding: 0 20 20 20;">
+                            <children>
+                                <!-- Charts Row -->
+                                <HBox spacing="20.0">
+                                    <children>
+                                        <!-- Status Chart -->
+                                        <VBox prefWidth="500" style="-fx-background-color: #1a2b5f; -fx-background-radius: 10; -fx-padding: 15;">
+                                            <children>
+                                                <Label style="-fx-text-fill: white; -fx-font-weight: bold;" text="Répartition des Statuts" />
+                                                <PieChart fx:id="statusPieChart" prefHeight="300" />
+                                            </children>
+                                        </VBox>
+
+                                        <!-- Type Chart -->
+                                        <VBox prefWidth="500" style="-fx-background-color: #1a2b5f; -fx-background-radius: 10; -fx-padding: 15;">
+                                            <children>
+                                                <Label style="-fx-text-fill: white; -fx-font-weight: bold;" text="Répartition des Types" />
+                                                <PieChart fx:id="typePieChart" prefHeight="300" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </HBox>
+
+                                <!-- Clients Chart -->
+                                <VBox style="-fx-background-color: #1a2b5f; -fx-background-radius: 10; -fx-padding: 15;">
+                                    <children>
+                                        <Label style="-fx-text-fill: white; -fx-font-weight: bold;" text="Top Clients par Demandes" />
+                                        <BarChart fx:id="clientBarChart" prefHeight="300">
+                                            <xAxis>
+                                                <CategoryAxis label="Clients" />
+                                            </xAxis>
+                                            <yAxis>
+                                                <NumberAxis label="Nombre de Demandes" />
+                                            </yAxis>
+                                        </BarChart>
+                                    </children>
+                                </VBox>
+
+                                <!-- Profitability Table -->
+                                <VBox style="-fx-background-color: #1a2b5f; -fx-background-radius: 10; -fx-padding: 15;">
+                                    <children>
+                                        <Label style="-fx-text-fill: white; -fx-font-weight: bold;" text="Rentabilité par Client" />
+                                        <TableView fx:id="profitabilityTable" prefHeight="200">
+                                            <style>
+                                                <![CDATA[
+                        -fx-background-color: #413052;
+                        -fx-text-fill: white;
+                        -fx-table-cell-border-color: #5d4a6b;
+                    ]]>
+                                            </style>
+                                            <columns>
+                                                <TableColumn fx:id="emailColumn" prefWidth="300" text="Email Client">
+                                                    <style>
+                                                        <![CDATA[
+                                -fx-background-color: #413052;
+                                -fx-text-fill: white;
+                                -fx-alignment: CENTER_LEFT;
+                            ]]>
+                                                    </style>
+                                                </TableColumn>
+                                                <TableColumn fx:id="daysColumn" prefWidth="150" text="Jours">
+                                                    <style>
+                                                        <![CDATA[
+                                -fx-background-color: #413052;
+                                -fx-text-fill: white;
+                                -fx-alignment: CENTER;
+                            ]]>
+                                                    </style>
+                                                </TableColumn>
+                                                <TableColumn fx:id="profitabilityColumn" prefWidth="200" text="Rentabilité (TND)">
+                                                    <style>
+                                                        <![CDATA[
+                                -fx-background-color: #281b36;
+                                -fx-text-fill: white;
+                                -fx-alignment: CENTER_RIGHT;
+                            ]]>
+                                                    </style>
+                                                </TableColumn>
+                                            </columns>
+                                        </TableView>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </AnchorPane>
+            </content>
+        </ScrollPane>
+    </children>
+</AnchorPane>

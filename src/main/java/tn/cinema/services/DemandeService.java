@@ -164,31 +164,34 @@ public class DemandeService implements IServices<Demande>{
 
 
     @Override
-    public List<Demande> recuperer() throws SQLException{
-        String sql="SELECT * FROM demande";
-        Statement ste= cnx.createStatement();
+    public List<Demande> recuperer() throws SQLException {
+        String sql = "SELECT d.*, u.email AS user_email FROM demande d JOIN user u ON d.user_id = u.id";
+        Statement ste = cnx.createStatement();
         ResultSet rs = ste.executeQuery(sql);
         List<Demande> demande = new ArrayList<>();
-        while ( rs.next()){
-            int id = rs.getInt("id");
-            int userId=rs.getInt("user_id");
-            int adminId=rs.getInt("admin_id");
-            int nombreJours=rs.getInt("nbr_jours");
-            String description=rs.getString("description");
-            String type=rs.getString("type");
-            String lienSupplementaire=rs.getString("lien_supp");
-            String statut=rs.getString("statut");
-          /*  if (statut == null) {
-                statut = "Inconnu";
-            }*/
-            Date dateSoumission=rs.getDate("date_soumission");
 
-            Demande d = new Demande(id,userId,adminId,nombreJours,description,type,lienSupplementaire,statut,dateSoumission);
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            int userId = rs.getInt("user_id");
+            int adminId = rs.getInt("admin_id");
+            int nombreJours = rs.getInt("nbr_jours");
+            String description = rs.getString("description");
+            String type = rs.getString("type");
+            String lienSupplementaire = rs.getString("lien_supp");
+            String statut = rs.getString("statut");
+            Date dateSoumission = rs.getDate("date_soumission");
+
+            // Tu peux juste afficher l'email ici ou l'utiliser
+            String email = rs.getString("user_email");
+            System.out.println("Demande ID " + id + " faite par : " + email);
+
+            Demande d = new Demande(id, userId,email,adminId, nombreJours, description, type, lienSupplementaire, statut, dateSoumission);
             demande.add(d);
         }
 
         return demande;
     }
+
 
     public List<Demande> recupererDemandesParClient(int clientId) throws SQLException {
         String sql = "SELECT * FROM demande WHERE user_id = ?";
