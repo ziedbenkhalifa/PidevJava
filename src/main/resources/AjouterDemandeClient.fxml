@@ -7,8 +7,9 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.web.WebView?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #080b21;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.AjouterDemandeClientController">
+<AnchorPane prefHeight="844.0" prefWidth="600.0" style="-fx-background-color: #080b21;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.AjouterDemandeClientController">
     <children>
         <Label layoutX="20.0" layoutY="20.0" text="Ajouter une Nouvelle Demande" textFill="WHITE">
             <font>
@@ -16,14 +17,17 @@
             </font>
         </Label>
         <Label layoutX="20.0" layoutY="60.0" text="Nombre de Jours:" textFill="WHITE" />
-        <TextField fx:id="nombreJoursField" layoutX="150.0" layoutY="60.0" prefWidth="400.0" promptText="Entrez un nombre entier positif" />
+        <TextField fx:id="nombreJoursField" layoutX="175.0" layoutY="60.0" prefWidth="400.0" promptText="Entrez un nombre entier positif" />
         <Label layoutX="20.0" layoutY="100.0" text="Description:" textFill="WHITE" />
-        <TextArea fx:id="descriptionField" layoutX="150.0" layoutY="100.0" prefHeight="100.0" prefWidth="400.0" promptText="Entrez une description" />
-        <Label layoutX="20.0" layoutY="220.0" text="Type:" textFill="WHITE" />
-        <ChoiceBox fx:id="typeChoiceBox" layoutX="150.0" layoutY="220.0" prefWidth="400.0" />
-        <Label layoutX="20.0" layoutY="260.0" text="Lien Supplémentaire:" textFill="WHITE" />
-        <TextField fx:id="lienSuppField" layoutX="150.0" layoutY="260.0" prefWidth="400.0" promptText="Entrez un lien valide (ex: https://example.com)" />
-        <Button fx:id="ajouterButton" layoutX="150.0" layoutY="320.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #4CAF50;" text="Ajouter" textFill="WHITE" onAction="#ajouterDemande" />
-        <Button fx:id="annulerButton" layoutX="300.0" layoutY="320.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #ff4444;" text="Annuler" textFill="WHITE" onAction="#annuler" />
+        <TextArea fx:id="descriptionField" layoutX="175.0" layoutY="100.0" prefHeight="100.0" prefWidth="400.0" promptText="Entrez une description" />
+        <Button fx:id="recordButton" layoutX="175.0" layoutY="210.0" mnemonicParsing="false" onAction="#recordAudio" prefHeight="24.0" prefWidth="150.0" style="-fx-background-color: #2196F3;" text="Record Description" textFill="WHITE" />
+        <Label layoutX="20.0" layoutY="250.0" text="Type:" textFill="WHITE" />
+        <ChoiceBox fx:id="typeChoiceBox" layoutX="175.0" layoutY="250.0" prefWidth="400.0" />
+        <Label layoutX="20.0" layoutY="290.0" text="Lien Supplémentaire:" textFill="WHITE" />
+        <TextField fx:id="lienSuppField" layoutX="175.0" layoutY="290.0" prefWidth="400.0" promptText="Entrez un lien valide (ex: https://example.com)" />
+        <Label layoutX="20.0" layoutY="330.0" text="Vérification reCAPTCHA:" textFill="WHITE" />
+        <WebView fx:id="recaptchaWebView" layoutX="175.0" layoutY="330.0" prefHeight="452.0" prefWidth="400.0" />
+        <Button fx:id="ajouterButton" layoutX="347.0" layoutY="804.0" mnemonicParsing="false" onAction="#ajouterDemande" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #4CAF50;" text="Ajouter" textFill="WHITE" />
+        <Button fx:id="annulerButton" layoutX="474.0" layoutY="804.0" mnemonicParsing="false" onAction="#annuler" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #ff4444;" text="Annuler" textFill="WHITE" />
     </children>
 </AnchorPane>

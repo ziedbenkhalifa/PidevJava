@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>reCAPTCHA</title>
+    <script src="https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit" async defer></script>
+</head>
+<body>
+<div id="recaptcha-container"></div>
+
+<script>
+    console.log("reCAPTCHA script loaded");
+
+    // Callback when reCAPTCHA script is fully loaded
+    function onRecaptchaLoad() {
+        console.log("reCAPTCHA API loaded successfully");
+        grecaptcha.render('recaptcha-container', {
+            'sitekey': '6LdocSQrAAAAAIYGK9eWAbSgDCdFJmtOll2zttUI',
+            'callback': onRecaptchaSuccess,
+            'error-callback': onRecaptchaError,
+            'expired-callback': onRecaptchaExpired
+        });
+        console.log("reCAPTCHA widget rendered");
+    }
+
+    function onRecaptchaSuccess(token) {
+        console.log("reCAPTCHA success callback fired with token: " + token);
+        function trySetToken(attempts) {
+            if (attempts <= 0) {
+                console.error("Failed to find JavaFX bridge after multiple attempts");
+                return;
+            }
+            if (window.javafx) {
+                console.log("JavaFX bridge found, setting token: " + token);
+                window.javafx.setRecaptchaResponse(token);
+                window.javafx.logMessage("Token set successfully: " + token);
+            } else {
+                console.log("JavaFX bridge not ready, retrying... (" + attempts + " attempts left)");
+                setTimeout(function() { trySetToken(attempts - 1); }, 500);
+            }
+        }
+        trySetToken(20);
+    }
+
+    function onRecaptchaError() {
+        console.error("reCAPTCHA error occurred. Please check the site key or network connectivity.");
+        if (window.javafx) {
+            window.javafx.logMessage("reCAPTCHA error occurred");
+        }
+    }
+
+    function onRecaptchaExpired() {
+        console.log("reCAPTCHA expired, please verify again.");
+        if (window.javafx) {
+            window.javafx.logMessage("reCAPTCHA expired");
+        }
+    }
+
+    window.onload = function() {
+        console.log("Page loaded, checking for JavaFX bridge");
+        if (window.javafx) {
+            console.log("JavaFX bridge is available on page load");
+            window.javafx.logMessage("JavaFX bridge available on page load");
+        } else {
+            console.log("JavaFX bridge not available on page load");
+            setTimeout(function() {
+                console.log("Retrying to find JavaFX bridge after 2s...");
+                if (window.javafx) {
+                    console.log("JavaFX bridge found after retry");
+                    window.javafx.logMessage("JavaFX bridge found after retry");
+                } else {
+                    console.error("JavaFX bridge still not found after retry");
+                }
+            }, 2000);
+        }
+
+        // Check if reCAPTCHA script loaded
+        if (typeof grecaptcha === 'undefined') {
+            console.error("reCAPTCHA script failed to load");
+            if (window.javafx) {
+                window.javafx.logMessage("reCAPTCHA script failed to load");
+            }
+        } else {
+            console.log("reCAPTCHA script loaded successfully");
+        }
+    };
+</script>
+</body>
+</html>
