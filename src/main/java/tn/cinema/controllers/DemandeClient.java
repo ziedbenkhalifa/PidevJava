@@ -42,6 +42,9 @@ public class DemandeClient extends FrontzController implements Initializable {
     @FXML
     private Button ajouterDemandeButton;
 
+    @FXML
+    private Button guideButton; // Add this field
+
     private DemandeService demandeService = new DemandeService();
     private ObservableList<Demande> demandes;
 
@@ -295,5 +298,17 @@ public class DemandeClient extends FrontzController implements Initializable {
         stage.setTitle("Login");
         stage.show();
         System.out.println("Logged out and navigated to Login.fxml");
+    }
+
+    @FXML
+    public void goToDemandeChatbot(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeChatbot.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.setTitle("Chatbot Guide");
+        stage.show();
+        System.out.println("Navigated to DemandeChatbot.fxml");
     }
 }

@@ -77,6 +77,42 @@
             <version>0.3.45</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.alphacephei/vosk -->
+
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-dialogflow</artifactId>
+            <version>4.20.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.auth</groupId>
+                    <artifactId>google-auth-library-oauth2-http</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Dépendances d'authentification spécifiques -->
+        <dependency>
+            <groupId>com.google.auth</groupId>
+            <artifactId>google-auth-library-oauth2-http</artifactId>
+            <version>1.19.0</version> <!-- Version stable sans SecureSessionAgent -->
+        </dependency>
+        <dependency>
+            <groupId>com.google.auth</groupId>
+            <artifactId>google-auth-library-credentials</artifactId>
+            <version>1.19.0</version>
+        </dependency>
+
+        <!-- Autres dépendances nécessaires -->
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-netty-shaded</artifactId>
+            <version>1.60.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>3.25.3</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

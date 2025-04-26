@@ -2,14 +2,14 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #080b21;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.DemandeClient">
+<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #080b21;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.DemandeChatbot">
     <children>
         <AnchorPane layoutX="31.0" layoutY="14.0" prefHeight="188.0" prefWidth="1257.0" style="-fx-background-color: #021b50; -fx-background-radius: 30;">
             <children>
@@ -36,50 +36,64 @@
                             </font>
                         </TextField>
                         <Button layoutX="1064.0" layoutY="19.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="121.0" style="-fx-background-color: #080b21;" text="Appliquer" textFill="WHITE" />
+                        <Button fx:id="retourButton" layoutX="929.0" layoutY="19.0" mnemonicParsing="false" onAction="#goToDemandeClient" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Retour" textFill="WHITE" />
                     </children>
                 </AnchorPane>
             </children>
         </AnchorPane>
-
-        <ImageView fitHeight="204.0" fitWidth="207.0" layoutX="-7.0" layoutY="-19.0">
+        <ImageView fitHeight="204.0" fitWidth="207.0" layoutX="-7.0" layoutY="19.0">
             <image>
                 <Image url="@images/showtime-removebg-preview.png" />
             </image>
         </ImageView>
-
         <Label layoutX="103.0" layoutY="150.0" text="Enjoy" textFill="#d3b4b4">
             <font>
                 <Font name="System Bold" size="18.0" />
             </font>
         </Label>
-
-        <!-- AnchorPane pour la gestion des demandes avec image de fond -->
-        <AnchorPane layoutX="17.0" layoutY="225.0" prefHeight="416.0" prefWidth="1268.0" style="-fx-background-radius: 20; -fx-border-color: #3e2063; -fx-border-width: 2; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 15, 0.5, 5, 5);">
+        <AnchorPane layoutX="17.0" layoutY="225.0" prefHeight="416.0" prefWidth="1268.0" style="-fx-background-color: #021b50; -fx-background-radius: 20;">
             <children>
-                <!-- Image de fond -->
-                <ImageView fitHeight="416.0" fitWidth="1268.0" layoutX="0.0" layoutY="0.0" preserveRatio="false">
+                <Button fx:id="backToDemandeButton" layoutX="30.0" layoutY="20.0" mnemonicParsing="false" onAction="#goToDemandeClient" prefHeight="36.0" prefWidth="150.0" style="-fx-background-color: #fa4651; -fx-background-radius: 10; -fx-font-size: 14; -fx-font-weight: bold;" text="Back to Demande" textFill="WHITE" />
+                <Button layoutX="846.0" layoutY="373.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Contact" textFill="WHITE" />
+                <Button layoutX="964.0" layoutY="373.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Help" textFill="WHITE" />
+                <ImageView fitHeight="34.0" fitWidth="34.0" layoutX="1076.0" layoutY="368.0">
                     <image>
-                        <Image url="@images/cinemaback.jpg" />
+                        <Image url="@images/icons8-facebook-logo-48.png" />
                     </image>
                 </ImageView>
-
-                <!-- Contenu au-dessus de l'image -->
-                <Label layoutX="30.0" layoutY="20.0" text="Liste des Demandes" textFill="WHITE">
+                <ImageView fitHeight="34.0" fitWidth="34.0" layoutX="1110.0" layoutY="368.0">
+                    <image>
+                        <Image url="@images/icons8-instagram-logo-94.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="34.0" fitWidth="34.0" layoutX="1144.0" layoutY="368.0">
+                    <image>
+                        <Image url="@images/icons8-youtube-logo-48.png" />
+                    </image>
+                </ImageView>
+                <Label layoutX="1178.0" layoutY="376.0" text="CopyRight" textFill="#e19d9d">
                     <font>
-                        <Font name="System Bold" size="26.0" />
+                        <Font name="System Bold" size="14.0" />
                     </font>
                 </Label>
-
-                <Button fx:id="backButton" layoutX="30.0" layoutY="70.0" mnemonicParsing="false" onAction="#goBackToFront" prefHeight="36.0" prefWidth="130.0" style="-fx-background-color: #fa4651; -fx-background-radius: 10; -fx-font-size: 14; -fx-font-weight: bold;" text="Retour" textFill="WHITE" />
-
-                <Button fx:id="ajouterDemandeButton" layoutX="180.0" layoutY="70.0" mnemonicParsing="false" onAction="#onAjouterDemandeClick" prefHeight="36.0" prefWidth="250.0" style="-fx-background-color: #4CAF50; -fx-background-radius: 10; -fx-font-size: 14; -fx-font-weight: bold;" text="Ajouter Nouvelle Demande" textFill="WHITE" />
-
-                <ListView fx:id="demandeListView" layoutX="30.0" layoutY="120.0" prefHeight="270.0" prefWidth="1208.0" style="-fx-background-color: transparent; -fx-control-inner-background: transparent; -fx-background-radius: 15;" />
-                <Button fx:id="guideButton" layoutX="1101.0" layoutY="72.0" mnemonicParsing="false" onAction="#goToDemandeChatbot" prefHeight="24.0" prefWidth="130.0" style="-fx-background-color: #021b50; -fx-background-radius: 10; -fx-font-size: 14; -fx-font-weight: bold;" text="guide" textFill="WHITE">
-                    <font>
-                        <Font name="System Bold" size="13.0" />
-                    </font>
-                </Button>
+                <AnchorPane layoutX="16.0" layoutY="9.0" prefHeight="355.0" prefWidth="1234.0" style="-fx-background-color: #0b0f29; -fx-background-radius: 20;">
+                    <children>
+                        <ImageView fitHeight="355.0" fitWidth="1227.0" layoutX="12.0" layoutY="3.0" opacity="0.28">
+                            <image>
+                                <Image url="@images/cinemaaaaaaa.jpg" />
+                            </image>
+                        </ImageView>
+                        <!-- Chatbot UI Elements -->
+                        <TextArea fx:id="chatArea" editable="false" layoutX="361.0" layoutY="30.0" prefHeight="200.0" prefWidth="500.0" style="-fx-background-color: #021b50; -fx-text-fill: black;" wrapText="true" />
+                        <TextField fx:id="userInput" layoutX="363.0" layoutY="240.0" prefHeight="40.0" prefWidth="400.0" promptText="Posez votre question ici..." style="-fx-background-color: #021b50; -fx-text-fill: white;" />
+                        <Button fx:id="sendButton" layoutX="768.0" layoutY="240.0" mnemonicParsing="false" onAction="#handleSendMessage" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #3e2063;" text="Envoyer" textFill="WHITE" />
+                        <Label layoutX="50.0" layoutY="10.0" text="Chatbot d'assistance" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </AnchorPane>
             </children>
         </AnchorPane>
     </children>
