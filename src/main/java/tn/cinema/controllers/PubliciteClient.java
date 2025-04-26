@@ -39,6 +39,9 @@ public class PubliciteClient extends FrontzController implements Initializable {
     private Button backButton;
 
     @FXML
+    private Button ajouterDemandeButton;
+
+    @FXML
     private ListView<Publicite> publiciteListView;
 
     private PubliciteService publiciteService = new PubliciteService();
@@ -46,7 +49,6 @@ public class PubliciteClient extends FrontzController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Set up the ListView with a custom cell factory
         publiciteListView.setCellFactory(listView -> new ListCell<Publicite>() {
             @Override
             protected void updateItem(Publicite publicite, boolean empty) {
@@ -56,7 +58,6 @@ public class PubliciteClient extends FrontzController implements Initializable {
                     setGraphic(null);
                     setStyle("");
                 } else {
-                    // Create a custom layout for each Publicite item
                     VBox vbox = new VBox(10);
                     vbox.setStyle("-fx-background-color: linear-gradient(to right, #1a2a44, #2a3b5a);" +
                             "-fx-padding: 20;" +
@@ -66,12 +67,10 @@ public class PubliciteClient extends FrontzController implements Initializable {
                             "-fx-border-width: 1.5;" +
                             "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0.3, 3, 3);");
 
-                    // Use GridPane to organize Publicite details
                     GridPane gridPane = new GridPane();
                     gridPane.setHgap(15);
                     gridPane.setVgap(8);
 
-                    // Define fields to display (excluding ID)
                     Text demandeIdText = new Text("Demande ID: " + publicite.getDemandeId());
                     demandeIdText.setStyle("-fx-font-weight: bold; -fx-font-size: 15; -fx-fill: #ffffff;");
                     Text dateDebutText = new Text("Date Début: " + publicite.getDateDebut());
@@ -83,17 +82,14 @@ public class PubliciteClient extends FrontzController implements Initializable {
                     Text montantText = new Text("Montant: " + publicite.getMontant());
                     montantText.setStyle("-fx-font-weight: bold; -fx-font-size: 15; -fx-fill: #ffffff;");
 
-                    // Add fields to GridPane (reorganized without ID)
                     gridPane.add(demandeIdText, 0, 0);
                     gridPane.add(dateDebutText, 1, 0);
                     gridPane.add(dateFinText, 0, 1);
                     gridPane.add(supportText, 1, 1);
                     gridPane.add(montantText, 0, 2);
 
-                    // Add GridPane to the VBox (no buttons since CRUD is not allowed)
                     vbox.getChildren().add(gridPane);
 
-                    // Add hover effect for the entire cell
                     vbox.setOnMouseEntered(e -> vbox.setStyle("-fx-background-color: linear-gradient(to right, #2a3b5a, #3b4c7a);" +
                             "-fx-padding: 20;" +
                             "-fx-background-radius: 15;" +
@@ -114,7 +110,6 @@ public class PubliciteClient extends FrontzController implements Initializable {
             }
         });
 
-        // Load data
         loadPublicites();
     }
 
@@ -126,6 +121,8 @@ public class PubliciteClient extends FrontzController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Erreur lors du chargement des publicités : " + e.getMessage());
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Erreur lors du chargement des publicités : " + e.getMessage());
+            alert.showAndWait();
         }
     }
 
@@ -154,8 +151,7 @@ public class PubliciteClient extends FrontzController implements Initializable {
     @FXML
     public void goBackToFront(ActionEvent event) {
         try {
-            // Adjust the path based on the actual location of Front.fxml
-            String fxmlPath = "/FrontZ.fxml"; // Update this if Front.fxml is in a different package
+            String fxmlPath = "/FrontZ.fxml";
             URL fxmlUrl = getClass().getResource(fxmlPath);
             if (fxmlUrl == null) {
                 throw new IOException("Cannot find resource: " + fxmlPath);
@@ -167,12 +163,12 @@ public class PubliciteClient extends FrontzController implements Initializable {
             stage.setScene(scene);
             stage.setTitle("Client Dashboard");
             stage.show();
-            System.out.println("Navigated back to Front.fxml from PubliciteClient");
+            System.out.println("Navigated back to FrontZ.fxml from PubliciteClient");
         } catch (IOException e) {
             e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR, "Erreur lors du retour au tableau de bord : " + e.getMessage());
             alert.showAndWait();
-            System.err.println("Error loading Front.fxml: " + e.getMessage());
+            System.err.println("Error loading FrontZ.fxml: " + e.getMessage());
         }
     }
 
@@ -186,5 +182,29 @@ public class PubliciteClient extends FrontzController implements Initializable {
         stage.setTitle("Login");
         stage.show();
         System.out.println("Logged out and navigated to Login.fxml");
+    }
+
+    @FXML
+    public void onAjouterDemandeClick(ActionEvent event) {
+        try {
+            String fxmlPath = "/NosSalles.fxml";
+            URL fxmlUrl = getClass().getResource(fxmlPath);
+            if (fxmlUrl == null) {
+                throw new IOException("Cannot find resource: " + fxmlPath);
+            }
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Nos Salles");
+            stage.show();
+            System.out.println("Navigated to NosSalles.fxml");
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Erreur lors de la navigation vers Nos Salles : " + e.getMessage());
+            alert.showAndWait();
+            System.err.println("Error loading NosSalles.fxml: " + e.getMessage());
+        }
     }
 }
