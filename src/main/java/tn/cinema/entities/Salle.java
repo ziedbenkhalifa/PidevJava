@@ -109,7 +109,5 @@ public class Salle {
         return Objects.hash(id_salle, nombre_de_place, nom_salle, disponibilite, type_salle, statut, emplacement);
     }
 
-    public void setNom(String salleNom) {
 
-    }
 }

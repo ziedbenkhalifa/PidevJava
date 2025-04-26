@@ -13,7 +13,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.SQLException;
 
 public class ModifierSalle {
 
@@ -74,12 +73,21 @@ public class ModifierSalle {
             return;
         }
 
+        // ✅ Mise à jour des infos de la salle
         salleActuelle.setNom_salle(tfNomSalle.getText());
         salleActuelle.setDisponibilite(cbDisponibilite.getValue());
         salleActuelle.setEmplacement(cbEmplacement.getValue());
         salleActuelle.setStatut(cbStatut.getValue());
         salleActuelle.setType_salle(tfTypeSalle.getValue());
         salleActuelle.setNombre_de_place(nombreDePlaces);
+
+        // ✅ Ajouter la notification avant la modification en base
+        String statut = salleActuelle.getStatut();
+        if ("Fermée".equalsIgnoreCase(statut) || "En Maintenance".equalsIgnoreCase(statut)) {
+            String message = "La salle \"" + salleActuelle.getNom_salle() + "\" est actuellement en " + statut.toLowerCase() + ".";
+            tn.cinema.services.NotificationService.getInstance().ajouterNotification(message);
+        }
+
 
         try {
             SalleService service = new SalleService();
@@ -95,7 +103,7 @@ public class ModifierSalle {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ListeSalle.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
-            Stage stage = (Stage) tfNomSalle.getScene().getWindow(); // ou n'importe quel composant de ta scène
+            Stage stage = (Stage) tfNomSalle.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
 

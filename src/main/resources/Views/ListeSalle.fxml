@@ -18,6 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import java.lang.String?>
 <AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: linear-gradient(to bottom right, #0b0f29, #121942); -fx-background-radius: 0;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.Controllers.ListeSalle">
     <children>
 
@@ -73,24 +74,49 @@
             </children>
         </AnchorPane>
 
+    <AnchorPane layoutX="210.0" layoutY="0.0" prefHeight="650.0" prefWidth="1080.0">
+        <Pane layoutX="10.0" layoutY="14.0" prefHeight="67.0" prefWidth="1060.0"
+              style="-fx-background-color: linear-gradient(to right, #021b50, #1a237e);
+                 -fx-background-radius: 30;
+                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 2, 2);">
+            <children>
 
-        <AnchorPane layoutX="210.0" layoutY="0.0" prefHeight="650.0" prefWidth="1080.0">
-            <Pane layoutX="10.0" layoutY="14.0" prefHeight="67.0" prefWidth="1060.0" style="-fx-background-color: linear-gradient(to right, #021b50, #1a237e); -fx-background-radius: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 2, 2);">
-                <children>
-                    <Label layoutX="41.0" layoutY="18.0" prefHeight="31.0" prefWidth="148.0" text="SHOWTIME" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.3), 5, 0, 0, 0);">
-                        <font>
-                            <Font name="System Bold" size="24.0"/>
-                        </font>
-                    </Label>
-                    <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="1010.0" layoutY="15.0" style="-fx-effect: dropshadow(gaussian, rgba(255,255,255,0.2), 5, 0, 0, 0);">
-                        <image>
-                            <Image url="@/images/search.png"/>
-                        </image>
-                    </ImageView>
-                </children>
-            </Pane>
+                <Label layoutX="41.0" layoutY="18.0" prefHeight="31.0" prefWidth="148.0" text="SHOWTIME"
+                       style="-fx-text-fill: white;
+                          -fx-font-weight: bold;
+                          -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.3), 5, 0, 0, 0);">
+                    <font>
+                        <Font name="System Bold" size="24.0"/>
+                    </font>
+                </Label>
 
-            <AnchorPane layoutX="10.0" layoutY="95.0" prefHeight="540.0" prefWidth="1060.0" style="-fx-background-color: linear-gradient(to bottom right, #e8eaf6, #d1d6ef); -fx-background-radius: 20; -fx-border-radius: 20; -fx-border-color: #c5cae9; -fx-border-width: 0.5;">
+                <TextField fx:id="tfRecherche" layoutX="730.0" layoutY="10.0" prefHeight="48.0" prefWidth="220.0" promptText="  Search"
+                           style="-fx-background-radius: 30;"/>
+
+                <ImageView fx:id="btnRecherche" fitHeight="38.0" fitWidth="36.0" layoutX="960.0" layoutY="15.0"
+                           onMouseClicked="#rechercherSalle"
+                           style="-fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.2), 5, 0, 0, 0);">
+                    <image>
+                        <Image url="@/images/search.png"/>
+                    </image>
+                </ImageView>
+
+
+
+                <Label fx:id="notificationIcon" layoutX="1005.0" layoutY="15.0" prefHeight="38.0" prefWidth="36.0" text="🔔"
+                       style="-fx-font-size: 24px;
+                          -fx-text-fill: white;
+                          -fx-alignment: center;
+                          -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.2), 5, 0, 0, 0);"
+                       onMouseClicked="#showNotificationList"/>
+
+            </children>
+        </Pane>
+
+
+
+
+       <AnchorPane layoutX="10.0" layoutY="95.0" prefHeight="540.0" prefWidth="1060.0" style="-fx-background-color: linear-gradient(to bottom right, #e8eaf6, #d1d6ef); -fx-background-radius: 20; -fx-border-radius: 20; -fx-border-color: #c5cae9; -fx-border-width: 0.5;">
                 <effect>
                     <DropShadow color="#00000066" radius="10" height="20" width="20" spread="0.05"/>
                 </effect>
@@ -106,6 +132,22 @@
                                         </font>
                                     </Label>
                                     <Pane HBox.hgrow="ALWAYS"/>
+
+
+                                    <HBox spacing="10" alignment="CENTER_LEFT">
+                                        <ComboBox fx:id="cbEtage">
+                                            <items>
+                                                <FXCollections fx:factory="observableArrayList">
+                                                    <String fx:value="Etage 1" />
+                                                    <String fx:value="Etage 2" />
+                                                    <String fx:value="Etage 3" />
+                                                </FXCollections>
+                                            </items>
+                                        </ComboBox>
+                                        <Button fx:id="btnTrier" text="Trier" />
+                                    </HBox>
+
+
                                     <Button fx:id="btnGererEquipement" mnemonicParsing="false" prefHeight="40.0" prefWidth="180.0"
                                             style="-fx-background-color: linear-gradient(to right, #2980b9, #3498db); -fx-background-radius: 20; -fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 1);"
                                             text="Gérer Équipement"/>
@@ -138,5 +180,5 @@
                 </children>
             </AnchorPane>
         </AnchorPane>
-    </children>
+     </children>
 </AnchorPane>

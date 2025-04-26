@@ -64,6 +64,50 @@ public class EquipementService implements IServices<Equipement> {
             }
         }
     }
+    public List<Equipement> filtrerParEtat(String etat) throws SQLException {
+        List<Equipement> equipements = new ArrayList<>();
+        String sql = "SELECT * FROM equipement WHERE LOWER(etat) = LOWER(?)";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, etat);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Equipement e = new Equipement();
+                e.setId(rs.getInt("id"));
+                e.setNom(rs.getString("nom"));
+                e.setType(rs.getString("type"));
+                e.setEtat(rs.getString("etat"));
+                e.setSalle_id(rs.getInt("salle_id"));
+                equipements.add(e);
+            }
+        }
+
+        return equipements;
+    }
+
+    public List<Equipement> rechercherParNom(String nom) throws SQLException {
+        List<Equipement> equipements = new ArrayList<>();
+        String sql = "SELECT * FROM equipement WHERE LOWER(nom) LIKE LOWER(?)";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, "%" + nom + "%"); // recherche partielle insensible à la casse
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Equipement e = new Equipement();
+                e.setId(rs.getInt("id"));
+                e.setNom(rs.getString("nom"));
+                e.setType(rs.getString("type"));
+                e.setEtat(rs.getString("etat"));
+                e.setSalle_id(rs.getInt("salle_id"));
+                equipements.add(e);
+            }
+        }
+
+        return equipements;
+    }
+
 
 
 

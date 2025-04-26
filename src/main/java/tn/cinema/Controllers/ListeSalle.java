@@ -1,6 +1,7 @@
 package tn.cinema.Controllers;
 
 import javafx.event.ActionEvent;
+import javafx.stage.Modality;
 import tn.cinema.entities.Salle;
 import tn.cinema.services.SalleService;
 import javafx.collections.FXCollections;
@@ -16,6 +17,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import tn.cinema.entities.Salle;
+import javafx.scene.image.ImageView;
+
+
+
 
 public class ListeSalle {
 
@@ -25,7 +30,20 @@ public class ListeSalle {
 
     @FXML
     private Button btnAjouter;
-    
+
+
+    @FXML
+    private TextField tfRecherche;
+
+
+
+    @FXML
+    private ImageView btnRecherche;
+
+    @FXML
+    private ComboBox<String> cbEtage;
+    @FXML
+    private Button btnTrier;
 
     @FXML
     public void initialize() {
@@ -36,6 +54,10 @@ public class ListeSalle {
                 System.out.println("✅ Clic détecté sur le bouton Ajouter !");
                 ouvrirAjouterSalle();
             });
+            btnRecherche.setOnMouseClicked(event -> rechercherSalle());
+
+            btnTrier.setOnAction(e -> trierParEtage());
+
         }
 
         try {
@@ -124,9 +146,83 @@ public class ListeSalle {
                 e.printStackTrace();
             }
         });
+        btnTrier.setOnAction(event -> trierParEtage());
+
     }
 
 
+
+    @FXML
+    private void rechercherSalle() {
+        String nom = tfRecherche.getText().trim();
+        SalleService service = new SalleService();
+
+        try {
+            List<Salle> resultats = service.rechercherParNom(nom);
+            listViewSalles.getItems().setAll(resultats);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText(null);
+            alert.setContentText("Erreur lors de la recherche des salles.");
+            alert.showAndWait();
+        }
+    }
+    @FXML
+    private void showNotificationList() {
+        try {
+            // Charger Notification.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Notification.fxml"));
+            Parent root = loader.load();
+
+            // Créer une nouvelle fenêtre pour la liste des notifications
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Liste des Notifications");
+            stage.initModality(Modality.APPLICATION_MODAL); // Fenêtre modale
+            stage.setResizable(false); // Non redimensionnable
+            stage.show();
+        } catch (IOException e) {
+            // Afficher une alerte en cas d'erreur
+            showErrorAlert(e);
+        }
+    }
+
+    private void showErrorAlert(Exception e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Erreur de chargement");
+        alert.setHeaderText("Impossible de charger la liste des notifications");
+        alert.setContentText(e.getMessage());
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void trierParEtage() {
+        String etageChoisi = cbEtage.getValue(); // Récupère l'étage sélectionné dans le ComboBox
+        if (etageChoisi != null && !etageChoisi.isEmpty()) {
+            SalleService service = new SalleService();
+            try {
+                // Récupère les salles filtrées par l'étage choisi
+                List<Salle> resultats = service.getSallesParEtage(etageChoisi);
+                ObservableList<Salle> list = FXCollections.observableArrayList(resultats);
+                listViewSalles.setItems(list); // Met à jour la ListView avec les salles filtrées
+            } catch (SQLException e) {
+                e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Erreur");
+                alert.setHeaderText("Erreur lors du tri des salles");
+                alert.setContentText("Une erreur s'est produite lors de la récupération des salles.");
+                alert.showAndWait();
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Alerte");
+            alert.setHeaderText("Sélectionnez un étage");
+            alert.setContentText("Veuillez sélectionner un étage avant de trier.");
+            alert.showAndWait();
+        }
+    }
 
 
 

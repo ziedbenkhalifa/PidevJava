@@ -26,7 +26,11 @@
             <artifactId>javafx-fxml</artifactId>
             <version>21.0.2</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>11.1.0</version> <!-- Assure-toi d'utiliser la dernière version -->
+        </dependency>
         <!-- MySQL Connector -->
         <dependency>
             <groupId>com.mysql</groupId>
@@ -47,6 +51,7 @@
                     <target>21</target>
                 </configuration>
             </plugin>
+
 
             <!-- Plugin JavaFX -->
             <plugin>

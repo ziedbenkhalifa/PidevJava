@@ -1,5 +1,6 @@
 package tn.cinema.Controllers;
 
+import javafx.scene.image.ImageView;
 import tn.cinema.entities.Equipement;
 import tn.cinema.services.EquipementService;
 import javafx.collections.FXCollections;
@@ -12,6 +13,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -20,9 +22,25 @@ public class ListeEquipement {
 
     @FXML
     private ListView<Equipement> listViewEquipements;
+    @FXML
+    private ComboBox<String> cbEtat;
+
+
 
     @FXML
+    private Button btnTrier;
+    @FXML
     private Button btnAjouter;
+
+
+    @FXML
+    private TextField tfRechercheEquipement;
+
+    @FXML
+    private ImageView btnRechercherEquipement;
+
+
+
 
     @FXML
     public void initialize() {
@@ -90,11 +108,17 @@ public class ListeEquipement {
                         setGraphic(row);
                     }
                 }
+
             });
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        btnTrier.setOnAction(event -> filtrerParEtat());
+
+        // Configuration de l'écouteur d'événements pour le clic sur l'ImageView
+        btnRechercherEquipement.setOnMouseClicked(event -> rechercherEquipementsParNom());
     }
 
     @FXML
@@ -163,6 +187,60 @@ public class ListeEquipement {
             alert.showAndWait();
         }
     }
+
+
+
+    @FXML
+
+    private void showErrorAlert(String titre, String header, Exception e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(titre);
+        alert.setHeaderText(header);
+        alert.setContentText(e.getMessage());
+        alert.showAndWait();
+    }
+
+
+
+    @FXML
+    private void rechercherEquipementsParNom() {
+        String nom = tfRechercheEquipement.getText().trim();
+        if (nom.isEmpty()) {
+            return;
+        }
+
+        try {
+            EquipementService service = new EquipementService();
+            List<Equipement> resultats = service.rechercherParNom(nom);
+            listViewEquipements.setItems(FXCollections.observableArrayList(resultats));
+        } catch (SQLException e) {
+            showErrorAlert("Erreur", "Erreur lors de la recherche", e);
+        }
+    }
+
+    @FXML
+    private void filtrerParEtat() {
+        String etatSelectionne = cbEtat.getValue();
+
+        try {
+            EquipementService service = new EquipementService();
+            List<Equipement> tous = service.recuperer();
+
+            if (etatSelectionne == null || etatSelectionne.isEmpty()) {
+                listViewEquipements.getItems().setAll(tous);
+            } else {
+                List<Equipement> filtres = tous.stream()
+                        .filter(e -> e.getEtat().equalsIgnoreCase(etatSelectionne))
+                        .toList();
+                listViewEquipements.getItems().setAll(filtres);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
     private void supprimerEquipement(Equipement equipement) {
         System.out.println("🗑️ Supprimer : " + equipement.getNom());

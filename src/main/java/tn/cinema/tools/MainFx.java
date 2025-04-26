@@ -27,9 +27,9 @@ public class MainFx extends Application {
         TabPane tabPane = new TabPane();
 
         // Charger la première vue (Équipement)
-        FXMLLoader equipementLoader = new FXMLLoader(getClass().getResource("/Views/AjouterEquipement.fxml"));
+        FXMLLoader equipementLoader = new FXMLLoader(getClass().getResource("/Views/interfacePrincipale.fxml"));
         Parent equipementRoot = equipementLoader.load();
-        Tab equipementTab = new Tab("Ajouter Équipement", equipementRoot);
+        Tab equipementTab = new Tab("interface Principale", equipementRoot);
         equipementTab.setClosable(false);
 
         // Charger la deuxième vue (Salle)
