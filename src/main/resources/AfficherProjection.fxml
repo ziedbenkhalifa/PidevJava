@@ -113,10 +113,11 @@
 
                 <ListView fx:id="listProjection" layoutX="40.0" layoutY="110.0" prefHeight="330.0" prefWidth="988.0" style="-fx-background-radius: 20; -fx-background-color: #021b50;" />
 
-                <Button layoutX="225.0" layoutY="460.0" onAction="#ajout" prefHeight="36.0" prefWidth="150.0" style="-fx-background-radius: 10; -fx-background-color: #3e2063; -fx-text-fill: white;" text="Ajouter" />
-                <Button layoutX="459.0" layoutY="460.0" onAction="#edit" prefHeight="36.0" prefWidth="150.0" style="-fx-background-radius: 10; -fx-background-color: #3e2063; -fx-text-fill: white;" text="Modifier" />
-                <Button layoutX="693.0" layoutY="460.0" onAction="#delete" prefHeight="36.0" prefWidth="150.0" style="-fx-background-radius: 10; -fx-background-color: #3e2063; -fx-text-fill: white;" text="Supprimer" />
-                <Button fx:id="statButton" layoutX="927.0" layoutY="460.0" onAction="#showStats" prefHeight="36.0" prefWidth="150.0" style="-fx-background-radius: 10; -fx-background-color: #3e2063; -fx-text-fill: white;" text="Stat" />
+                <Button layoutX="225.0" layoutY="460.0" onAction="#ajout" prefHeight="36.0" prefWidth="120.0" style="-fx-background-radius: 10; -fx-background-color: #3e2063; -fx-text-fill: white;" text="Ajouter" />
+                <Button layoutX="366.0" layoutY="460.0" onAction="#edit" prefHeight="36.0" prefWidth="120.0" style="-fx-background-radius: 10; -fx-background-color: #3e2063; -fx-text-fill: white;" text="Modifier" />
+                <Button layoutX="507.0" layoutY="460.0" onAction="#delete" prefHeight="36.0" prefWidth="120.0" style="-fx-background-radius: 10; -fx-background-color: #3e2063; -fx-text-fill: white;" text="Supprimer" />
+                <Button fx:id="statButton" layoutX="648.0" layoutY="460.0" onAction="#showStats" prefHeight="36.0" prefWidth="120.0" style="-fx-background-radius: 10; -fx-background-color: #3e2063; -fx-text-fill: white;" text="Stat" />
+                <Button fx:id="timelineButton" layoutX="789.0" layoutY="460.0" onAction="#showTimeline" prefHeight="36.0" prefWidth="120.0" style="-fx-background-radius: 10; -fx-background-color: #3e2063; -fx-text-fill: white;" text="Timeline" />
             </children>
         </AnchorPane>
     </children>
