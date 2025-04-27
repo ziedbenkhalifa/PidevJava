@@ -78,7 +78,7 @@
                     </font>
                 </Label>
 
-                <!-- Main content with QR code -->
+                <!-- Main content with course details -->
                 <AnchorPane layoutX="16.0" layoutY="9.0" prefHeight="355.0" prefWidth="1234.0" style="-fx-background-color: #0b0f29; -fx-background-radius: 20;">
                     <children>
                         <!-- Background image with opacity -->
@@ -88,8 +88,8 @@
                             </image>
                         </ImageView>
 
-                        <!-- CARD DESIGN for QR Code -->
-                        <AnchorPane layoutX="394.0" layoutY="14.0" prefHeight="310.0" prefWidth="599.0" style="-fx-background-color: #1a1e3c; -fx-background-radius: 15;">
+                        <!-- CARD DESIGN for Course Details -->
+                        <AnchorPane layoutX="394.0" layoutY="14.0" prefHeight="277.0" prefWidth="599.0" style="-fx-background-color: #1a1e3c; -fx-background-radius: 15;">
                             <effect>
                                 <DropShadow color="#000000" height="20.0" radius="9.5" width="20.0" />
                             </effect>
@@ -105,8 +105,27 @@
                                     </children>
                                 </AnchorPane>
 
-                                <!-- QR Code (centered, larger size) -->
-                                <ImageView fx:id="qrCodeImageView" fitHeight="200.0" fitWidth="200.0" layoutX="199.5" layoutY="55.0" preserveRatio="true" />
+                                <!-- Course details -->
+                                <Label fx:id="typeCourLabel" layoutX="27.0" layoutY="74.0" text="Type de Cours: " textFill="WHITE">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="coutLabel" layoutX="27.0" layoutY="104.0" text="Coût: " textFill="WHITE">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="dateDebutLabel" layoutX="27.0" layoutY="134.0" text="Date de Début: " textFill="WHITE">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="dateFinLabel" layoutX="27.0" layoutY="164.0" text="Date de Fin: " textFill="WHITE">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
                             </children>
                         </AnchorPane>
 

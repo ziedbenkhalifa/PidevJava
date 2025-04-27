@@ -63,6 +63,15 @@ public class Front {
         alert.setContentText(message);
         alert.showAndWait();
     }
+    @FXML
+    public void logout(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
 
 
 }

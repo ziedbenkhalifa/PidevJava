@@ -53,12 +53,12 @@ public class AjouterCour extends Dashboard {
                 throw new IllegalArgumentException("Type de Cour doit être sélectionné.");
             }
 
-            // Validation du coût (doit être entre 50 et 999)
+            // Validation du coût (doit être entre 50 et 999, et explicitement pas 0)
             double cout;
             try {
                 cout = Double.parseDouble(coutField.getText());
-                if (cout <= 0) {
-                    throw new IllegalArgumentException("Le Coût doit être un nombre supérieur à 0.");
+                if (cout == 0) {
+                    throw new IllegalArgumentException("Le Coût ne peut pas être égal à 0.");
                 }
                 if (cout < 50 || cout > 999) {
                     throw new IllegalArgumentException("Le Coût doit être compris entre 50 et 999.");

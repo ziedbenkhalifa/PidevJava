@@ -7,7 +7,9 @@ import tn.cinema.entities.User;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CourService implements IServices<Cour>{
     private Connection cnx;
@@ -128,5 +130,20 @@ public class CourService implements IServices<Cour>{
         return coursIds;
     }
 
+    public Map<Integer, Integer> recupererToutesParticipations() throws SQLException {
+        Map<Integer, Integer> participationsCount = new HashMap<>();
+        sql = "SELECT cour_id, COUNT(*) as count FROM participation GROUP BY cour_id";
+        ps = cnx.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        System.out.println("Résultats de la requête pour toutes les participations :");
+        while (rs.next()) {
+            int courId = rs.getInt("cour_id");
+            int count = rs.getInt("count");
+            System.out.println("Cours ID: " + courId + ", Participants: " + count);
+            participationsCount.put(courId, count);
+        }
+        System.out.println("Total participations trouvées : " + participationsCount.size() + " cours différents");
+        return participationsCount;
+    }
 
 }

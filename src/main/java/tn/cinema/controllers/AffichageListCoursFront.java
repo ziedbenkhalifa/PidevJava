@@ -18,6 +18,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
 import tn.cinema.entities.Cour;
 import tn.cinema.entities.User;
 import tn.cinema.services.CourService;
@@ -68,6 +72,8 @@ public class AffichageListCoursFront implements Initializable {
     private Button applySearchButton;
     @FXML
     private Label noResultsLabel;
+
+
 
     private CourService courService = new CourService();
     public List<Cour> allCours = new ArrayList<>();
@@ -605,4 +611,7 @@ public class AffichageListCoursFront implements Initializable {
             throw e;
         }
     }
+
+
+
 }

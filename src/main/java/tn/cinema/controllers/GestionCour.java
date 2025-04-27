@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
@@ -15,6 +16,12 @@ public class GestionCour {
 
     @FXML
     private Button btnGererSeances;
+
+    @FXML
+    private Button viewStatsCoursButton;
+
+    @FXML
+    private Button viewStatsSeancesButton;
 
     @FXML
     private void handleGererSeances(ActionEvent event) {
@@ -65,4 +72,45 @@ public class GestionCour {
             alert.showAndWait();
         }
     }
-}
+
+    @FXML
+    private void viewStatsCoursAction(ActionEvent event) {
+        try {
+            // Naviguer vers la fenêtre des statistiques
+            Parent root = FXMLLoader.load(getClass().getResource("/StatsCoursChart.fxml"));
+            Stage stage = (Stage) viewStatsCoursButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText(null);
+            alert.setContentText("Une erreur s'est produite lors de l'affichage des statistiques : " + e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+    @FXML
+    private void viewStatsSeancesAction(ActionEvent event) {
+        try {
+            // Naviguer vers la fenêtre des statistiques
+            Parent root = FXMLLoader.load(getClass().getResource("/StatsSeanceChart.fxml"));
+            Stage stage = (Stage) viewStatsSeancesButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText(null);
+            alert.setContentText("Une erreur s'est produite lors de l'affichage des statistiques : " + e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }}

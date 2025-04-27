@@ -9,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -19,8 +20,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class AffichageListCours implements Initializable {
 
@@ -36,32 +39,46 @@ public class AffichageListCours implements Initializable {
     @FXML
     private Button btnSupprimer;
 
+    @FXML
+    private TextField searchField;
+
+    @FXML
+    private ImageView searchIcon;
+
+    @FXML
+    private ComboBox<String> typeFilterComboBox;
+
     private final CourService courService = new CourService();
+    private List<Cour> allCours; // Liste complète des cours pour le filtrage et la recherche
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
+            // Récupérer tous les cours
+            allCours = courService.recuperer();
 
-            List<Cour> cours = courService.recuperer();
+            // Trier automatiquement par coût croissant
+            allCours.sort(Comparator.comparingDouble(Cour::getCout));
 
+            // Afficher les cours triés
+            setRlistItems(allCours);
 
-            setRlistItems(cours);
-
-
+            // Configurer la ListView avec une cellule personnalisée
             rlist.setCellFactory(listView -> new CustomCourCell());
-
-
             rlist.setStyle("-fx-background-color: #192342; -fx-control-inner-background: #192342;");
 
-
+            // Désactiver les boutons Modifier et Supprimer par défaut
             btnModifier.setDisable(true);
             btnSupprimer.setDisable(true);
 
-
+            // Activer les boutons lorsque l'utilisateur sélectionne un cours
             rlist.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
                 btnModifier.setDisable(newSelection == null);
                 btnSupprimer.setDisable(newSelection == null);
             });
+
+            // Configurer la ComboBox (elle est déjà définie dans le FXML, mais on peut s'assurer qu'elle est initialisée)
+            typeFilterComboBox.setValue("Tous");
 
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -132,14 +149,82 @@ public class AffichageListCours implements Initializable {
     }
 
     @FXML
+    private void applySearchAction(ActionEvent event) {
+        String searchText = searchField.getText().trim().toLowerCase();
+        List<Cour> filteredCours = allCours;
+
+        // Filtrer par type de cours (si un filtre est appliqué via la ComboBox)
+        filteredCours = applyTypeFilter(filteredCours);
+
+        // Appliquer la recherche par typeCour ou cout
+        if (!searchText.isEmpty()) {
+            try {
+                // Essayer de convertir le texte de recherche en double pour chercher par coût
+                double searchCout = Double.parseDouble(searchText);
+                filteredCours = filteredCours.stream()
+                        .filter(cour -> cour.getTypeCour().toLowerCase().contains(searchText) || cour.getCout() == searchCout)
+                        .collect(Collectors.toList());
+            } catch (NumberFormatException e) {
+                // Si la conversion échoue, chercher uniquement par typeCour
+                filteredCours = filteredCours.stream()
+                        .filter(cour -> cour.getTypeCour().toLowerCase().contains(searchText))
+                        .collect(Collectors.toList());
+            }
+        }
+
+        // Trier les résultats par coût croissant
+        filteredCours.sort(Comparator.comparingDouble(Cour::getCout));
+
+        // Mettre à jour la ListView
+        setRlistItems(filteredCours);
+    }
+
+    @FXML
+    private void filterByTypeAction(ActionEvent event) {
+        List<Cour> filteredCours = allCours;
+
+        // Appliquer le filtre par type de cours
+        filteredCours = applyTypeFilter(filteredCours);
+
+        // Appliquer la recherche si le champ de recherche n'est pas vide
+        String searchText = searchField.getText().trim().toLowerCase();
+        if (!searchText.isEmpty()) {
+            try {
+                double searchCout = Double.parseDouble(searchText);
+                filteredCours = filteredCours.stream()
+                        .filter(cour -> cour.getTypeCour().toLowerCase().contains(searchText) || cour.getCout() == searchCout)
+                        .collect(Collectors.toList());
+            } catch (NumberFormatException e) {
+                filteredCours = filteredCours.stream()
+                        .filter(cour -> cour.getTypeCour().toLowerCase().contains(searchText))
+                        .collect(Collectors.toList());
+            }
+        }
+
+        // Trier les résultats par coût croissant
+        filteredCours.sort(Comparator.comparingDouble(Cour::getCout));
+
+        // Mettre à jour la ListView
+        setRlistItems(filteredCours);
+    }
+
+    private List<Cour> applyTypeFilter(List<Cour> cours) {
+        String selectedType = typeFilterComboBox.getValue();
+        if (selectedType == null || "Tous".equals(selectedType)) {
+            return cours;
+        }
+        return cours.stream()
+                .filter(cour -> cour.getTypeCour().equalsIgnoreCase(selectedType))
+                .collect(Collectors.toList());
+    }
+
+    @FXML
     private void modifierAction() {
         Cour selectedCour = rlist.getSelectionModel().getSelectedItem();
         if (selectedCour != null) {
             try {
-
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierCour.fxml"));
                 Parent root = loader.load();
-
 
                 ModifierCour controller = loader.getController();
                 controller.setCour(selectedCour);
@@ -157,14 +242,16 @@ public class AffichageListCours implements Initializable {
             }
         }
     }
+
     @FXML
     private void supprimerAction() {
         Cour selectedCour = rlist.getSelectionModel().getSelectedItem();
         if (selectedCour != null) {
             try {
                 courService.supprimer(selectedCour.getId());
-                List<Cour> updatedCours = courService.recuperer();
-                setRlistItems(updatedCours);
+                allCours = courService.recuperer();
+                allCours.sort(Comparator.comparingDouble(Cour::getCout)); // Retrier après suppression
+                setRlistItems(allCours);
                 btnModifier.setDisable(true);
                 btnSupprimer.setDisable(true);
             } catch (SQLException e) {

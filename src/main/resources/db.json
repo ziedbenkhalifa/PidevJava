@@ -1,0 +1,7 @@
+{
+  "participations": [
+    { "courseId": 1, "participations": 20 },
+    { "courseId": 2, "participations": 15 },
+    { "courseId": 3, "participations": 30 }
+  ]
+}
