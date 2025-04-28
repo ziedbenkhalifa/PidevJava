@@ -7,7 +7,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import net.fortuna.ical4j.data.CalendarOutputter;
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.CalScale;
+import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.util.RandomUidGenerator;
 import tn.cinema.entities.Cour;
 import tn.cinema.entities.Seance;
 import tn.cinema.entities.User;
@@ -15,9 +25,13 @@ import tn.cinema.services.CourService;
 import tn.cinema.services.SeanceService;
 import tn.cinema.utils.SessionManager;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -164,17 +178,20 @@ public class AffichageListSeancesFront {
             Label dayLabel = new Label(String.valueOf(day));
             dayLabel.getStyleClass().add("day-label");
 
-            StringBuilder seanceInfo = new StringBuilder();
-            for (Seance seance : seances) {
-                if (seance.getDateSeance().equals(date)) {
-                    seanceInfo.append(seance.getDuree().format(DateTimeFormatter.ofPattern("HH:mm")))
-                            .append(" - ").append(seance.getObjectifs()).append("\n");
+            List<Seance> daySeances = seances.stream()
+                    .filter(s -> s.getDateSeance().equals(date))
+                    .toList();
+
+            if (!daySeances.isEmpty()) {
+                for (Seance seance : daySeances) {
+                    String seanceText = seance.getDuree().format(DateTimeFormatter.ofPattern("HH:mm"))
+                            + " - " + seance.getObjectifs();
+                    Label seanceLabel = new Label(seanceText);
+                    seanceLabel.getStyleClass().add("seance-label");
+                    seanceLabel.setOnMouseClicked(event -> saveSeanceToCalendar(seance));
+                    dayVBox.getChildren().add(seanceLabel);
                 }
-            }
-            if (!seanceInfo.isEmpty()) {
-                Label seanceLabel = new Label(seanceInfo.toString());
-                seanceLabel.getStyleClass().add("seance-label");
-                dayVBox.getChildren().addAll(dayLabel, seanceLabel);
+                dayVBox.getChildren().add(0, dayLabel);
                 dayVBox.getStyleClass().remove("day-box");
                 dayVBox.getStyleClass().add("day-box-with-seance");
             } else {
@@ -182,6 +199,69 @@ public class AffichageListSeancesFront {
             }
 
             calendarGrid.add(dayVBox, (dayOfWeek + day - 1) % 7, row + ((dayOfWeek + day - 1) / 7));
+        }
+    }
+
+    private void saveSeanceToCalendar(Seance seance) {
+        try {
+            // Créer un objet iCalendar
+            Calendar calendar = new Calendar();
+            calendar.getProperties().add(new ProdId("-//xAI//CinemaApp//FR"));
+            calendar.getProperties().add(Version.VERSION_2_0);
+            calendar.getProperties().add(CalScale.GREGORIAN);
+
+            // Créer un événement (VEvent) pour la séance
+            LocalDateTime startDateTime = LocalDateTime.of(seance.getDateSeance(), seance.getDuree());
+            LocalDateTime endDateTime = startDateTime.plusHours(1); // Supposons une durée de 1 heure
+            DateTime start = new DateTime(java.util.Date.from(startDateTime.atZone(java.time.ZoneId.systemDefault()).toInstant()));
+            DateTime end = new DateTime(java.util.Date.from(endDateTime.atZone(java.time.ZoneId.systemDefault()).toInstant()));
+
+            String eventSummary = "Séance: " + seance.getObjectifs();
+            VEvent event = new VEvent(start, end, eventSummary);
+
+            // Ajouter un identifiant unique
+            RandomUidGenerator ug = new RandomUidGenerator();
+            event.getProperties().add(ug.generateUid());
+
+            // Ajouter une description
+            String description = "Cours: " + (seance.getCour() != null ? seance.getCour().getTypeCour() : "N/A") +
+                    "\nObjectifs: " + seance.getObjectifs();
+            event.getProperties().add(new net.fortuna.ical4j.model.property.Description(description));
+
+            // Ajouter un lieu (optionnel)
+            event.getProperties().add(new net.fortuna.ical4j.model.property.Location("Cinéma"));
+
+            // Ajouter l'événement au calendrier
+            calendar.getComponents().add(event);
+
+            // Créer un fichier temporaire
+            File tempFile = File.createTempFile("seance_", ".ics");
+
+            // Écrire le fichier .ics
+            try (FileOutputStream fout = new FileOutputStream(tempFile)) {
+                CalendarOutputter outputter = new CalendarOutputter();
+                outputter.output(calendar, fout);
+            }
+
+            // Vérifier si Outlook est installé et ouvrir le fichier .ics avec Outlook
+            if (Desktop.isDesktopSupported()) {
+                Desktop desktop = Desktop.getDesktop();
+                if (desktop.isSupported(Desktop.Action.OPEN)) {
+                    desktop.open(tempFile);
+                    showAlert("Succès", "La séance a été ouverte .");
+                } else {
+                    showAlert("Erreur", "L'ouverture automatique n'est pas supportée sur cette plateforme. Le fichier est à : " + tempFile.getAbsolutePath());
+                }
+            } else {
+                showAlert("Erreur", "L'ouverture automatique n'est pas supportée sur cette plateforme. Le fichier est à : " + tempFile.getAbsolutePath());
+            }
+
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Erreur lors de la création ou de l'ouverture du fichier .ics", e);
+            showAlert("Erreur", "Erreur lors de l'ouverture d'Outlook : " + e.getMessage());
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Erreur inattendue lors de l'enregistrement de la séance", e);
+            showAlert("Erreur", "Erreur inattendue : " + e.getMessage());
         }
     }
 
@@ -194,7 +274,7 @@ public class AffichageListSeancesFront {
             currentMonth = YearMonth.of(selectedYear, month);
             LOGGER.info("Mois mis à jour via ComboBox : " + currentMonth);
             updateCalendar();
-            datePicker.setValue(currentMonth.atDay(1)); // Mettre à jour le DatePicker
+            datePicker.setValue(currentMonth.atDay(1));
         }
     }
 
@@ -220,7 +300,6 @@ public class AffichageListSeancesFront {
     private void applySearchAction() {
         LOGGER.info("Recherche appliquée : " + searchField.getText());
         // Implémenter la logique de recherche ici
-        // Par exemple, filtrer les séances ou cours en fonction de searchField.getText()
     }
 
     @FXML
@@ -340,7 +419,10 @@ public class AffichageListSeancesFront {
     }
 
     private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        if (title.equals("Erreur")) {
+            alert.setAlertType(Alert.AlertType.ERROR);
+        }
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);

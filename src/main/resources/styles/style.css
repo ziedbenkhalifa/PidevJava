@@ -498,3 +498,7 @@
     -fx-alignment: center;
     -fx-max-width: 180; /* Augmenté de 160 à 180 pour s'adapter à la nouvelle largeur */
 }
+.seance-label:hover {
+    -fx-cursor: hand;
+    -fx-underline: true;
+}
