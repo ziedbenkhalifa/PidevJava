@@ -7,7 +7,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Side;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import tn.cinema.entities.Salle;
 import tn.cinema.entities.Equipement;
@@ -47,8 +50,8 @@ public class Statistique implements Initializable {
             if (salles.isEmpty()) {
                 afficherMessage("Aucune salle trouvée.");
             } else {
-                PieChart pieChart = createPieChartSalles(salles);
-                chartContainer.getChildren().add(pieChart);
+                VBox pieChartAvecLegende = createPieChartSallesAvecLegende(salles);
+                chartContainer.getChildren().add(pieChartAvecLegende);
                 afficherTotal("Nombre total de salles : " + salles.size());
             }
 
@@ -112,15 +115,16 @@ public class Statistique implements Initializable {
         e.printStackTrace();
     }
 
-    private PieChart createPieChartSalles(List<Salle> salles) {
+    private VBox createPieChartSallesAvecLegende(List<Salle> salles) {
         PieChart pieChart = SalleStats.createEtatSalleChart(salles);
         pieChart.setLabelsVisible(true);
-        pieChart.setLegendVisible(true);
+        pieChart.setLegendVisible(false);
         pieChart.setLegendSide(Side.BOTTOM);
         pieChart.setClockwise(true);
 
-        // Appliquer les couleurs personnalisées aux slices
         String[] couleurs = {"#ff7eb6", "#7fdbda", "#d3d3d3"}; // rose, turquoise, gris clair
+        String[] etats = {"Disponible", "En maintenance", "En panne"};
+
         int i = 0;
         for (PieChart.Data data : pieChart.getData()) {
             String couleur = couleurs[i % couleurs.length];
@@ -136,7 +140,20 @@ public class Statistique implements Initializable {
         fadeTransition.setToValue(1);
         fadeTransition.play();
 
-        return pieChart;
+        // Légende personnalisée
+        HBox legendBox = new HBox(15);
+        legendBox.setPadding(new Insets(10, 0, 0, 0));
+
+        for (int j = 0; j < etats.length; j++) {
+            Rectangle rect = new Rectangle(12, 12, Color.web(couleurs[j]));
+            Label label = new Label(etats[j]);
+            label.setStyle("-fx-font-size: 13px; -fx-text-fill: #444;");
+            HBox legendItem = new HBox(5, rect, label);
+            legendBox.getChildren().add(legendItem);
+        }
+
+        VBox container = new VBox(10, pieChart, legendBox);
+        return container;
     }
 
     private BarChart<String, Number> createBarChartEquipements(List<Equipement> equipements) {
@@ -153,14 +170,17 @@ public class Statistique implements Initializable {
         barChart.setLegendVisible(false);
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
+
+        // Ordre fixe : Disponible, En panne, En maintenance
+        String[] etats = {"Disponible", "En panne", "En maintenance"};
         String[] couleurs = {"#7fdbda", "#ff7eb6", "#a6a6a6"}; // turquoise, rose, gris
-        int colorIndex = 0;
 
-        for (Map.Entry<String, Long> entry : repartition.entrySet()) {
-            XYChart.Data<String, Number> data = new XYChart.Data<>(entry.getKey(), entry.getValue());
+        for (int i = 0; i < etats.length; i++) {
+            String etat = etats[i];
+            long count = repartition.getOrDefault(etat, 0L);
+            XYChart.Data<String, Number> data = new XYChart.Data<>(etat, count);
 
-            // Ajoute listener pour changer la couleur après le rendu du node
-            final String couleur = couleurs[colorIndex % couleurs.length];
+            final String couleur = couleurs[i % couleurs.length];
             data.nodeProperty().addListener((obs, oldNode, newNode) -> {
                 if (newNode != null) {
                     newNode.setStyle("-fx-bar-fill: " + couleur + ";");
@@ -168,7 +188,6 @@ public class Statistique implements Initializable {
             });
 
             series.getData().add(data);
-            colorIndex++;
         }
 
         barChart.getData().add(series);
@@ -180,4 +199,5 @@ public class Statistique implements Initializable {
 
         return barChart;
     }
+
 }

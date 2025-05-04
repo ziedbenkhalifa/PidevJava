@@ -7,12 +7,18 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import tn.cinema.entities.Salle;
 import tn.cinema.services.SalleService;
+import tn.cinema.services.NotificationService; // 🛠️ Ajouté
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Connection; // 🛠️ Ajouté
+import tn.cinema.tools.Mydatabase; // 🛠️ Changé
+import java.sql.PreparedStatement; // 🛠️ Ajouté
+import java.sql.Timestamp; // 🛠️ Ajouté
+import java.time.LocalDateTime; // 🛠️ Ajouté
 
 public class ModifierSalle {
 
@@ -36,11 +42,9 @@ public class ModifierSalle {
 
     private Salle salleActuelle;
 
-    // Méthode pour initialiser la salle à modifier dans les champs du formulaire
     public void setSalle(Salle salle) {
         this.salleActuelle = salle;
 
-        // Initialisation des champs avec les valeurs de la salle
         tfNomSalle.setText(salle.getNom_salle());
         cbDisponibilite.setValue(salle.getDisponibilite());
         cbEmplacement.setValue(salle.getEmplacement());
@@ -73,7 +77,6 @@ public class ModifierSalle {
             return;
         }
 
-        // ✅ Mise à jour des infos de la salle
         salleActuelle.setNom_salle(tfNomSalle.getText());
         salleActuelle.setDisponibilite(cbDisponibilite.getValue());
         salleActuelle.setEmplacement(cbEmplacement.getValue());
@@ -81,13 +84,16 @@ public class ModifierSalle {
         salleActuelle.setType_salle(tfTypeSalle.getValue());
         salleActuelle.setNombre_de_place(nombreDePlaces);
 
-        // ✅ Ajouter la notification avant la modification en base
         String statut = salleActuelle.getStatut();
         if ("Fermée".equalsIgnoreCase(statut) || "En Maintenance".equalsIgnoreCase(statut)) {
             String message = "La salle \"" + salleActuelle.getNom_salle() + "\" est actuellement en " + statut.toLowerCase() + ".";
-            tn.cinema.services.NotificationService.getInstance().ajouterNotification(message);
-        }
 
+            // 🔵 Envoyer vers la liste
+            NotificationService.getInstance().ajouterNotification(message);
+
+            // 🔵 Enregistrer aussi dans la base de données
+            enregistrerNotificationDansBase(message);
+        }
 
         try {
             SalleService service = new SalleService();
@@ -99,7 +105,6 @@ public class ModifierSalle {
             alert.setContentText("Les informations de la salle ont été mises à jour.");
             alert.showAndWait();
 
-            // Redirection vers ListeSalle.fxml
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ListeSalle.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
@@ -124,12 +129,47 @@ public class ModifierSalle {
         }
     }
 
+    private void enregistrerNotificationDansBase(String message) {
+        Connection connexion = null;
+        PreparedStatement ps = null;
+        try {
+            connexion = Mydatabase.getInstance().getCnx();
+
+            if (connexion == null || connexion.isClosed()) {
+                System.out.println("La connexion est fermée !");
+                return;
+            }
+
+            // Créer les timestamps proprement
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime expires = now.plusDays(1);
+
+            Timestamp createdAt = Timestamp.valueOf(now);
+            Timestamp expiresAt = Timestamp.valueOf(expires);
+
+            String sql = "INSERT INTO notification (message, created_at, expires_at) VALUES (?, ?, ?)";
+            ps = connexion.prepareStatement(sql);
+            ps.setString(1, message);
+            ps.setTimestamp(2, createdAt);
+            ps.setTimestamp(3, expiresAt);
+
+            ps.executeUpdate();
+            System.out.println("✅ Notification enregistrée avec expiration après un jour !");
+
+        } catch (SQLException e) {
+            System.out.println("❌ Erreur lors de l'enregistrement : " + e.getMessage());
+        } finally {
+            try {
+                if (ps != null) ps.close();
+            } catch (SQLException e) {
+                System.out.println("❌ Erreur lors de la fermeture de la requête : " + e.getMessage());
+            }
+        }}
+
     @FXML
     public void resetForm(ActionEvent actionEvent) {
         tfNomSalle.clear();
         tfPlaces.clear();
-
-        // Réinitialisation des ComboBoxes
         cbDisponibilite.getSelectionModel().clearSelection();
         cbEmplacement.getSelectionModel().clearSelection();
         cbStatut.getSelectionModel().clearSelection();

@@ -29,7 +29,7 @@ public class Page1 {
 
     @FXML
     private void statistiques(ActionEvent event) {
-        chargerPage("/Views/Statistique.fxml", "Statistiques");
+        chargerPage("/Views/stat.fxml", "Statistiques");
     }
 
     private void chargerPage(String cheminFxml, String titrePage) {

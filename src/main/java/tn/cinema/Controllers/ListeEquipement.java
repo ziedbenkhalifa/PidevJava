@@ -1,6 +1,9 @@
 package tn.cinema.Controllers;
 
+import javafx.event.ActionEvent;
+import javafx.scene.Node;
 import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
 import tn.cinema.entities.Equipement;
 import tn.cinema.services.EquipementService;
 import javafx.collections.FXCollections;
@@ -120,6 +123,33 @@ public class ListeEquipement {
         // Configuration de l'écouteur d'événements pour le clic sur l'ImageView
         btnRechercherEquipement.setOnMouseClicked(event -> rechercherEquipementsParNom());
     }
+    @FXML
+    private void showNotificationList() {
+        try {
+            // Charger Notification.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Notification.fxml"));
+            Parent root = loader.load();
+
+            // Créer une nouvelle fenêtre pour la liste des notifications
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Liste des Notifications");
+            stage.initModality(Modality.APPLICATION_MODAL); // Fenêtre modale
+            stage.setResizable(false); // Non redimensionnable
+            stage.show();
+        } catch (IOException e) {
+            // Afficher une alerte en cas d'erreur
+            showErrorAlert(e);
+        }
+    }
+
+    private void showErrorAlert(Exception e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Erreur de chargement");
+        alert.setHeaderText("Impossible de charger la liste des notifications");
+        alert.setContentText(e.getMessage());
+        alert.showAndWait();
+    }
 
     @FXML
     private void handleAide() {
@@ -139,6 +169,17 @@ public class ListeEquipement {
             alert.setHeaderText("Impossible d'ouvrir la page des salles");
             alert.setContentText(e.getMessage());
             alert.showAndWait();
+        }
+    }
+    @FXML
+    private void allerVersNouvellePage(ActionEvent event) {
+        try {
+            Parent nouvellePage = FXMLLoader.load(getClass().getResource("/Views/GestionPanne.fxml"));
+            Scene scene = ((Node) event.getSource()).getScene();
+            Stage stage = (Stage) scene.getWindow();
+            stage.getScene().setRoot(nouvellePage);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
