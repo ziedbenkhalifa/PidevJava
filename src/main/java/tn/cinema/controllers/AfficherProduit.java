@@ -7,8 +7,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import java.util.Optional;
+import java.time.LocalDateTime;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -18,6 +21,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
+import java.util.List;
 import javafx.event.ActionEvent;
 import tn.cinema.controllers.ModifierProduit;
 import tn.cinema.entities.Produit;
@@ -26,6 +30,9 @@ import javafx.scene.Node;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 import java.io.IOException;
+import javafx.scene.control.ComboBox;
+import java.util.Arrays;  // Ajoutez cette ligne
+import javafx.stage.Modality;
 
 public class AfficherProduit extends Dashboard {
 
@@ -37,9 +44,48 @@ public class AfficherProduit extends Dashboard {
     private ProduitService produitService = new ProduitService();
 
     @FXML
+    private TextField searchField;
+    @FXML
+    private TextField categorieField;
+
+    @FXML
+    private DatePicker dateField;
+
+    @FXML
+    private ComboBox<String> categorieComboBox;
+
+    @FXML
+    private TextField prixMinField;
+
+    @FXML
+    private TextField prixMaxField;
+
+    @FXML private ComboBox<String> sortComboBox;
+
+    @FXML
     public void initialize() {
         produits.addAll(produitService.recuperer());
         afficherProduits();
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            rechercherProduit(); // Appel de la méthode de recherche automatique
+        });
+        List<String> categories = Arrays.asList("Vetement", "Food", "Maison");
+
+        // Remplir le ComboBox avec la liste des catégories
+        categorieComboBox.setItems(FXCollections.observableArrayList(categories));
+        sortComboBox.setItems(FXCollections.observableArrayList(
+                "Nom (A→Z)",
+                "Prix (↑)",
+                "Prix (↓)",
+                "Date (↑)",
+                "Date (↓)"
+        ));
+        // Par défaut
+        sortComboBox.setValue("Nom (A→Z)");
+        sortComboBox.setOnAction(e -> appliquerTri());
+
+        // Chargement initial
+        appliquerTri();
     }
 
     private void afficherProduits() {
@@ -243,6 +289,48 @@ public class AfficherProduit extends Dashboard {
         confirmationStage.show();
     }
 
+    @FXML
+    public void rechercherProduit() {
+        // Récupérer les valeurs des champs de recherche
+        String nom = searchField.getText().toLowerCase();
+
+        // Récupérer la valeur sélectionnée du ComboBox
+        String categorie = null;
+        if (categorieComboBox.getValue() != null) {
+            categorie = categorieComboBox.getValue().toString().toLowerCase();
+        }
+
+        Double prixMin = null;
+        Double prixMax = null;
+        LocalDateTime date = null;
+
+        try {
+            if (!prixMinField.getText().isEmpty()) {
+                prixMin = Double.parseDouble(prixMinField.getText());
+            }
+            if (!prixMaxField.getText().isEmpty()) {
+                prixMax = Double.parseDouble(prixMaxField.getText());
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("❌ Erreur lors de la conversion des prix min/max");
+        }
+
+        if (dateField.getValue() != null) {
+            date = dateField.getValue().atStartOfDay();
+        }
+
+        // Appel de la méthode de recherche avancée avec les nouveaux paramètres
+        List<Produit> produitsFiltres = produitService.rechercherAvancee(nom, categorie, prixMin, prixMax, date);
+
+        // Conversion en ObservableList pour affichage
+        ObservableList<Produit> observableProduits = FXCollections.observableArrayList(produitsFiltres);
+
+        // Mise à jour de l'affichage
+        produits.setAll(observableProduits);
+        afficherProduits();
+    }
+
+
     private void showConfirmationSuccess() {
         // Fenêtre de succès après suppression
         VBox successBox = new VBox(15);
@@ -273,7 +361,29 @@ public class AfficherProduit extends Dashboard {
         successStage.show();
     }
 
+    @FXML
+    private void appliquerTri() {
+        String choix = sortComboBox.getValue();
+        String colonne;
+        boolean asc = true;
 
+        switch (choix) {
+            case "Prix (↑)" -> { colonne = "prix";      asc = true;  }
+            case "Prix (↓)" -> { colonne = "prix";      asc = false; }
+            case "Date (↑)" -> { colonne = "datecommande"; asc = true;  }
+            case "Date (↓)" -> { colonne = "datecommande"; asc = false; }
+            default         -> { colonne = "nom";       asc = true;  }
+        }
+
+        // 1) Fetch the sorted list of Produit
+        List<Produit> tris = produitService.recupererTries(colonne, asc);
+
+        // 2) Update your ObservableList<Produit>
+        produits.setAll(tris);
+
+        // 3) Re-render the HBoxes in the ListView
+        afficherProduits();
+    }
 
     @FXML
     void ajouter(ActionEvent event) {
@@ -282,6 +392,36 @@ public class AfficherProduit extends Dashboard {
             Parent root = loader.load();
             Stage stage = (Stage) listViewProduits.getScene().getWindow();
             stage.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    void stat(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/StatistiquesProduit.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) listViewProduits.getScene().getWindow();
+            stage.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }    @FXML
+    void envoyerSMS(ActionEvent event) {
+        try {
+            // Charger le fichier FXML pour la fenêtre popup
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/SMSPromotion.fxml"));
+            Parent root = loader.load();
+
+            // Créer un nouveau stage pour afficher la popup
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL);  // Empêche l'interaction avec la fenêtre principale
+            popupStage.setTitle("Envoyer Promotion par SMS");  // Titre de la fenêtre popup
+
+            // Créer une scène pour le popup et l'afficher
+            Scene scene = new Scene(root);
+            popupStage.setScene(scene);
+            popupStage.showAndWait();  // Afficher la popup et attendre que l'utilisateur ferme la fenêtre
         } catch (IOException e) {
             e.printStackTrace();
         }

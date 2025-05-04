@@ -15,11 +15,11 @@ import javafx.scene.Node;
 import tn.cinema.entities.Commande;
 import tn.cinema.services.CommandeService;
 import java.io.IOException;
+import tn.cinema.entities.User;
+import tn.cinema.utils.SessionManager;
 
-public class ModifierCommande extends Dashboard {
+public class ModifierCommande {
 
-    @FXML
-    private TextField tfUserId;
     @FXML
     private TextField tfMontantPaye;
     @FXML
@@ -31,11 +31,10 @@ public class ModifierCommande extends Dashboard {
     @FXML
     public void initialize() {
         // Initialisation de la ComboBox pour l'état
-        cbEtat.setItems(FXCollections.observableArrayList("En attente", "Payée", "Annulée"));
+        cbEtat.setItems(FXCollections.observableArrayList("En attente", "Payée", "Annulée", "Livrée"));
 
         // Charger les informations de la commande à modifier si disponible
         if (commandeSelectionnee != null) {
-            tfUserId.setText(String.valueOf(commandeSelectionnee.getUserId()));
             tfMontantPaye.setText(String.valueOf(commandeSelectionnee.getMontantPaye()));
             cbEtat.setValue(commandeSelectionnee.getEtat());
         }
@@ -50,48 +49,73 @@ public class ModifierCommande extends Dashboard {
     @FXML
     private void modifierCommande() {
         try {
-            if (commandeSelectionnee != null) {
-                // Vérifier que les champs sont remplis
-                if (tfUserId.getText().isEmpty() || tfMontantPaye.getText().isEmpty() || cbEtat.getValue() == null) {
-                    showAlert(AlertType.WARNING, "Erreur", "Veuillez remplir tous les champs.");
-                    return;
-                }
-
-                // Valider que les données sont correctes
-                int userId;
-                try {
-                    userId = Integer.parseInt(tfUserId.getText());
-                } catch (NumberFormatException e) {
-                    showAlert(AlertType.ERROR, "Erreur", "L'ID utilisateur doit être un nombre valide.");
-                    return;
-                }
-
-                double montantPaye;
-                try {
-                    montantPaye = Double.parseDouble(tfMontantPaye.getText());
-                    if (montantPaye < 0) {
-                        showAlert(AlertType.ERROR, "Erreur", "Le montant payé ne peut pas être négatif.");
-                        return;
-                    }
-                } catch (NumberFormatException e) {
-                    showAlert(AlertType.ERROR, "Erreur", "Le montant payé doit être un nombre valide.");
-                    return;
-                }
-
-                // Mettre à jour les informations de la commande
-                commandeSelectionnee.setUserId(userId);
-                commandeSelectionnee.setMontantPaye(montantPaye);
-                commandeSelectionnee.setEtat(cbEtat.getValue());
-
-                // Mettre à jour la commande dans le service
-                commandeService.modifier(commandeSelectionnee);
-
-                showAlert(AlertType.INFORMATION, "Succès", "La commande a été modifiée avec succès.");
-            } else {
-                showAlert(AlertType.WARNING, "Erreur", "Commande non trouvée.");
+            // Vérifier que les champs sont remplis
+            if (tfMontantPaye.getText().isEmpty() || cbEtat.getValue() == null) {
+                showAlert(AlertType.WARNING, "Erreur", "Veuillez remplir tous les champs.");
+                return;
             }
+
+            // Valider que les données sont correctes
+            double montantPaye = validateMontantPaye(tfMontantPaye.getText());
+            if (montantPaye == -1) return;  // Montant invalide
+
+            // Mise à jour de la commande
+            commandeSelectionnee.setMontantPaye(montantPaye);
+            commandeSelectionnee.setEtat(cbEtat.getValue());
+            commandeService.modifier(commandeSelectionnee);
+
+            // Envoi d’email si livrée
+            if ("Livrée".equals(cbEtat.getValue())) {
+                sendLivraisonEmail(commandeSelectionnee);
+            }
+
+            showAlert(AlertType.INFORMATION, "Succès", "La commande a été modifiée avec succès.");
+            clearFields();
+
+        } catch (NumberFormatException e) {
+            showAlert(AlertType.ERROR, "Erreur de format", "Le format des données est incorrect : " + e.getMessage());
         } catch (Exception e) {
-            showAlert(AlertType.ERROR, "Erreur", "Une erreur est survenue : " + e.getMessage());
+            showAlert(AlertType.ERROR, "Erreur inconnue", "Une erreur est survenue : " + e.getMessage());
+        }
+    }
+
+    // Méthode pour valider le montant payé
+    private double validateMontantPaye(String montantPayeText) {
+        try {
+            double montantPaye = Double.parseDouble(montantPayeText);
+            if (montantPaye < 0) {
+                showAlert(AlertType.ERROR, "Erreur", "Le montant payé ne peut pas être négatif.");
+                return -1; // Retourner une valeur invalide pour signifier une erreur
+            }
+            return montantPaye;
+        } catch (NumberFormatException e) {
+            showAlert(AlertType.ERROR, "Erreur", "Le montant payé doit être un nombre valide.");
+            return -1; // Retourner une valeur invalide pour signifier une erreur
+        }
+    }
+
+    // Méthode pour envoyer un email de confirmation de livraison
+// Méthode pour envoyer un email de confirmation de livraison
+    private void sendLivraisonEmail(Commande commande) {
+        // Récupérer l'utilisateur connecté
+        User loggedInUser = SessionManager.getInstance().getLoggedInUser();
+        if (loggedInUser == null) {
+            showAlert(AlertType.WARNING, "Email non envoyé", "Aucun utilisateur connecté, impossible d'envoyer l'email.");
+            return;
+        }
+
+        String recipientEmail = loggedInUser.getEmail();  // récupère automatiquement
+        String subject = "Votre commande a été livrée";
+        String messageBody = "Bonjour " + loggedInUser.getNom() + ",\n\n" +
+                "Votre commande n°" + commande.getId() + " a bien été livrée.\n" +
+                "Merci de votre confiance !\n\n" +
+                "Cordialement,\nL’équipe Showtime";
+
+        boolean emailEnvoye = CommandeService.envoyerEmailConfirmation(recipientEmail, subject, messageBody);
+        if (emailEnvoye) {
+            showAlert(AlertType.INFORMATION, "Email envoyé", "Un email de confirmation a été envoyé à : " + recipientEmail);
+        } else {
+            showAlert(AlertType.ERROR, "Erreur d'email", "L'envoi de l'email a échoué. Veuillez vérifier votre configuration SMTP.");
         }
     }
 
@@ -121,8 +145,8 @@ public class ModifierCommande extends Dashboard {
         }
     }
 
+    // Méthode pour réinitialiser les champs
     private void clearFields() {
-        tfUserId.clear();
         tfMontantPaye.clear();
         cbEtat.setValue("En attente");
     }

@@ -22,7 +22,7 @@ public class ProjectionService implements IServices<Projection>{
         String sql = "INSERT INTO projection (capaciter, date_projection, prix) VALUES (?, ?, ?)";
         PreparedStatement ps =cnx.prepareStatement(sql);
         ps.setInt(1, projection.getCapaciter());
-        ps.setDate(2, java.sql.Date.valueOf(projection.getDate_projection()));
+        ps.setDate(2, Date.valueOf(projection.getDate_projection()));
         ps.setFloat(3, projection.getPrix());
         ps.executeUpdate();
         System.out.println("Projection added");
@@ -42,7 +42,7 @@ public class ProjectionService implements IServices<Projection>{
     public void modifier(Projection projection) throws SQLException {
         String req = "UPDATE projection SET date_projection = ?, capaciter = ?, prix = ? WHERE id = ?";
         PreparedStatement ps = cnx.prepareStatement(req);
-        ps.setDate(1, java.sql.Date.valueOf(projection.getDate_projection()));
+        ps.setDate(1, Date.valueOf(projection.getDate_projection()));
         ps.setInt(2, projection.getCapaciter());
         ps.setFloat(3, projection.getPrix());
         ps.setInt(4, projection.getId());

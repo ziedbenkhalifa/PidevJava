@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<?import javafx.scene.control.TextField?>
+<?import java.net.URL?>
+<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #0b0f29;" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.StatistiquesController">
+    <stylesheets>
+        <URL value="@styles.css" />
+    </stylesheets>
+    <children>
+        <!-- Sidebar (identique à AfficherUser.fxml) -->
+        <AnchorPane layoutY="-8.0" prefHeight="651.0" prefWidth="200.0" style="-fx-background-color: #021b50; -fx-background-radius: 10;">
+            <children>
+                <ImageView layoutX="12.0" layoutY="31.0">
+                    <image>
+                        <Image url="@images/icons8-user-64.png" />
+                    </image>
+                </ImageView>
+                <Button fx:id="monCompteButton" layoutX="74.0" layoutY="31.0" mnemonicParsing="false" onAction="#handleMonCompteAction" prefHeight="64.0" prefWidth="126.0" style="-fx-background-color: #021b50;" text="Mon Compte" textFill="#d7d7d9">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Button>
+                <Button layoutX="56.0" layoutY="181.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion User" textFill="#d7d7d9" />
+                <Button layoutX="57.0" layoutY="237.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Film" textFill="#d7d7d9" />
+                <Button fx:id="gestionPubButton" layoutX="57.0" layoutY="346.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Pub" textFill="#d7d7d9" />
+                <Button layoutX="57.0" layoutY="399.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Cour" textFill="#d7d7d9" />
+                <Button layoutX="58.0" layoutY="293.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Produit" textFill="#d7d7d9" />
+                <Button layoutX="55.0" layoutY="454.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Salle" textFill="#d7d7d9" />
+
+                <!-- Sidebar Icons -->
+                <ImageView fitHeight="87.0" fitWidth="100.0" layoutX="8.0" layoutY="542.0">
+                    <image>
+                        <Image url="@images/showtime-removebg-preview.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="31.0" fitWidth="29.0" layoutX="15.0" layoutY="178.0">
+                    <image>
+                        <Image url="@images/usermodifier.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitWidth="29.0" layoutX="13.0" layoutY="236.0">
+                    <image>
+                        <Image url="@images/film-slate.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="31.0" fitWidth="36.0" layoutX="9.0" layoutY="289.0">
+                    <image>
+                        <Image url="@images/new-product.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="12.0" layoutY="339.0">
+                    <image>
+                        <Image url="@images/mmmmmm.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="8.0" layoutY="392.0">
+                    <image>
+                        <Image url="@images/gggggggggggggggggggggggg.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="31.0" fitWidth="29.0" layoutX="12.0" layoutY="451.0">
+                    <image>
+                        <Image url="@images/cinema.png" />
+                    </image>
+                </ImageView>
+            </children>
+        </AnchorPane>
+
+        <!-- Header (identique à AfficherUser.fxml) -->
+        <Pane layoutX="215.0" layoutY="14.0" prefHeight="67.0" prefWidth="1076.0" style="-fx-background-color: #021b50; -fx-background-radius: 30;">
+            <children>
+                <Label layoutX="41.0" layoutY="18.0" prefHeight="31.0" prefWidth="148.0" text="SHOWTIME" textFill="WHITE">
+                    <font>
+                        <Font size="24.0" />
+                    </font>
+                </Label>
+                <Button fx:id="backToUsersButton" layoutX="200.0" layoutY="18.0" mnemonicParsing="false" onAction="#handleBackToUsers" prefHeight="31.0" prefWidth="120.0" style="-fx-background-color: #294478; -fx-text-fill: white; -fx-background-radius: 5;" text="Retour aux Users">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Button>
+                <ImageView fitHeight="38.0" fitWidth="36.0" layoutX="956.0" layoutY="15.0">
+                    <image>
+                        <Image url="@images/search.png" />
+                    </image>
+                </ImageView>
+                <TextField layoutX="692.0" layoutY="10.0" prefHeight="48.0" prefWidth="256.0" promptText="  Search" style="-fx-background-radius: 30;">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </TextField>
+            </children>
+        </Pane>
+
+        <!-- Main Content Area (remplacer ListView par PieChart) -->
+        <AnchorPane layoutX="215.0" layoutY="89.0" prefHeight="554.0" prefWidth="1068.0" style="-fx-background-radius: 20;">
+            <children>
+                <!-- Background Image -->
+                <ImageView fitHeight="554.0" fitWidth="1068.0" opacity="0.35">
+                    <image>
+                        <Image url="@images/cinemaback.jpg" />
+                    </image>
+                </ImageView>
+                <!-- Statistiques avec PieChart -->
+                <VBox layoutX="10.0" layoutY="37.0" prefHeight="460.0" prefWidth="1048.0" spacing="20" style="-fx-background-color: transparent; -fx-border-color: #162c4f; -fx-border-width: 1; -fx-border-radius: 5;">
+                    <children>
+                        <Label text="Statistiques des Utilisateurs par Rôle :" textFill="WHITE">
+                            <font>
+                                <Font size="22.0" />
+                            </font>
+                        </Label>
+                        <PieChart fx:id="rolePieChart" prefHeight="400.0" prefWidth="1048.0" title="Répartition des Rôles" legendVisible="false">
+                            <titleSide>
+                                <javafx.geometry.Side fx:constant="TOP" />
+                            </titleSide>
+                        </PieChart>
+                    </children>
+                </VBox>
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>

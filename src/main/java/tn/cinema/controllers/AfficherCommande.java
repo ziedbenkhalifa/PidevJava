@@ -21,7 +21,19 @@ import tn.cinema.utils.SessionManager;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.time.LocalDateTime;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.io.File;
+import javafx.animation.ScaleTransition;
+import javafx.animation.TranslateTransition;
+import javafx.util.Duration;
+import javafx.scene.input.MouseEvent;
 
 public class AfficherCommande {
 
@@ -31,11 +43,13 @@ public class AfficherCommande {
     private ObservableList<Commande> commandes = FXCollections.observableArrayList();
     private final CommandeService commandeService = new CommandeService();
 
+
     @FXML
     public void initialize() {
         commandes.addAll(commandeService.recuperer()); // Récupérer toutes les commandes
         afficherCommandes();
     }
+
 
     private void afficherCommandes() {
         listViewCommandes.getItems().clear();
@@ -67,69 +81,66 @@ public class AfficherCommande {
             btnModifier.setStyle(btnStyle);
             btnSupprimer.setStyle(btnDeleteStyle);
 
-            // Hover Animation for Buttons
-            btnModifier.setOnMouseEntered(e -> {
-                btnModifier.setStyle(btnStyle + "-fx-background-color: #2980b9;");
-                btnModifier.setScaleX(1.1);
-                btnModifier.setScaleY(1.1);
-            });
-            btnModifier.setOnMouseExited(e -> {
-                btnModifier.setStyle(btnStyle);
-                btnModifier.setScaleX(1);
-                btnModifier.setScaleY(1);
-            });
+            // Animation sur les boutons Modifier et Supprimer
+            addHoverAnimation(btnModifier);
+            addHoverAnimation(btnSupprimer);
+            addClickAnimation(btnModifier);
+            addClickAnimation(btnSupprimer);
 
-            btnSupprimer.setOnMouseEntered(e -> {
-                btnSupprimer.setStyle(btnDeleteStyle + "-fx-background-color: #c0392b;");
-                btnSupprimer.setScaleX(1.1);
-                btnSupprimer.setScaleY(1.1);
-            });
-            btnSupprimer.setOnMouseExited(e -> {
-                btnSupprimer.setStyle(btnDeleteStyle);
-                btnSupprimer.setScaleX(1);
-                btnSupprimer.setScaleY(1);
-            });
+            // Création du bouton Exporter en PDF
+            Button btnExporterPDF = new Button("Exporter en PDF");
+            btnExporterPDF.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-padding: 10px 15px; -fx-border-radius: 5px;");
+            btnExporterPDF.setOnAction(event -> exporterEnPDF(c)); // Appel à la méthode d'exportation
+            // Animation sur le bouton Exporter en PDF (survol)
+            addHoverAnimation(btnExporterPDF);
 
-            // Press Animation for Buttons
-            btnModifier.setOnMousePressed(e -> {
-                btnModifier.setStyle(btnStyle + "-fx-background-color: #1f618d;");
-            });
-            btnModifier.setOnMouseReleased(e -> {
-                btnModifier.setStyle(btnStyle);
-            });
+// Animation au clic sur le bouton Exporter en PDF
+            addClickAnimation(btnExporterPDF);
 
-            btnSupprimer.setOnMousePressed(e -> {
-                btnSupprimer.setStyle(btnDeleteStyle + "-fx-background-color: #922b21;");
-            });
-            btnSupprimer.setOnMouseReleased(e -> {
-                btnSupprimer.setStyle(btnDeleteStyle);
-            });
+            // Utilisation de HBox pour aligner les informations horizontalement
+            HBox infoBox = new HBox(15, lblId, lblUserId, lblMontant, lblEtat, lblDate);
+            infoBox.setStyle("-fx-padding: 10px; -fx-background-color: #f9f9f9; -fx-background-radius: 10px;");
+            infoBox.setAlignment(Pos.CENTER_LEFT);
 
-            // Créer un VBox pour les informations de la commande et les boutons
-            VBox infoBox = new VBox(5, lblId, lblUserId, lblMontant, lblEtat, lblDate);
-            infoBox.setSpacing(8);
-            infoBox.setPadding(new Insets(10, 0, 0, 0));
-
-            // Créer un HBox pour les boutons Modifier et Supprimer
-            HBox btnBox = new HBox(10, btnModifier, btnSupprimer);
+            // Création des boutons dans un autre HBox
+            HBox btnBox = new HBox(10, btnModifier, btnSupprimer, btnExporterPDF);
             btnBox.setAlignment(Pos.CENTER_LEFT);
-            btnBox.setPadding(new Insets(10, 0, 0, 0));
+            btnBox.setPadding(new Insets(5, 0, 0, 0));
 
-            // Création de la boîte de la commande avec un style personnalisé
-            VBox commandeBox = new VBox(10, infoBox, btnBox);
-            commandeBox.setStyle(
-                    "-fx-padding: 15px;" +
-                            "-fx-background-color: #ffffff;" +
-                            "-fx-border-radius: 12px;" +
-                            "-fx-border-color: #ecf0f1;" +
-                            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 10);"
-            );
+            // Encapsuler la commande dans un VBox avec une bordure personnalisée
+            VBox commandeBox = new VBox(15, infoBox, btnBox);
+            commandeBox.setStyle("-fx-padding: 15px; -fx-background-color: #ffffff; -fx-border-radius: 12px; -fx-border-color: #ecf0f1; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 10);");
 
-            // Ajout de l'élément HBox pour chaque commande
+            // Ajouter chaque commande dans la ListView en utilisant un HBox
             HBox card = new HBox(commandeBox);
-            card.setStyle("-fx-background-color: #f9f9f9; -fx-padding: 10px; -fx-margin: 10px;");
+            card.setStyle("-fx-background-color: #f9f9f9; -fx-padding: 10px; -fx-margin: 10px; -fx-spacing: 20px;");
             listViewCommandes.getItems().add(card);
         }
+    }
+
+    // Méthode pour ajouter l'animation de survol
+    private void addHoverAnimation(Button button) {
+        ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(150), button);
+        scaleTransition.setFromX(1);
+        scaleTransition.setFromY(1);
+        scaleTransition.setToX(1.1);
+        scaleTransition.setToY(1.1);
+
+        button.setOnMouseEntered(e -> scaleTransition.play()); // Agrandir au survol
+        button.setOnMouseExited(e -> {
+            scaleTransition.setToX(1);
+            scaleTransition.setToY(1);
+            scaleTransition.play(); // Retour à la taille d'origine
+        });
+    }
+
+    // Méthode pour ajouter l'animation au clic
+    private void addClickAnimation(Button button) {
+        TranslateTransition translateTransition = new TranslateTransition(Duration.millis(100), button);
+        translateTransition.setByY(5); // Déplacement vers le bas de 5px
+
+        button.setOnMousePressed(e -> translateTransition.play()); // Animation au clic
+        button.setOnMouseReleased(e -> translateTransition.setByY(0)); // Réinitialisation après le clic
     }
 
     @FXML
@@ -353,9 +364,28 @@ public class AfficherCommande {
     }
 
 
+    @FXML
+    private void exporterEnPDF(Commande commande) {
+        // Ouvrir une fenêtre de sauvegarde pour enregistrer le fichier PDF
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Enregistrer le PDF");
+        fileChooser.setInitialFileName("commande_" + commande.getId() + ".pdf");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Fichiers PDF (*.pdf)", "*.pdf");
+        fileChooser.getExtensionFilters().add(extFilter);
 
+        Stage stage = new Stage();
+        File file = fileChooser.showSaveDialog(stage);
 
-
+        if (file != null) {
+            try {
+                // Appeler la méthode pour exporter la commande vers un fichier PDF
+                commandeService.exporterCommandeVersPDF(commande, file.getAbsolutePath());
+                System.out.println("Exportation réussie pour la commande " + commande.getId());
+            } catch (Exception e) {
+                System.out.println("Erreur lors de l'exportation : " + e.getMessage());
+            }
+        }
+    }
 
     /// aliiiiiiiiii
 

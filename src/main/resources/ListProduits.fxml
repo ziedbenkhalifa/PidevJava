@@ -7,8 +7,9 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #080b21;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.ListProduits">
@@ -29,7 +30,7 @@
 
 
 
-                <Button fx:id="mesCommandesButton" layoutX="870.0" layoutY="46.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Mes Commandes" textFill="WHITE" onAction="#afficherMesCommandes" />
+                <Button fx:id="mesCommandesButton" layoutX="870.0" layoutY="46.0" mnemonicParsing="false" onAction="#afficherMesCommandes" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Mes Commandes" textFill="WHITE" />
                 <ImageView fitHeight="34.0" fitWidth="34.0" layoutX="1031.0" layoutY="14.0">
                     <image>
                         <Image url="@images/userwhite.png" />
@@ -45,6 +46,7 @@
                         <Button layoutX="1064.0" layoutY="19.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="121.0" style="-fx-background-color: #080b21;" text="Appliquer" textFill="WHITE" />
                     </children>
                 </AnchorPane>
+                <Button layoutX="723.0" layoutY="46.0" mnemonicParsing="false" onAction="#afficherFavoris" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Mes Favoris" textFill="WHITE" />
             </children>
         </AnchorPane>
 
@@ -87,40 +89,45 @@
                 <AnchorPane layoutX="16.0" layoutY="9.0" prefHeight="355.0" prefWidth="1234.0" style="-fx-background-color: #0b0f29; -fx-background-radius: 20;">
                     <children>
 
-                        <StackPane prefWidth="1242.0" prefHeight="402.0" style="-fx-background-radius: 20; -fx-padding: 20;"
-                                   xmlns="http://javafx.com/javafx"
-                                   xmlns:fx="http://javafx.com/fxml">
+                        <StackPane prefHeight="402.0" prefWidth="1242.0" style="-fx-background-radius: 20; -fx-padding: 20;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 
-                            <!-- صورة الخلفية -->
+
                             <ImageView fitHeight="402.0" fitWidth="1242.0" opacity="0.2" preserveRatio="false">
                                 <image>
                                     <Image url="@images/cinemaaaaaaa.jpg" />
                                 </image>
                             </ImageView>
 
-                            <!-- المحتوى فوق الصورة -->
-                            <VBox alignment="CENTER" spacing="15"
-                                  style="-fx-background-color: transparent; -fx-padding: 20;">
 
-                                <Label text="🎬 Liste des Produits"
-                                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;
-              -fx-background-color: rgba(0, 0, 0, 0.3);
-              -fx-padding: 10 20;
-              -fx-background-radius: 10;" />
+                            <VBox alignment="CENTER" spacing="15" style="-fx-background-color: transparent; -fx-padding: 20;">
 
+                                <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;               -fx-background-color: rgba(0, 0, 0, 0.3);               -fx-padding: 10 20;               -fx-background-radius: 10;" text="🎬 Liste des Produits" />
 
-                                <ListView fx:id="listViewProduits"
-                                          prefHeight="320.0" prefWidth="1100.0"
-                                          style="-fx-background-color: transparent;
-                 -fx-border-color: rgba(255,255,255,0.2);
-                 -fx-border-radius: 10;
-                 -fx-padding: 5;
-                 -fx-control-inner-background: transparent;
-                 -fx-cell-hover-color: rgba(255,255,255,0.05);
-                 -fx-selection-bar: #5e4083;
-                 -fx-selection-bar-text: white;
-                 -fx-background-insets: 0;" />
-
+                                <ListView fx:id="listViewProduits" prefHeight="320.0" prefWidth="1100.0" style="-fx-background-color: transparent;                  -fx-border-color: rgba(255,255,255,0.2);                  -fx-border-radius: 10;                  -fx-padding: 5;                  -fx-control-inner-background: transparent;                  -fx-cell-hover-color: rgba(255,255,255,0.05);                  -fx-selection-bar: #5e4083;                  -fx-selection-bar-text: white;                  -fx-background-insets: 0;" />
+                                <!-- Bouton pour afficher le chatbot -->
+                                <HBox alignment="CENTER" spacing="20" style="-fx-background-color: transparent;">
+                                    <Button onAction="#afficherChatbot" style="-fx-background-color: #0d4dd6; -fx-text-fill: white;                -fx-font-size: 16px; -fx-font-weight: bold;                -fx-padding: 10 20; -fx-background-radius: 10;">
+                                        <graphic>
+                                            <HBox spacing="10">
+                                                <ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true">
+                                                    <Image url="@images/chatbot.png" /> <!-- Assurez-vous que le chemin est correct -->
+                                                </ImageView>
+                                                <Label text="Support Ai" textFill="white" />
+                                            </HBox>
+                                        </graphic>
+                                    </Button>
+                                    <!-- 🎮 Bouton Commencer le Jeu -->
+                                    <Button text="🎮 Commencer le Jeu"
+                                            onAction="#startGame"
+                                            prefWidth="200.0" prefHeight="50.0"
+                                            style="-fx-background-color: linear-gradient(to right, #FF416C, #FF4B2B);
+                   -fx-text-fill: white;
+                   -fx-font-size: 18px;
+                   -fx-font-weight: bold;
+                   -fx-background-radius: 30;
+                   -fx-cursor: hand;
+                   -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 4);" />
+                                </HBox>
                             </VBox>
 
                         </StackPane>

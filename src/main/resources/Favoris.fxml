@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Label?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.cinema.controllers.FavorisController"
+            prefHeight="400.0" prefWidth="600.0"
+            style="-fx-background-color: #021b50;">
+    <children>
+        <!-- Titre de la section des favoris -->
+        <Label text="Liste des Favoris"
+               layoutX="20.0" layoutY="20.0"
+               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;" />
+
+        <!-- Liste des produits favoris -->
+        <ListView fx:id="listViewFavoris"
+                  layoutX="20.0" layoutY="60.0"
+                  prefHeight="300.0" prefWidth="560.0"
+                  style="-fx-background-color: #03173a; -fx-control-inner-background: #03173a; -fx-text-fill: white;" />
+    </children>
+</AnchorPane>

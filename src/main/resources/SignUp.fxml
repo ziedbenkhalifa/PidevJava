@@ -15,40 +15,51 @@
 <AnchorPane prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: #021b50;" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.SignUp">
     <children>
         <!-- Logo -->
-        <ImageView fitHeight="98.0" fitWidth="109.0" layoutX="245.0" layoutY="10.0">
+        <ImageView fitHeight="50.0" fitWidth="58.0" layoutX="14.0" layoutY="14.0">
             <image>
-                <Image url="@images/showtime-removebg-preview (1).png" />
+                <Image url="@images/showtime-removebg-preview.png" />
             </image>
         </ImageView>
         <!-- Sign Up Form -->
         <VBox alignment="CENTER" layoutX="100.0" layoutY="120.0" prefWidth="400.0" spacing="15" style="-fx-padding: 20;">
             <children>
-                <Label text="Sign Up" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;">
-                    <font>
-                        <Font size="24.0" />
-                    </font>
-                </Label>
-                <TextField fx:id="nomField" prefHeight="40.0" prefWidth="300.0" promptText="Full Name" style="-fx-background-color: white; -fx-text-fill: #333333; -fx-font-size: 14px; -fx-background-radius: 5; -fx-border-radius: 5;" />
                 <TextField fx:id="emailField" prefHeight="40.0" prefWidth="300.0" promptText="Email" style="-fx-background-color: white; -fx-text-fill: #333333; -fx-font-size: 14px; -fx-background-radius: 5; -fx-border-radius: 5;" />
                 <PasswordField fx:id="passwordField" prefHeight="40.0" prefWidth="300.0" promptText="Password" style="-fx-background-color: white; -fx-text-fill: #333333; -fx-font-size: 14px; -fx-background-radius: 5; -fx-border-radius: 5;" />
-                <DatePicker fx:id="dateNaissance" prefHeight="40.0" prefWidth="300.0" promptText="Date of Birth" style="-fx-background-color: white; -fx-font-size: 14px; -fx-background-radius: 5;" />
-                <ComboBox fx:id="roleComboBox" prefHeight="40.0" prefWidth="300.0" promptText="Select Role" style="-fx-background-color: white; -fx-font-size: 14px; -fx-background-radius: 5;" />
-                <Button fx:id="photoButton" onAction="#photoPopUp" prefHeight="40.0" prefWidth="300.0" text="Select Photo (Optional)" style="-fx-background-color: #294478; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 5; -fx-cursor: hand;">
+                <DatePicker fx:id="dateNaissance" prefHeight="40.0" prefWidth="381.0" promptText="Date of Birth" style="-fx-background-color: white; -fx-font-size: 14px; -fx-background-radius: 5;" />
+                <ComboBox fx:id="roleComboBox" prefHeight="40.0" prefWidth="382.0" promptText="Select Role" style="-fx-background-color: white; -fx-font-size: 14px; -fx-background-radius: 5;" />
+
+                <!-- CAPTCHA Section -->
+                <Label style="-fx-text-fill: white; -fx-font-size: 14px;" text="Verify you are not a bot:" />
+                <ImageView fx:id="captchaImageView" fitHeight="50" fitWidth="150" />
+                <TextField fx:id="captchaInputField" prefHeight="38.0" prefWidth="363.0" promptText="Enter CAPTCHA code" style="-fx-background-color: white; -fx-text-fill: #333333; -fx-font-size: 14px; -fx-background-radius: 5; -fx-border-radius: 5;" />
+
+                <Button fx:id="photoButton" onAction="#photoPopUp" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: #294478; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 5; -fx-cursor: hand;" text="Select Photo">
                     <font>
                         <Font size="14.0" />
                     </font>
                 </Button>
-                <Button fx:id="signUpButton" onAction="#handleSignUp" prefHeight="40.0" prefWidth="300.0" text="Create Account" style="-fx-background-color: #04a9f4; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 5; -fx-cursor: hand;">
+                <Button fx:id="signUpButton" onAction="#handleSignUp" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: #04a9f4; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 5; -fx-cursor: hand;" text="Create Account">
                     <font>
                         <Font size="16.0" />
                     </font>
                 </Button>
-                <Button fx:id="backButton" onAction="#handleBackAction" prefHeight="40.0" prefWidth="300.0" text="Back to Login" style="-fx-background-color: #24c10d; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 5; -fx-cursor: hand;">
+                <Button fx:id="backButton" onAction="#handleBackAction" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: #24c10d; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 5; -fx-cursor: hand;" text="Back to Login">
                     <font>
                         <Font size="14.0" />
                     </font>
                 </Button>
             </children>
         </VBox>
+        <Label layoutX="253.0" layoutY="10.0" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;" text="Sign Up">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Label>
+        <TextField fx:id="nomField" layoutX="121.0" layoutY="64.0" prefHeight="40.0" prefWidth="360.0" promptText="Full Name" style="-fx-background-color: white; -fx-text-fill: #333333; -fx-font-size: 14px; -fx-background-radius: 5; -fx-border-radius: 5;" />
+        <Button fx:id="refreshCaptchaButton" layoutX="481.0" layoutY="461.0" onAction="#handleRefreshCaptcha" prefHeight="40.0" prefWidth="133.0" style="-fx-background-color: #294478; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 5; -fx-cursor: hand;" text="Refresh CAPTCHA">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Button>
     </children>
 </AnchorPane>

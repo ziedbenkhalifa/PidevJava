@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+
 
 <AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #0b0f29;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.AjouterProduit">
    <children>
@@ -87,30 +96,67 @@
          </children>
       </Pane>
 
-      <!-- Formulaire produit -->
       <AnchorPane layoutX="215.0" layoutY="89.0" prefHeight="554.0" prefWidth="1076.0" style="-fx-background-color: #f4f7fa; -fx-background-radius: 20; -fx-padding: 15px;">
          <children>
-            <!-- Nom -->
-            <TextField fx:id="nom" layoutX="40.0" layoutY="42.0" promptText="Nom" style="-fx-background-radius: 20; -fx-padding: 8 12 8 12; -fx-font-size: 14px; -fx-background-color: #ffffff; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0.5, 0, 2);" />
 
-            <!-- Prix -->
-            <TextField fx:id="prix" layoutX="40.0" layoutY="91.0" promptText="Prix" style="-fx-background-radius: 20; -fx-padding: 8 12 8 12; -fx-font-size: 14px; -fx-background-color: #ffffff; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0.5, 0, 2);" />
+            <!-- Titre -->
+            <Label layoutX="400.0" layoutY="30.0" text="Ajouter Produit" style="-fx-font-size: 36px; -fx-text-fill: #3e2063; -fx-font-weight: bold;"/>
 
-            <!-- Catégorie -->
-            <ComboBox fx:id="categorie" layoutX="40.0" layoutY="149.0" prefHeight="44.0" prefWidth="184.0" promptText="Catégorie" style="-fx-background-radius: 20; -fx-padding: 8 12 8 12; -fx-font-size: 14px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0.5, 0, 2);" />
+            <!-- Formulaire -->
+            <VBox layoutX="330.0" layoutY="100.0" spacing="20" alignment="CENTER">
+               <children>
 
-            <!-- Description -->
-            <TextField fx:id="description" layoutX="40.0" layoutY="215.0" promptText="Description" style="-fx-background-radius: 20; -fx-padding: 8 12 8 12; -fx-font-size: 14px; -fx-background-color: #ffffff; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0.5, 0, 2);" />
+                  <!-- Nom -->
+                  <TextField fx:id="nom" prefWidth="400" prefHeight="50" promptText="Nom"
+                             style="-fx-background-radius: 20; -fx-padding: 10 15 10 15; -fx-font-size: 16px; -fx-background-color: #ffffff; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0.5, 0, 2);"
+                             onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited"/>
 
-            <!-- Image -->
-            <TextField fx:id="image" layoutX="37.0" layoutY="284.0" promptText="Image" style="-fx-background-radius: 20; -fx-padding: 8 12 8 12; -fx-font-size: 14px; -fx-background-color: #ffffff; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0.5, 0, 2);" />
+                  <!-- Prix -->
+                  <TextField fx:id="prix" prefWidth="400" prefHeight="50" promptText="Prix"
+                             style="-fx-background-radius: 20; -fx-padding: 10 15 10 15; -fx-font-size: 16px; -fx-background-color: #ffffff; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0.5, 0, 2);"
+                             onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited"/>
 
-            <!-- Choisir une image -->
-            <Button layoutX="245.0" layoutY="284.0" mnemonicParsing="false" onAction="#choisirImage" style="-fx-background-color: #56ccf2; -fx-text-fill: white; -fx-background-radius: 20; -fx-font-size: 14px; -fx-padding: 8 15 8 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0.5, 0, 2);" text="Choisir une image" />
+                  <!-- Catégorie -->
+                  <ComboBox fx:id="categorie" prefWidth="400" prefHeight="50" promptText="Catégorie"
+                            style="-fx-background-radius: 20; -fx-padding: 10 15 10 15; -fx-font-size: 16px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0.5, 0, 2);"/>
 
-            <!-- Ajouter -->
-            <Button layoutX="64.0" layoutY="339.0" mnemonicParsing="false" onAction="#ajouter" style="-fx-background-color: #3e2063; -fx-text-fill: white; -fx-background-radius: 20; -fx-font-size: 14px; -fx-padding: 10 15 10 15;" text="Ajouter Produit" />
-            <Button layoutX="55.0" layoutY="388.0" mnemonicParsing="false" onAction="#afficher" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 20; -fx-font-size: 14px; -fx-padding: 8 15 8 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0.5, 0, 2);" text="Retour de la Liste" />
+                  <!-- Description -->
+                  <TextField fx:id="description" prefWidth="400" prefHeight="50" promptText="Description"
+                             style="-fx-background-radius: 20; -fx-padding: 10 15 10 15; -fx-font-size: 16px; -fx-background-color: #ffffff; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0.5, 0, 2);"
+                             onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited"/>
+
+                  <!-- Image + Choisir -->
+                  <HBox spacing="10" alignment="CENTER">
+                     <children>
+                        <TextField fx:id="image" prefWidth="250" prefHeight="50" promptText="Image"
+                                   style="-fx-background-radius: 20; -fx-padding: 10 15 10 15; -fx-font-size: 16px; -fx-background-color: #ffffff; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0.5, 0, 2);"
+                                   onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited"/>
+
+                        <Button text="Choisir Image" prefHeight="50"
+                                onAction="#choisirImage"
+                                style="-fx-background-color: #56ccf2; -fx-text-fill: white; -fx-background-radius: 20; -fx-font-size: 16px; -fx-padding: 10 20 10 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0.5, 0, 2);"
+                                onMouseEntered="#onButtonHover" onMouseExited="#onButtonExit"/>
+                     </children>
+                  </HBox>
+
+                  <!-- Boutons -->
+                  <HBox spacing="20" alignment="CENTER">
+                     <children>
+                        <Button text="Ajouter Produit" prefWidth="180" prefHeight="50"
+                                onAction="#ajouter"
+                                style="-fx-background-color: #3e2063; -fx-text-fill: white; -fx-background-radius: 20; -fx-font-size: 16px; -fx-padding: 10 20 10 20;"
+                                onMouseEntered="#onButtonHover" onMouseExited="#onButtonExit"/>
+
+                        <Button text="Retour à la Liste" prefWidth="180" prefHeight="50"
+                                onAction="#afficher"
+                                style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 20; -fx-font-size: 16px; -fx-padding: 10 20 10 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0.5, 0, 2);"
+                                onMouseEntered="#onButtonHover" onMouseExited="#onButtonExit"/>
+                     </children>
+                  </HBox>
+
+               </children>
+            </VBox>
+
          </children>
       </AnchorPane>
    </children>

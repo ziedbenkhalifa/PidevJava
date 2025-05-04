@@ -27,8 +27,14 @@
         <TextField fx:id="emailField" layoutX="150.0" layoutY="175.0" prefHeight="40.0" prefWidth="300.0" promptText="Enter your email" style="-fx-background-color: white; -fx-text-fill: #333333; -fx-font-size: 14px; -fx-background-radius: 5; -fx-border-radius: 5;" />
         <!-- Password Field -->
         <PasswordField fx:id="passwordField" layoutX="150.0" layoutY="225.0" prefHeight="40.0" prefWidth="300.0" promptText="Enter your password" style="-fx-background-color: white; -fx-text-fill: #333333; -fx-font-size: 14px; -fx-background-radius: 5; -fx-border-radius: 5;" />
+        <!-- Capture Photo Button for Face Login -->
+        <Button fx:id="capturePhotoButton" layoutX="150.0" layoutY="275.0" onAction="#capturePhoto" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: #294478; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 5; -fx-cursor: hand;" text="Capture Photo for Face Login">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Button>
         <!-- Buttons Container -->
-        <HBox alignment="CENTER" layoutX="150.0" layoutY="285.0" spacing="20.0">
+        <HBox alignment="CENTER" layoutX="150.0" layoutY="325.0" spacing="20.0">
             <children>
                 <!-- Login Button -->
                 <Button fx:id="loginButton" onAction="#handleLoginAction" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #04a9f4; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 5; -fx-cursor: hand;" text="Login">
@@ -38,11 +44,17 @@
                 </Button>
             </children>
         </HBox>
-          <!-- Sign Up Button -->
-          <Button fx:id="signUpButton" layoutX="331.0" layoutY="285.0" onAction="#handleSignUpAction" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #294478; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 5; -fx-cursor: hand;" text="Sign Up">
-              <font>
-                  <Font size="16.0" />
-              </font>
-          </Button>
+        <!-- Sign Up Button -->
+        <Button fx:id="signUpButton" layoutX="331.0" layoutY="325.0" onAction="#handleSignUpAction" prefHeight="40.0" prefWidth="120.0" style="-fx-background-color: #294478; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 5; -fx-cursor: hand;" text="Sign Up">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Button>
+        <!-- Forget Password Button -->
+        <Button fx:id="forgetPasswordButton" layoutX="150.0" layoutY="375.0" onAction="#handleForgetPasswordAction" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: transparent; -fx-text-fill: blue; -fx-font-size: 14px; -fx-cursor: hand;" text="Forget Password?">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Button>
     </children>
 </AnchorPane>

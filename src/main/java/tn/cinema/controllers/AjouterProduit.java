@@ -7,11 +7,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import tn.cinema.entities.Produit;
 import tn.cinema.services.ProduitService;
+
 import javafx.scene.Node;
 
 import java.io.File;
@@ -37,10 +41,59 @@ public class AjouterProduit {
 
     private ProduitService produitService = new ProduitService();
 
+    // Mouse Hover for TextField (scale effect)
+    @FXML
+    private void onMouseEntered(MouseEvent event) {
+        Node source = (Node) event.getSource();
+        source.setScaleX(1.03);
+        source.setScaleY(1.03);
+    }
+
+    @FXML
+    private void onMouseExited(MouseEvent event) {
+        Node source = (Node) event.getSource();
+        source.setScaleX(1.0);
+        source.setScaleY(1.0);
+    }
+
+    // Mouse Hover for Button (DropShadow effect + scale)
+    @FXML
+    private void onButtonHover(MouseEvent event) {
+        Node source = (Node) event.getSource();
+        source.setScaleX(1.05);
+        source.setScaleY(1.05);
+        source.setEffect(new DropShadow(10, Color.web("#bbbbbb")));
+    }
+
+    @FXML
+    private void onButtonExit(MouseEvent event) {
+        Node source = (Node) event.getSource();
+        source.setScaleX(1.0);
+        source.setScaleY(1.0);
+        source.setEffect(null);
+    }
+
     @FXML
     void initialize() {
         // Pré-remplir la ComboBox avec des catégories
         categorie.getItems().addAll("Vetement", "Maison", "Food");
+
+        // Ajout des listeners pour le filtrage en live
+        nom.textProperty().addListener((observable, oldValue, newValue) -> {
+            String filtered = produitService.filterBadWords(newValue);
+            if (!newValue.equals(filtered)) {
+                nom.setText(filtered);  // Mettre à jour le texte avec les étoiles
+                nom.positionCaret(filtered.length());  // Replacer le curseur à la fin du texte
+            }
+        });
+
+        description.textProperty().addListener((observable, oldValue, newValue) -> {
+            String filtered = produitService.filterBadWords(newValue);
+            if (!newValue.equals(filtered)) {
+                description.setText(filtered);  // Mettre à jour le texte avec les étoiles
+                description.positionCaret(filtered.length());  // Replacer le curseur à la fin du texte
+            }
+        });
     }
 
     @FXML
@@ -50,6 +103,10 @@ public class AjouterProduit {
         String categorieProduit = categorie.getValue();
         String imageProduit = image.getText().trim();
         String prixText = prix.getText().trim();
+
+        // Filtrage des mots interdits via le service
+        nomProduit = produitService.filterBadWords(nomProduit);
+        descriptionProduit = produitService.filterBadWords(descriptionProduit);
 
         // Vérification des champs obligatoires
         if (nomProduit.isEmpty() || prixText.isEmpty() || categorieProduit == null || imageProduit.isEmpty()) {
@@ -85,7 +142,7 @@ public class AjouterProduit {
             return;
         }
 
-        // Validation de l'image (le fichier doit exister)
+        // Validation de l'image
         File imageFile = new File(imageProduit);
         if (!imageFile.exists() || imageFile.isDirectory()) {
             afficherAlerte("Erreur", "L’image sélectionnée est invalide ou n’existe pas.");

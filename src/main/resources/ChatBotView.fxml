@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox spacing="15.0" alignment="CENTER"
+      xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.cinema.controllers.ChatBotController"
+      style="-fx-background-color: #021b50;"
+      stylesheets="@chat.css">
+
+    <!-- ✅ Padding pour éviter que tout soit collé -->
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- ✅ Header du Chat -->
+    <Label text="🤖 ChatBot Assistant"
+           style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-color: #3e2063; -fx-padding: 10 20; -fx-background-radius: 10;" />
+
+    <!-- ✅ ScrollPane pour gérer le défilement des messages -->
+    <ScrollPane fx:id="scrollPane"
+                fitToWidth="true"
+                prefHeight="450.0"
+                prefWidth="500.0"
+                style="-fx-background-color: transparent; -fx-border-color: #5e4083; -fx-border-radius: 10; -fx-padding: 5;">
+        <TextArea fx:id="chatArea"
+                  wrapText="true"
+                  editable="false"
+                  prefHeight="400.0"
+                  style="-fx-background-color: transparent; -fx-border-color: #5e4083; -fx-border-radius: 10; -fx-control-inner-background: transparent; -fx-font-size: 14px; -fx-text-fill: white; -fx-cell-hover-color: #3e2063; -fx-selection-bar: #5e4083; -fx-selection-bar-text: white;" />
+    </ScrollPane>
+
+    <!-- ✅ Zone d'entrée utilisateur -->
+    <HBox spacing="10.0" alignment="CENTER">
+        <TextField fx:id="userInputField"
+                   prefWidth="400.0"
+                   promptText="Écris ton message ici..."
+                   style="-fx-background-color: #173d8f; -fx-font-size: 16px; -fx-text-fill: white; -fx-prompt-text-fill: #cccccc; -fx-background-radius: 10; -fx-padding: 10 20;" />
+        <Button fx:id="sendButton"
+                text="Envoyer"
+                style="-fx-background-color: #5e4083; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 10; -fx-padding: 10 20; -fx-cursor: hand;" />
+    </HBox>
+
+</VBox>

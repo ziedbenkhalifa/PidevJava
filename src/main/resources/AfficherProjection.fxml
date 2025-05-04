@@ -36,8 +36,6 @@
                         <Image url="@images/showtime-removebg-preview.png" />
                     </image>
                 </ImageView>
-
-                <!-- Icônes -->
                 <ImageView fitHeight="31.0" fitWidth="29.0" layoutX="15.0" layoutY="178.0">
                     <image>
                         <Image url="@images/usermodifier.png" />
@@ -93,7 +91,7 @@
         </Pane>
 
         <!-- Centre : Affichage des projections -->
-        <AnchorPane layoutX="215.0" layoutY="89.0" prefHeight="554.0" prefWidth="1068.0" style="-fx-background-color: back; -fx-background-radius: 20;">
+        <AnchorPane layoutX="215.0" layoutY="89.0" prefHeight="554.0" prefWidth="1068.0" style="-fx-background-radius: 20;">
             <children>
                 <ImageView fitHeight="548.0" fitWidth="1059.0" layoutX="-1.0" layoutY="1.0" opacity="0.38">
                     <image>
@@ -107,11 +105,19 @@
                     </font>
                 </Label>
 
-                <ListView fx:id="listProjection" layoutX="40.0" layoutY="70.0" prefHeight="370.0" prefWidth="988.0" style="-fx-background-radius: 20; -fx-background-color: #021b50;" />
+                <TextField fx:id="searchField" layoutX="40.0" layoutY="60.0" prefHeight="40.0" prefWidth="988.0" promptText="Rechercher des projections" style="-fx-background-radius: 20; -fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; -fx-prompt-text-fill: #d3b4b4;">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </TextField>
 
-                <Button layoutX="225.0" layoutY="460.0" onAction="#ajout" prefHeight="36.0" prefWidth="150.0" style="-fx-background-radius: 10; -fx-background-color: #3e2063; -fx-text-fill: white;" text="Ajouter" />
-                <Button layoutX="459.0" layoutY="460.0" onAction="#edit" prefHeight="36.0" prefWidth="150.0" style="-fx-background-radius: 10; -fx-background-color: #3e2063; -fx-text-fill: white;" text="Modifier" />
-                <Button layoutX="693.0" layoutY="460.0" onAction="#delete" prefHeight="36.0" prefWidth="150.0" style="-fx-background-radius: 10; -fx-background-color: #3e2063; -fx-text-fill: white;" text="Supprimer" />
+                <ListView fx:id="listProjection" layoutX="40.0" layoutY="110.0" prefHeight="330.0" prefWidth="988.0" style="-fx-background-radius: 20; -fx-background-color: #021b50;" />
+
+                <Button layoutX="225.0" layoutY="460.0" onAction="#ajout" prefHeight="36.0" prefWidth="120.0" style="-fx-background-radius: 10; -fx-background-color: #3e2063; -fx-text-fill: white;" text="Ajouter" />
+                <Button layoutX="366.0" layoutY="460.0" onAction="#edit" prefHeight="36.0" prefWidth="120.0" style="-fx-background-radius: 10; -fx-background-color: #3e2063; -fx-text-fill: white;" text="Modifier" />
+                <Button layoutX="507.0" layoutY="460.0" onAction="#delete" prefHeight="36.0" prefWidth="120.0" style="-fx-background-radius: 10; -fx-background-color: #3e2063; -fx-text-fill: white;" text="Supprimer" />
+                <Button fx:id="statButton" layoutX="648.0" layoutY="460.0" onAction="#showStats" prefHeight="36.0" prefWidth="120.0" style="-fx-background-radius: 10; -fx-background-color: #3e2063; -fx-text-fill: white;" text="Stat" />
+                <Button fx:id="timelineButton" layoutX="789.0" layoutY="460.0" onAction="#showTimeline" prefHeight="36.0" prefWidth="120.0" style="-fx-background-radius: 10; -fx-background-color: #3e2063; -fx-text-fill: white;" text="Timeline" />
             </children>
         </AnchorPane>
     </children>

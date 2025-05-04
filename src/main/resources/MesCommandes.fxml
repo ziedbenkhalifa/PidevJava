@@ -6,24 +6,29 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="tn.cinema.controllers.MesCommandesController">
+            fx:controller="tn.cinema.controllers.MesCommandesController"
+            style="-fx-background-color: #021b50;">
 
+    <!-- ✅ Titre en haut -->
     <top>
-        <Label text="Vos Commandes"
-               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 20; -fx-text-fill: #2c3e50;"
+        <Label text="🛒 Vos Commandes"
+               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 20; -fx-text-fill: white;"
                BorderPane.alignment="CENTER"/>
     </top>
 
+    <!-- ✅ Liste des commandes -->
     <center>
         <ListView fx:id="listViewCommandes"
-                  style="-fx-padding: 15;" />
+                  style="-fx-padding: 15; -fx-background-color: #03173a; -fx-control-inner-background: #03173a; -fx-text-fill: white;" />
     </center>
 
+    <!-- ✅ Bouton de validation en bas -->
     <bottom>
         <HBox spacing="20" alignment="CENTER_RIGHT" style="-fx-padding: 20;">
             <Button text="Valider la commande"
                     fx:id="btnValider"
-                    style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 10 20;" />
+                    style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 10 20; -fx-cursor: hand;" />
         </HBox>
     </bottom>
+
 </BorderPane>

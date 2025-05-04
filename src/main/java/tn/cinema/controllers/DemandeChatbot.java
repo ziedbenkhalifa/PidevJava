@@ -2,17 +2,34 @@ package tn.cinema.controllers;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.AccessToken;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
+import javafx.scene.shape.Circle;
+import javafx.animation.RotateTransition;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
 import javafx.stage.Stage;
 import org.json.JSONObject;
 
@@ -26,6 +43,7 @@ import java.net.http.HttpResponse;
 import java.util.Collections;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.ResourceBundle;
 
 public class DemandeChatbot implements Initializable {
 
@@ -45,9 +63,15 @@ public class DemandeChatbot implements Initializable {
     @FXML private Button logoutButton;
 
     // Chatbot UI
-    @FXML private TextArea chatArea;
+    @FXML private VBox chatBox;
     @FXML private TextField userInput;
     @FXML private Button sendButton;
+    @FXML private ScrollPane chatScrollPane;
+
+    // Éléments du loader
+    @FXML private AnchorPane loaderPane;
+    @FXML private Circle loaderCircle;
+    private RotateTransition rotateTransition;
 
     // Dialogflow configuration
     private static final String PROJECT_ID = "my-project-4489-1741031296470";
@@ -59,7 +83,7 @@ public class DemandeChatbot implements Initializable {
     private GoogleCredentials credentials;
 
     @Override
-    public void initialize(URL location, java.util.ResourceBundle resources) {
+    public void initialize(URL location, ResourceBundle resources) {
         // Initialisation des boutons
         demandeSubButton.setVisible(false);
         publiciteSubButton.setVisible(false);
@@ -69,8 +93,48 @@ public class DemandeChatbot implements Initializable {
         // Initialisation Dialogflow
         initializeDialogflow();
 
+        // Configuration des actions pour le champ de texte (appuyer sur Entrée)
+        userInput.setOnAction(event -> handleSendMessage(event));
+
+        // Initialisation de l'animation du loader
+        initializeLoader();
+
         // Message de bienvenue
-        chatArea.appendText("Chatbot: Bonjour! Comment puis-je vous aider aujourd'hui?\n");
+        Platform.runLater(() -> {
+            addBotMessage("Bonjour! Je suis l'assistant virtuel de CinemaShowtime. Comment puis-je vous aider aujourd'hui?");
+            scrollToBottom();
+        });
+    }
+
+    /**
+     * Initialise l'animation du loader
+     */
+    private void initializeLoader() {
+        // Configuration de l'animation de rotation
+        rotateTransition = new RotateTransition(Duration.seconds(1.5), loaderCircle);
+        rotateTransition.setByAngle(360);
+        rotateTransition.setCycleCount(RotateTransition.INDEFINITE);
+        rotateTransition.setInterpolator(javafx.animation.Interpolator.LINEAR);
+    }
+
+    /**
+     * Affiche le loader d'attente
+     */
+    private void showLoader() {
+        Platform.runLater(() -> {
+            loaderPane.setVisible(true);
+            rotateTransition.play();
+        });
+    }
+
+    /**
+     * Cache le loader d'attente
+     */
+    private void hideLoader() {
+        Platform.runLater(() -> {
+            loaderPane.setVisible(false);
+            rotateTransition.stop();
+        });
     }
 
     private void initializeDialogflow() {
@@ -91,27 +155,114 @@ public class DemandeChatbot implements Initializable {
         }
     }
 
+    // Méthode pour ajouter un message utilisateur (aligné à gauche avec icône)
+    private void addUserMessage(String message) {
+        HBox messageContainer = new HBox();
+        messageContainer.setAlignment(Pos.CENTER_LEFT);
+        messageContainer.setPadding(new Insets(5, 10, 5, 10));
+        messageContainer.setSpacing(10);
+
+        // Ajouter l'icône de l'utilisateur
+        ImageView userIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/icons8-user-64.png")));
+        userIcon.setFitHeight(30);
+        userIcon.setFitWidth(30);
+
+        TextFlow textFlow = new TextFlow();
+        Text text = new Text(message);
+        text.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
+        text.setStyle("-fx-fill: white;");
+        textFlow.getChildren().add(text);
+        textFlow.setStyle("-fx-background-color: #3e2063; -fx-background-radius: 15; -fx-padding: 10;");
+        textFlow.setPrefWidth(300);
+
+        messageContainer.getChildren().addAll(userIcon, textFlow);
+
+        Platform.runLater(() -> {
+            chatBox.getChildren().add(messageContainer);
+            scrollToBottom();
+        });
+    }
+
+    // Méthode pour ajouter un message du bot (aligné à droite avec icône)
+    private void addBotMessage(String message) {
+        HBox messageContainer = new HBox();
+        messageContainer.setAlignment(Pos.CENTER_RIGHT);
+        messageContainer.setPadding(new Insets(5, 10, 5, 10));
+        messageContainer.setSpacing(10);
+
+        TextFlow textFlow = new TextFlow();
+        Text text = new Text(message);
+        text.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
+        text.setStyle("-fx-fill: white;");
+        textFlow.getChildren().add(text);
+        textFlow.setStyle("-fx-background-color: #6a4ba3; -fx-background-radius: 15; -fx-padding: 10;");
+        textFlow.setPrefWidth(300);
+
+        // Ajouter l'icône du chatbot
+        ImageView botIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/chatbot-icon.png")));
+        botIcon.setFitHeight(30);
+        botIcon.setFitWidth(30);
+
+        messageContainer.getChildren().addAll(textFlow, botIcon);
+
+        Platform.runLater(() -> {
+            chatBox.getChildren().add(messageContainer);
+            scrollToBottom();
+        });
+    }
+
+    // Méthode pour faire défiler le chat vers le bas
+    private void scrollToBottom() {
+        Platform.runLater(() -> {
+            if (chatScrollPane != null && chatBox != null) {
+                // Forcer la mise à jour du layout
+                chatBox.layout();
+                // Utiliser PauseTransition pour attendre que le rendu soit complet
+                PauseTransition pause = new PauseTransition(Duration.millis(50));
+                pause.setOnFinished(e -> chatScrollPane.setVvalue(1.0));
+                pause.play();
+                // Fallback: Si PauseTransition échoue, forcer le défilement immédiatement
+                chatScrollPane.setVvalue(1.0);
+            }
+        });
+    }
+
     @FXML
     private void handleSendMessage(ActionEvent event) {
         String message = userInput.getText().trim();
         if (!message.isEmpty()) {
-            chatArea.appendText("Vous: " + message + "\n");
+            addUserMessage(message);
+            userInput.clear();
 
             if (credentials == null) {
-                chatArea.appendText("Chatbot: Service non disponible. Veuillez réessayer plus tard.\n");
-                userInput.clear();
+                addBotMessage("Service non disponible. Veuillez réessayer plus tard.");
                 return;
             }
 
-            try {
-                String response = detectIntent(message);
-                chatArea.appendText("Chatbot: " + response + "\n");
-            } catch (Exception e) {
-                LOGGER.severe("Error detecting intent: " + e.getMessage());
-                chatArea.appendText("Chatbot: Désolé, une erreur s'est produite: " + e.getMessage() + "\n");
-            }
+            // Afficher le loader pendant la réflexion
+            showLoader();
 
-            userInput.clear();
+            // Simulation d'un délai de réflexion et traitement asynchrone
+            new Thread(() -> {
+                try {
+                    // On ajoute un petit délai pour simuler la réflexion (facultatif)
+                    Thread.sleep(1200);
+
+                    String response = detectIntent(message);
+
+                    // Masquer le loader et afficher la réponse
+                    Platform.runLater(() -> {
+                        hideLoader();
+                        addBotMessage(response);
+                    });
+                } catch (Exception e) {
+                    LOGGER.severe("Error detecting intent: " + e.getMessage());
+                    Platform.runLater(() -> {
+                        hideLoader();
+                        addBotMessage("Désolé, une erreur s'est produite. Veuillez reformuler votre question.");
+                    });
+                }
+            }).start();
         }
     }
 
@@ -151,7 +302,7 @@ public class DemandeChatbot implements Initializable {
         return responseJson.getJSONObject("queryResult").getString("fulfillmentText");
     }
 
-    // Méthodes existantes de navigation (inchangées)
+    // Méthodes existantes de navigation
     @FXML
     public void toggleSubButtons(ActionEvent event) {
         boolean isVisible = demandeSubButton.isVisible();

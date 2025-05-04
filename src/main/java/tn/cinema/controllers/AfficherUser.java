@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AfficherUser extends Dashboard {
 
@@ -38,13 +39,35 @@ public class AfficherUser extends Dashboard {
     @FXML
     private Button backToDashboardButton;
 
+    @FXML
+    private TextField searchField;
+
+    @FXML
+    private ComboBox<String> roleFilter; // Added ComboBox for role filtering
+
+    @FXML
+    private Button searchButton;
+
+    @FXML
+    private Button statsButton;
+
     private UserService userService = new UserService();
+    private ObservableList<User> allUsers;
 
     @FXML
     public void initialize() {
+        // Initialize the role filter ComboBox
+        ObservableList<String> roles = FXCollections.observableArrayList("All", "Admin", "Coach", "Client", "Sponsor");
+        roleFilter.setItems(roles);
+        roleFilter.setValue("All"); // Default selection
+
         loadUsers();
         modifierButton.setOnAction(event -> handleModifierButtonClick());
         deleteButton.setOnAction(event -> handleDeleteButtonClick());
+
+        // Listener for real-time filtering based on name and role
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> filterUsers());
+        roleFilter.valueProperty().addListener((observable, oldValue, newValue) -> filterUsers());
     }
 
     @FXML
@@ -98,6 +121,26 @@ public class AfficherUser extends Dashboard {
         }
     }
 
+    @FXML
+    private void handleSearchAction() {
+        filterUsers();
+    }
+
+    @FXML
+    private void handleStatsAction() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Statistiques.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) statsButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Statistiques des Utilisateurs");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible de charger Statistiques.fxml: " + e.getMessage());
+        }
+    }
+
     private void loadUsers() {
         try {
             List<User> users = userService.recuperer();
@@ -105,8 +148,8 @@ public class AfficherUser extends Dashboard {
             if (users.isEmpty()) {
                 showAlert("Information", "Aucun utilisateur trouvé dans la base de données.");
             }
-            ObservableList<User> observableList = FXCollections.observableArrayList(users);
-            listView.setItems(observableList);
+            allUsers = FXCollections.observableArrayList(users);
+            listView.setItems(allUsers);
 
             listView.setCellFactory(param -> new ListCell<>() {
                 @Override
@@ -190,6 +233,23 @@ public class AfficherUser extends Dashboard {
             e.printStackTrace();
             showAlert("Erreur", "Échec du chargement des utilisateurs : " + e.getMessage());
         }
+    }
+
+    private void filterUsers() {
+        String searchText = searchField.getText().trim().toLowerCase();
+        String selectedRole = roleFilter.getValue();
+
+        ObservableList<User> filteredUsers = allUsers.stream()
+                .filter(user -> {
+                    // Filter by name
+                    boolean matchesName = searchText.isEmpty() || (user.getNom() != null && user.getNom().toLowerCase().contains(searchText));
+                    // Filter by role
+                    boolean matchesRole = "All".equals(selectedRole) || (user.getRole() != null && user.getRole().equalsIgnoreCase(selectedRole));
+                    return matchesName && matchesRole;
+                })
+                .collect(Collectors.toCollection(FXCollections::observableArrayList));
+
+        listView.setItems(filteredUsers);
     }
 
     private void handleModifierButtonClick() {

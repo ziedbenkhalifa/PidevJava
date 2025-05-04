@@ -78,7 +78,7 @@
                 </Label>
                 <AnchorPane layoutX="16.0" layoutY="9.0" prefHeight="355.0" prefWidth="1234.0" style="-fx-background-color: #0b0f29; -fx-background-radius: 20;">
                     <children>
-                        <ComboBox fx:id="cinemaComboBox" layoutX="10.0" layoutY="10.0" prefWidth="200.0" promptText="Sélectionnez un cinéma" style="-fx-background-color: #3e2063; -fx-text-fill: white;"/>
+                        <ComboBox fx:id="cinemaComboBox" layoutX="10.0" layoutY="10.0" prefHeight="24.0" prefWidth="227.0" promptText="Sélectionnez un cinéma" style="-fx-background-color: #c4b2db; -fx-text-fill: white;" />
                         <WebView fx:id="mapView" layoutX="10.0" layoutY="50.0" prefHeight="295.0" prefWidth="1214.0" />
                     </children>
                 </AnchorPane>
