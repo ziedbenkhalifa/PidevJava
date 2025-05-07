@@ -47,7 +47,7 @@ public class StatsCoursChartController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         courService = new CourService();
         try {
-            // Récupérer toutes les participations globales
+
             Map<Integer, Integer> participationsMap = courService.recupererToutesParticipations();
             System.out.println("Participations globales récupérées : " + participationsMap);
 
@@ -63,14 +63,14 @@ public class StatsCoursChartController implements Initializable {
                 return;
             }
 
-            // Récupérer tous les cours pour mapper les IDs aux détails
+
             List<Cour> allCourses = courService.recuperer();
             Map<Integer, Cour> courseMap = new HashMap<>();
             for (Cour cour : allCourses) {
                 courseMap.put(cour.getId(), cour);
             }
 
-            // Créer le dataset pour le Pie Chart
+
             DefaultPieDataset dataset = new DefaultPieDataset();
             int totalParticipations = participationsMap.values().stream().mapToInt(Integer::intValue).sum();
 
@@ -157,7 +157,7 @@ public class StatsCoursChartController implements Initializable {
 
             @Override
             public void chartMouseMoved(org.jfree.chart.ChartMouseEvent event) {
-                // Pas d'action pour le mouvement de la souris
+
             }
         });
 

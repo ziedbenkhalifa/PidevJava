@@ -78,16 +78,16 @@ public class SignUp {
                     nomField.getText(),
                     dateNaissance.getValue(),
                     emailField.getText(),
-                    roleComboBox.getValue(), // Use selected role
+                    roleComboBox.getValue(),
                     passwordField.getText(),
                     selectedPhotoPath.isEmpty() ? null : selectedPhotoPath,
-                    "" // faceToken
+                    ""
             );
 
             userService.ajouter(newUser);
             showAlert("Success", "Account created successfully!", Alert.AlertType.INFORMATION);
 
-            // Navigate back to Login
+
             handleBackAction(null);
         } catch (Exception e) {
             showAlert("Error", "Failed to create account: " + e.getMessage(), Alert.AlertType.ERROR);
@@ -110,12 +110,12 @@ public class SignUp {
     private boolean validateForm() {
         StringBuilder errorMessage = new StringBuilder();
 
-        // Validate Name (No numbers)
+
         if (!nomField.getText().matches("^[a-zA-Z\\s]+$")) {
             errorMessage.append("Name must not contain numbers.\n");
         }
 
-        // Validate Email
+
         String emailPattern = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         Pattern pattern = Pattern.compile(emailPattern);
         Matcher matcher = pattern.matcher(emailField.getText());
@@ -123,17 +123,17 @@ public class SignUp {
             errorMessage.append("Invalid email format.\n");
         }
 
-        // Validate Password (At least 8 characters)
+
         if (passwordField.getText().length() < 8) {
             errorMessage.append("Password must be at least 8 characters.\n");
         }
 
-        // Validate Date of Birth
+
         if (dateNaissance.getValue() == null) {
             errorMessage.append("Date of birth is required.\n");
         }
 
-        // Validate Role
+
         if (roleComboBox.getValue() == null) {
             errorMessage.append("Please select a role.\n");
         }

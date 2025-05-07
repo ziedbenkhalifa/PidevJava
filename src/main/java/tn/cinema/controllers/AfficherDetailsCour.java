@@ -10,12 +10,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import tn.cinema.entities.Cour;
+import tn.cinema.entities.User;
+import tn.cinema.utils.SessionManager;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import tn.cinema.services.CourService;
 public class AfficherDetailsCour {
 
     private static final Logger LOGGER = Logger.getLogger(AfficherDetailsCour.class.getName());
@@ -36,6 +40,9 @@ public class AfficherDetailsCour {
     private Button courSubButton;
 
     private Cour currentCour;
+    private CourService courService = new CourService();
+    public List<Cour> allCours = new ArrayList<>();
+
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     public void initialize() {
@@ -131,5 +138,45 @@ public class AfficherDetailsCour {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void goParticipationAction() {
+        try {
+            User loggedInUser = SessionManager.getInstance().getLoggedInUser();
+            if (loggedInUser == null) {
+                showAlert("Erreur", "Veuillez vous connecter pour voir vos participations.");
+                return;
+            }
+
+            List<Integer> participationIds = courService.recupererParticipations(loggedInUser.getId());
+            System.out.println("Participations récupérées pour popup (utilisateur ID " + loggedInUser.getId() + "): " + participationIds);
+            List<Cour> participatedCourses = new ArrayList<>();
+            for (Cour cour : allCours) {
+                if (participationIds.contains(cour.getId())) {
+                    participatedCourses.add(cour);
+                }
+            }
+            System.out.println("Cours participés pour popup: " + participatedCourses.size());
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/PopupParticipation.fxml"));
+            Parent root = loader.load();
+
+            PopupParticipationController controller = loader.getController();
+            controller.setParticipations(participatedCourses);
+
+            Stage popupStage = new Stage();
+            controller.setStage(popupStage);
+
+            Scene scene = new Scene(root);
+            popupStage.setTitle("Mes participations");
+            popupStage.setScene(scene);
+            popupStage.setResizable(false);
+            popupStage.show();
+
+            popupStage.setOnCloseRequest(event -> popupStage.close());
+        } catch (Exception e) {
+            showAlert("Erreur", "Erreur lors de l'affichage des participations : " + e.getMessage());
+        }
     }
 }

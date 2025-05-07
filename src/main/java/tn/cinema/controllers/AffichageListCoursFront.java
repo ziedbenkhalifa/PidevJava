@@ -18,15 +18,18 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.data.general.DefaultPieDataset;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.Cell;
 import tn.cinema.entities.Cour;
 import tn.cinema.entities.User;
 import tn.cinema.services.CourService;
 import tn.cinema.utils.SessionManager;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -73,8 +76,6 @@ public class AffichageListCoursFront implements Initializable {
     @FXML
     private Label noResultsLabel;
 
-
-
     private CourService courService = new CourService();
     public List<Cour> allCours = new ArrayList<>();
     private List<Integer> participatedCoursIds = new ArrayList<>();
@@ -103,7 +104,6 @@ public class AffichageListCoursFront implements Initializable {
             refreshParticipations();
             displayCours(allCours);
 
-            // Le ComboBox est déjà rempli dans le FXML, on sélectionne simplement l'option par défaut
             typeFilterComboBox.getSelectionModel().select("Tous");
 
             searchField.textProperty().addListener((observable, oldValue, newValue) -> applyFilters());
@@ -148,7 +148,6 @@ public class AffichageListCoursFront implements Initializable {
         System.out.println("Date sélectionnée: " + selectedDate);
         System.out.println("Recherche: " + searchQuery);
 
-        // Étape 1 : Filtrer par date si une date est sélectionnée
         if (selectedDate != null) {
             filteredCours = filteredCours.stream()
                     .filter(cour -> {
@@ -162,15 +161,13 @@ public class AffichageListCoursFront implements Initializable {
                     })
                     .collect(Collectors.toList());
 
-            // Si aucun cours ne correspond à la date, arrêter le filtrage et afficher "Aucun cours trouvé"
             if (filteredCours.isEmpty()) {
                 System.out.println("Aucun cours trouvé pour la date sélectionnée: " + selectedDate);
-                displayCours(filteredCours); // Affichera "Aucun cours trouvé"
+                displayCours(filteredCours);
                 return;
             }
         }
 
-        // Étape 2 : Filtrer par type si un type spécifique est sélectionné
         if (selectedType != null && !"Tous".equals(selectedType)) {
             String filterType = selectedType.toLowerCase().trim();
             filteredCours = filteredCours.stream()
@@ -181,7 +178,6 @@ public class AffichageListCoursFront implements Initializable {
                     .collect(Collectors.toList());
         }
 
-        // Étape 3 : Filtrer par recherche si une requête est entrée
         if (!searchQuery.isEmpty()) {
             filteredCours = filteredCours.stream()
                     .filter(cour -> {
@@ -192,7 +188,6 @@ public class AffichageListCoursFront implements Initializable {
                     .collect(Collectors.toList());
         }
 
-        // Étape 4 : Trier par coût
         filteredCours.sort(Comparator.comparingDouble(Cour::getCout));
         System.out.println("Nombre de cours trouvés: " + filteredCours.size());
         for (Cour cour : filteredCours) {
@@ -318,7 +313,6 @@ public class AffichageListCoursFront implements Initializable {
                 return;
             }
 
-            // Vérifier si l'utilisateur est déjà inscrit
             List<Integer> currentParticipations = courService.recupererParticipations(loggedInUser.getId());
             if (currentParticipations.contains(cour.getId())) {
                 showAlert("Information", "Vous êtes déjà inscrit à ce cours : " + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini"));
@@ -367,18 +361,20 @@ public class AffichageListCoursFront implements Initializable {
                     "<tr><th>Date de début</th><td>" + (cour.getDateDebut() != null ? cour.getDateDebut().format(DATE_FORMATTER) : "Non défini") + "</td></tr>" +
                     "<tr><th>Date de fin</th><td>" + (cour.getDateFin() != null ? cour.getDateFin().format(DATE_FORMATTER) : "Non défini") + "</td></tr>" +
                     "<tr><th>Email</th><td>" + userEmail + "</td></tr></table>" +
-                    "<p>Nous vous remercions de votre participation et avons hâte de vous accueillir !</p></div>" +
+                    "<p>Nous vous remercions de votre participation et avons hâte de vous accueillir !</p>" +
+                    "<p>Vous trouverez en pièce jointe un PDF contenant la confirmation de votre participation.</p></div>" +
                     "<div class='footer'><p>Contactez-nous : <a href='mailto:support@cinema.com'>support@cinema.com</a></p>" +
                     "<p>© 2025 Cinema. Tous droits réservés.</p></div></div></body></html>";
 
             new Thread(() -> {
                 try {
-                    sendEmail(userEmail, subject, plainText, htmlContent);
+                    File pdfFile = generateConfirmationPdf(loggedInUser, cour, true);
+                    sendEmail(userEmail, subject, plainText, htmlContent, pdfFile);
                     Platform.runLater(() -> showAlert("Succès", "Vous avez participé au cours : " +
                             (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") +
-                            ". Un email de confirmation a été envoyé à " + userEmail));
-                } catch (MessagingException e) {
-                    Platform.runLater(() -> showAlert("Avertissement", "Participation enregistrée, mais l'email de confirmation n'a pas pu être envoyé."));
+                            ". Un email de confirmation avec PDF a été envoyé à " + userEmail));
+                } catch (Exception e) {
+                    Platform.runLater(() -> showAlert("Avertissement", "Participation enregistrée, mais l'email de confirmation ou le PDF n'a pas pu être envoyé."));
                     e.printStackTrace();
                 }
             }).start();
@@ -440,18 +436,20 @@ public class AffichageListCoursFront implements Initializable {
                     "<tr><th>Date de début</th><td>" + (cour.getDateDebut() != null ? cour.getDateDebut().format(DATE_FORMATTER) : "Non défini") + "</td></tr>" +
                     "<tr><th>Date de fin</th><td>" + (cour.getDateFin() != null ? cour.getDateFin().format(DATE_FORMATTER) : "Non défini") + "</td></tr>" +
                     "<tr><th>Email</th><td>" + userEmail + "</td></tr></table>" +
-                    "<p>Nous sommes désolés de vous voir partir. Si vous changez d'avis, vous pouvez vous réinscrire à tout moment.</p></div>" +
+                    "<p>Nous sommes désolés de vous voir partir. Si vous changez d'avis, vous pouvez vous réinscrire à tout moment.</p>" +
+                    "<p>Vous trouverez en pièce jointe un PDF contenant la confirmation de votre annulation.</p></div>" +
                     "<div class='footer'><p>Contactez-nous : <a href='mailto:support@cinema.com'>support@cinema.com</a></p>" +
                     "<p>© 2025 Cinema. Tous droits réservés.</p></div></div></body></html>";
 
             new Thread(() -> {
                 try {
-                    sendEmail(userEmail, subject, plainText, htmlContent);
+                    File pdfFile = generateConfirmationPdf(loggedInUser, cour, false);
+                    sendEmail(userEmail, subject, plainText, htmlContent, pdfFile);
                     Platform.runLater(() -> showAlert("Succès", "Vous avez quitté le cours : " +
                             (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") +
-                            ". Un email de confirmation a été envoyé à " + userEmail));
-                } catch (MessagingException e) {
-                    Platform.runLater(() -> showAlert("Avertissement", "Annulation enregistrée, mais l'email de confirmation n'a pas pu être envoyé."));
+                            ". Un email de confirmation avec PDF a été envoyé à " + userEmail));
+                } catch (Exception e) {
+                    Platform.runLater(() -> showAlert("Avertissement", "Annulation enregistrée, mais l'email de confirmation ou le PDF n'a pas pu être envoyé."));
                     e.printStackTrace();
                 }
             }).start();
@@ -459,6 +457,106 @@ public class AffichageListCoursFront implements Initializable {
             displayCours(allCours);
         } catch (SQLException e) {
             showAlert("Erreur", "Erreur lors de l'annulation de la participation : " + e.getMessage());
+        }
+    }
+
+    private File generateConfirmationPdf(User user, Cour cour, boolean isParticipation) throws Exception {
+        File tempFile = File.createTempFile("confirmation_", ".pdf");
+        PdfWriter writer = new PdfWriter(tempFile);
+        PdfDocument pdf = new PdfDocument(writer);
+        Document document = new Document(pdf);
+
+        document.add(new Paragraph(isParticipation ? "Confirmation de Participation" : "Confirmation d'Annulation")
+                .setFontSize(20).setBold());
+        document.add(new Paragraph("Bonjour " + user.getNom() + ",")
+                .setFontSize(14).setMarginTop(10));
+        document.add(new Paragraph("Voici les détails de votre " + (isParticipation ? "participation" : "annulation") + " au cours :")
+                .setFontSize(12).setMarginTop(5));
+
+        float[] columnWidths = {150, 300};
+        Table table = new Table(columnWidths);
+        table.addCell(new Cell().add(new Paragraph("Cours").setBold()));
+        table.addCell(new Cell().add(new Paragraph(cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini")));
+        table.addCell(new Cell().add(new Paragraph("Coût").setBold()));
+        table.addCell(new Cell().add(new Paragraph(cour.getCout() + " DT")));
+        table.addCell(new Cell().add(new Paragraph("Date de début").setBold()));
+        table.addCell(new Cell().add(new Paragraph(cour.getDateDebut() != null ? cour.getDateDebut().format(DATE_FORMATTER) : "Non défini")));
+        table.addCell(new Cell().add(new Paragraph("Date de fin").setBold()));
+        table.addCell(new Cell().add(new Paragraph(cour.getDateFin() != null ? cour.getDateFin().format(DATE_FORMATTER) : "Non défini")));
+        table.addCell(new Cell().add(new Paragraph("Email").setBold()));
+        table.addCell(new Cell().add(new Paragraph(user.getEmail())));
+        document.add(table);
+
+        document.add(new Paragraph(isParticipation ?
+                "Nous vous remercions de votre participation et avons hâte de vous accueillir !" :
+                "Nous sommes désolés de vous voir partir. Vous pouvez vous réinscrire à tout moment.")
+                .setFontSize(12).setMarginTop(10));
+        document.add(new Paragraph("Cordialement,\nL'équipe Cinema")
+                .setFontSize(12).setMarginTop(10));
+
+        document.close();
+        return tempFile;
+    }
+
+    private void sendEmail(String to, String subject, String plainText, String htmlContent, File pdfFile) throws MessagingException {
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.ssl.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "465");
+        props.put("mail.smtp.timeout", "10000");
+        props.put("mail.smtp.connectiontimeout", "10000");
+        props.put("mail.debug", "true");
+
+        final String username = "farahboukesra4@gmail.com";
+        final String password = "afgdmorpxwnlinxa";
+
+        Session session = Session.getInstance(props, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
+
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(username));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+            message.setSubject(subject);
+
+            Multipart multipart = new MimeMultipart("mixed");
+
+            // Partie texte et HTML
+            MimeMultipart contentPart = new MimeMultipart("alternative");
+            MimeBodyPart textPart = new MimeBodyPart();
+            textPart.setText(plainText);
+            MimeBodyPart htmlPart = new MimeBodyPart();
+            htmlPart.setContent(htmlContent, "text/html; charset=utf-8");
+            contentPart.addBodyPart(textPart);
+            contentPart.addBodyPart(htmlPart);
+
+            MimeBodyPart contentBodyPart = new MimeBodyPart();
+            contentBodyPart.setContent(contentPart);
+            multipart.addBodyPart(contentBodyPart);
+
+            // Partie pièce jointe (PDF)
+            MimeBodyPart pdfPart = new MimeBodyPart();
+            pdfPart.attachFile(pdfFile);
+            pdfPart.setFileName(pdfFile.getName());
+            multipart.addBodyPart(pdfPart);
+
+            message.setContent(multipart);
+
+            Transport.send(message);
+            System.out.println("Email with PDF sent successfully!");
+        } catch (Exception e) {
+            System.err.println("Failed to send email: " + e.getMessage());
+            throw new MessagingException("Failed to send email", e);
+        } finally {
+            // Supprimer le fichier temporaire après envoi
+            if (pdfFile != null && pdfFile.exists()) {
+                pdfFile.delete();
+            }
         }
     }
 
@@ -492,7 +590,7 @@ public class AffichageListCoursFront implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageListSeancesFront.fxml"));
             Parent root = loader.load();
             AffichageListSeancesFront controller = loader.getController();
-            controller.initializeWithCour(null); // Affiche toutes les séances (pas de cours spécifique sélectionné)
+            controller.initializeWithCour(null);
             Stage stage = (Stage) seanceSubButton.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
@@ -562,56 +660,12 @@ public class AffichageListCoursFront implements Initializable {
         }
     }
 
+
+
     @FXML
     private void logoutAction() {
         SessionManager.getInstance().setLoggedInUser(null);
         Platform.exit();
         System.exit(0);
     }
-
-    private void sendEmail(String to, String subject, String plainText, String htmlContent) throws MessagingException {
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.ssl.enable", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "465");
-        props.put("mail.smtp.timeout", "10000");
-        props.put("mail.smtp.connectiontimeout", "10000");
-        props.put("mail.debug", "true");
-
-        final String username = "farahboukesra4@gmail.com";
-        final String password = "afgdmorpxwnlinxa";
-
-        Session session = Session.getInstance(props, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password);
-            }
-        });
-
-        try {
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(username));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-            message.setSubject(subject);
-
-            Multipart multipart = new MimeMultipart("alternative");
-            MimeBodyPart textPart = new MimeBodyPart();
-            textPart.setText(plainText);
-            MimeBodyPart htmlPart = new MimeBodyPart();
-            htmlPart.setContent(htmlContent, "text/html; charset=utf-8");
-            multipart.addBodyPart(textPart);
-            multipart.addBodyPart(htmlPart);
-            message.setContent(multipart);
-
-            Transport.send(message);
-            System.out.println("Email sent successfully!");
-        } catch (MessagingException e) {
-            System.err.println("Failed to send email: " + e.getMessage());
-            throw e;
-        }
-    }
-
-
-
 }

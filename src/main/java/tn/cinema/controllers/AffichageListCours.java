@@ -201,10 +201,10 @@ public class AffichageListCours implements Initializable {
             }
         }
 
-        // Trier les résultats par coût croissant
+
         filteredCours.sort(Comparator.comparingDouble(Cour::getCout));
 
-        // Mettre à jour la ListView
+
         setRlistItems(filteredCours);
     }
 

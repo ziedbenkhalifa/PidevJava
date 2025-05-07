@@ -17,8 +17,10 @@
                 <Button fx:id="coursButton" layoutX="449.0" layoutY="46.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Cours" textFill="WHITE" onAction="#toggleSubButtons" />
                 <Button fx:id="courSubButton" layoutX="391.0" layoutY="80.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #5a3a8b;" text="Cour" textFill="WHITE" visible="false" onAction="#goCourAction" />
                 <Button fx:id="seanceSubButton" layoutX="507.0" layoutY="80.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #5a3a8b;" text="Séance" textFill="WHITE" visible="false" onAction="#goSeanceAction" />
+
                 <Button fx:id="publicitesButton" layoutX="573.0" layoutY="46.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Publicités" textFill="WHITE" />
                 <Button fx:id="participationButton" layoutX="870.0" layoutY="46.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Participation" textFill="WHITE" onAction="#goParticipationAction" />
+
                 <Button fx:id="monCompteButton" layoutX="992.0" layoutY="46.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #021b50;" text="Mon Compte" textFill="WHITE" />
                 <Button fx:id="logoutButton" layoutX="1117.0" layoutY="46.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #fa4651;" text="LogOut" textFill="WHITE" onAction="#logoutAction" />
                 <ImageView fitHeight="34.0" fitWidth="34.0" layoutX="1031.0" layoutY="14.0">

@@ -46,17 +46,17 @@ public class AffichageListSeances implements Initializable {
         // Charger les séances depuis la base de données
         loadSeances();
 
-        // Définir une cellule personnalisée pour afficher les séances
+
         rlist.setCellFactory(listView -> new CustomSeanceCell());
 
-        // Appliquer un style à la ListView
+
         rlist.setStyle("-fx-background-color: #192342; -fx-control-inner-background: #192342;");
 
-        // Désactiver les boutons Modifier et Supprimer par défaut
+
         btnModifier.setDisable(true);
         btnSupprimer.setDisable(true);
 
-        // Activer les boutons Modifier et Supprimer lorsqu'une séance est sélectionnée
+
         rlist.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             btnModifier.setDisable(newSelection == null);
             btnSupprimer.setDisable(newSelection == null);
@@ -65,7 +65,7 @@ public class AffichageListSeances implements Initializable {
 
     private void loadSeances() {
         try {
-            // Charger les séances depuis la base de données
+
             List<Seance> seances = seanceService.recuperer();
             rlist.setItems(FXCollections.observableArrayList(seances));
         } catch (SQLException e) {

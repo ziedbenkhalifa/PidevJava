@@ -53,7 +53,7 @@ public class StatsSeanceChartController implements Initializable {
         seanceService = new SeanceService();
         originalColors = new HashMap<>();
         try {
-            // Récupérer toutes les séances
+
             List<Seance> allSeances = seanceService.recuperer();
             if (allSeances.isEmpty()) {
                 Platform.runLater(() -> {
@@ -63,7 +63,6 @@ public class StatsSeanceChartController implements Initializable {
                 return;
             }
 
-            // Calculer le nombre de séances par type de cours
             Map<String, Integer> seanceByTypeCour = new HashMap<>();
             int totalSeances = allSeances.size();
             for (Seance seance : allSeances) {
@@ -72,7 +71,7 @@ public class StatsSeanceChartController implements Initializable {
                 seanceByTypeCour.put(typeCour, seanceByTypeCour.getOrDefault(typeCour, 0) + 1);
             }
 
-            // Créer le dataset pour le Pie Chart
+
             DefaultPieDataset dataset = new DefaultPieDataset();
             for (Map.Entry<String, Integer> entry : seanceByTypeCour.entrySet()) {
                 String typeCour = entry.getKey();
@@ -117,7 +116,7 @@ public class StatsSeanceChartController implements Initializable {
         piePlot.setLabelPaint(Color.WHITE);
         piePlot.setLabelShadowPaint(new Color(0, 0, 0, 80));
 
-        // Définir des couleurs modernes avec gradient
+
         Color[] colors = {
                 new Color(255, 99, 71),  // Tomato
                 new Color(106, 90, 205), // SlateBlue
@@ -148,14 +147,14 @@ public class StatsSeanceChartController implements Initializable {
                         detailsLabel.setText("Type: " + sectionKey.split(" ")[0] + " | Séances: " + seances);
                     });
 
-                    // Réinitialiser les couleurs de toutes les sections
+
                     for (String key : originalColors.keySet()) {
                         piePlot.setSectionPaint(key, originalColors.get(key));
                     }
                     Color highlightColor = Color.YELLOW;
                     piePlot.setSectionPaint(sectionKey, highlightColor);
 
-                    // Revenir à la couleur originale après 1 seconde
+
                     new java.util.Timer().schedule(
                             new java.util.TimerTask() {
                                 @Override
@@ -170,7 +169,7 @@ public class StatsSeanceChartController implements Initializable {
 
             @Override
             public void chartMouseMoved(org.jfree.chart.ChartMouseEvent event) {
-                // Animation au survol
+
                 if (event.getEntity() instanceof org.jfree.chart.entity.PieSectionEntity) {
                     org.jfree.chart.entity.PieSectionEntity section = (org.jfree.chart.entity.PieSectionEntity) event.getEntity();
                     String sectionKey = (String) section.getSectionKey();
@@ -181,10 +180,9 @@ public class StatsSeanceChartController implements Initializable {
 
         Platform.runLater(() -> participationChart.setContent(chartPanel));
 
-        // Animation de rotation fluide
         Timeline rotationTimeline = new Timeline(
                 new KeyFrame(Duration.millis(50), e -> {
-                    rotationAngle += 0.5; // Rotation plus lente
+                    rotationAngle += 0.5;
                     if (rotationAngle >= 360) rotationAngle = 0;
                     piePlot.setStartAngle(rotationAngle);
                 })

@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -79,18 +80,25 @@ public class AffichageListSeancesFront {
     @FXML
     private Button retourButton;
 
+    @FXML
+    private Button checkReminderButton;
+
+    @FXML
+    private Button showTomorrowButton; // Nouveau bouton pour afficher les séances de demain
+
     private YearMonth currentMonth;
     private Cour selectedCour;
     private final SeanceService seanceService = new SeanceService();
     private final CourService courService = new CourService();
     private List<Cour> allCours = new ArrayList<>();
+    private List<Seance> allSeances = new ArrayList<>();
+    private boolean showOnlyTomorrow = false; // Indicateur pour afficher uniquement les séances de demain
 
     @FXML
     public void initialize() {
         LOGGER.info("Initialisation de AffichageListSeancesFront");
         currentMonth = YearMonth.now();
 
-        // Initialiser monthComboBox avec les mois
         List<String> months = new ArrayList<>();
         for (Month month : Month.values()) {
             months.add(month.toString());
@@ -98,18 +106,17 @@ public class AffichageListSeancesFront {
         monthComboBox.getItems().addAll(months);
         monthComboBox.setValue(currentMonth.getMonth().toString());
 
-        // Initialiser yearComboBox avec une plage d'années (par exemple, 2020 à 2030)
         List<Integer> years = IntStream.rangeClosed(2020, 2030)
                 .boxed()
                 .collect(Collectors.toList());
         yearComboBox.getItems().addAll(years);
         yearComboBox.setValue(currentMonth.getYear());
 
-        // Initialiser datePicker avec la date actuelle
         datePicker.setValue(LocalDate.now());
 
         try {
             allCours = courService.recuperer();
+            allSeances = seanceService.recuperer();
             courComboBox.getItems().addAll(allCours);
             courComboBox.setOnAction(event -> {
                 selectedCour = courComboBox.getValue();
@@ -119,9 +126,11 @@ public class AffichageListSeancesFront {
             courComboBox.getItems().add(0, null);
             courComboBox.setValue(null);
             LOGGER.info("ComboBox initialisée avec " + courComboBox.getItems().size() + " cours");
+
+            checkSessionReminders();
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Erreur lors du chargement des cours", e);
-            showAlert("Erreur", "Erreur lors du chargement des cours : " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Erreur lors du chargement des cours ou séances", e);
+            showAlert("Erreur", "Erreur lors du chargement des données : " + e.getMessage());
         }
         updateCalendar();
     }
@@ -131,13 +140,16 @@ public class AffichageListSeancesFront {
         selectedCour = cour;
         try {
             allCours = courService.recuperer();
+            allSeances = seanceService.recuperer();
             courComboBox.getItems().addAll(allCours);
             courComboBox.getItems().add(0, null);
             courComboBox.setValue(cour);
             LOGGER.info("ComboBox initialisée avec cours sélectionné ID: " + (cour != null ? cour.getId() : "null"));
+
+            checkSessionReminders();
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Erreur lors du chargement des cours", e);
-            showAlert("Erreur", "Erreur lors du chargement des cours : " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Erreur lors du chargement des cours ou séances", e);
+            showAlert("Erreur", "Erreur lors du chargement des données : " + e.getMessage());
         }
         updateCalendar();
     }
@@ -159,32 +171,38 @@ public class AffichageListSeancesFront {
         int dayOfWeek = firstOfMonth.getDayOfWeek().getValue() % 7;
         List<Seance> seances;
         try {
-            seances = selectedCour != null ? seanceService.recuperer().stream()
-                    .filter(s -> s.getCour() != null && s.getCour().getId() == selectedCour.getId())
-                    .toList() : seanceService.recuperer();
+            if (showOnlyTomorrow) {
+                LocalDate tomorrow = LocalDate.now().plusDays(1);
+                seances = allSeances.stream()
+                        .filter(s -> s.getDateSeance() != null && s.getDateSeance().equals(tomorrow))
+                        .toList();
+            } else {
+                seances = selectedCour != null ? allSeances.stream()
+                        .filter(s -> s.getCour() != null && s.getCour().getId() == selectedCour.getId())
+                        .toList() : allSeances;
+            }
             LOGGER.info("Nombre de séances récupérées : " + seances.size());
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Erreur lors du chargement des séances", e);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Erreur lors du filtrage des séances", e);
             showAlert("Erreur", "Erreur lors du chargement des séances : " + e.getMessage());
             return;
         }
 
-        int row = 1;
-        for (int day = 1; day <= currentMonth.lengthOfMonth(); day++) {
-            LocalDate date = currentMonth.atDay(day);
+        if (showOnlyTomorrow) {
+            LocalDate tomorrow = LocalDate.now().plusDays(1);
             VBox dayVBox = new VBox(5);
             dayVBox.getStyleClass().add("day-box");
 
-            Label dayLabel = new Label(String.valueOf(day));
+            Label dayLabel = new Label("Demain (" + tomorrow.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + ")");
             dayLabel.getStyleClass().add("day-label");
 
-            List<Seance> daySeances = seances.stream()
-                    .filter(s -> s.getDateSeance().equals(date))
+            List<Seance> tomorrowSeances = seances.stream()
+                    .filter(s -> s.getDateSeance().equals(tomorrow))
                     .toList();
 
-            if (!daySeances.isEmpty()) {
-                for (Seance seance : daySeances) {
-                    String seanceText = seance.getDuree().format(DateTimeFormatter.ofPattern("HH:mm"))
+            if (!tomorrowSeances.isEmpty()) {
+                for (Seance seance : tomorrowSeances) {
+                    String seanceText = (seance.getDuree() != null ? seance.getDuree().format(DateTimeFormatter.ofPattern("HH:mm")) : "N/A")
                             + " - " + seance.getObjectifs();
                     Label seanceLabel = new Label(seanceText);
                     seanceLabel.getStyleClass().add("seance-label");
@@ -192,77 +210,133 @@ public class AffichageListSeancesFront {
                     dayVBox.getChildren().add(seanceLabel);
                 }
                 dayVBox.getChildren().add(0, dayLabel);
-                dayVBox.getStyleClass().remove("day-box");
-                dayVBox.getStyleClass().add("day-box-with-seance");
+                calendarGrid.add(dayVBox, 0, 1, 7, 1);
             } else {
                 dayVBox.getChildren().add(dayLabel);
+                dayVBox.getChildren().add(new Label("Aucune séance prévue pour demain."));
+                calendarGrid.add(dayVBox, 0, 1, 7, 1);
             }
+        } else {
+            int row = 1;
+            for (int day = 1; day <= currentMonth.lengthOfMonth(); day++) {
+                LocalDate date = currentMonth.atDay(day);
+                VBox dayVBox = new VBox(5);
+                dayVBox.getStyleClass().add("day-box");
 
-            calendarGrid.add(dayVBox, (dayOfWeek + day - 1) % 7, row + ((dayOfWeek + day - 1) / 7));
+                Label dayLabel = new Label(String.valueOf(day));
+                dayLabel.getStyleClass().add("day-label");
+
+                List<Seance> daySeances = seances.stream()
+                        .filter(s -> s.getDateSeance() != null && s.getDateSeance().equals(date))
+                        .toList();
+
+                if (!daySeances.isEmpty()) {
+                    for (Seance seance : daySeances) {
+                        String seanceText = (seance.getDuree() != null ? seance.getDuree().format(DateTimeFormatter.ofPattern("HH:mm")) : "N/A")
+                                + " - " + seance.getObjectifs();
+                        Label seanceLabel = new Label(seanceText);
+                        seanceLabel.getStyleClass().add("seance-label");
+                        seanceLabel.setOnMouseClicked(event -> saveSeanceToCalendar(seance));
+                        dayVBox.getChildren().add(seanceLabel);
+                    }
+                    dayVBox.getChildren().add(0, dayLabel);
+                    dayVBox.getStyleClass().remove("day-box");
+                    dayVBox.getStyleClass().add("day-box-with-seance");
+                } else {
+                    dayVBox.getChildren().add(dayLabel);
+                }
+
+                calendarGrid.add(dayVBox, (dayOfWeek + day - 1) % 7, row + ((dayOfWeek + day - 1) / 7));
+            }
         }
     }
 
     private void saveSeanceToCalendar(Seance seance) {
         try {
-            // Créer un objet iCalendar
             Calendar calendar = new Calendar();
             calendar.getProperties().add(new ProdId("-//xAI//CinemaApp//FR"));
             calendar.getProperties().add(Version.VERSION_2_0);
             calendar.getProperties().add(CalScale.GREGORIAN);
 
-            // Créer un événement (VEvent) pour la séance
-            LocalDateTime startDateTime = LocalDateTime.of(seance.getDateSeance(), seance.getDuree());
-            LocalDateTime endDateTime = startDateTime.plusHours(1); // Supposons une durée de 1 heure
+            LocalDateTime startDateTime = LocalDateTime.of(seance.getDateSeance(), seance.getDuree() != null ? seance.getDuree() : LocalTime.of(0, 0));
+            LocalDateTime endDateTime = startDateTime.plusHours(1);
             DateTime start = new DateTime(java.util.Date.from(startDateTime.atZone(java.time.ZoneId.systemDefault()).toInstant()));
             DateTime end = new DateTime(java.util.Date.from(endDateTime.atZone(java.time.ZoneId.systemDefault()).toInstant()));
 
             String eventSummary = "Séance: " + seance.getObjectifs();
             VEvent event = new VEvent(start, end, eventSummary);
 
-            // Ajouter un identifiant unique
             RandomUidGenerator ug = new RandomUidGenerator();
             event.getProperties().add(ug.generateUid());
 
-            // Ajouter une description
             String description = "Cours: " + (seance.getCour() != null ? seance.getCour().getTypeCour() : "N/A") +
                     "\nObjectifs: " + seance.getObjectifs();
             event.getProperties().add(new net.fortuna.ical4j.model.property.Description(description));
 
-            // Ajouter un lieu (optionnel)
             event.getProperties().add(new net.fortuna.ical4j.model.property.Location("Cinéma"));
 
-            // Ajouter l'événement au calendrier
             calendar.getComponents().add(event);
 
-            // Créer un fichier temporaire
             File tempFile = File.createTempFile("seance_", ".ics");
 
-            // Écrire le fichier .ics
             try (FileOutputStream fout = new FileOutputStream(tempFile)) {
                 CalendarOutputter outputter = new CalendarOutputter();
                 outputter.output(calendar, fout);
             }
 
-            // Vérifier si Outlook est installé et ouvrir le fichier .ics avec Outlook
             if (Desktop.isDesktopSupported()) {
                 Desktop desktop = Desktop.getDesktop();
                 if (desktop.isSupported(Desktop.Action.OPEN)) {
                     desktop.open(tempFile);
-                    showAlert("Succès", "La séance a été ouverte .");
+                    showAlert("Succès", "La séance a été ajoutée au calendrier.");
                 } else {
-                    showAlert("Erreur", "L'ouverture automatique n'est pas supportée sur cette plateforme. Le fichier est à : " + tempFile.getAbsolutePath());
+                    showAlert("Erreur", "L'ouverture automatique n'est pas supportée. Fichier : " + tempFile.getAbsolutePath());
                 }
             } else {
-                showAlert("Erreur", "L'ouverture automatique n'est pas supportée sur cette plateforme. Le fichier est à : " + tempFile.getAbsolutePath());
+                showAlert("Erreur", "L'ouverture automatique n'est pas supportée. Fichier : " + tempFile.getAbsolutePath());
             }
-
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Erreur lors de la création ou de l'ouverture du fichier .ics", e);
-            showAlert("Erreur", "Erreur lors de l'ouverture d'Outlook : " + e.getMessage());
+            showAlert("Erreur", "Erreur lors de l'ouverture du calendrier : " + e.getMessage());
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Erreur inattendue lors de l'enregistrement de la séance", e);
             showAlert("Erreur", "Erreur inattendue : " + e.getMessage());
         }
+    }
+
+    @FXML
+    private void checkSessionReminders() {
+        try {
+            LocalDate today = LocalDate.now();
+            LocalDate tomorrow = today.plusDays(1); // Rappel uniquement pour demain
+
+            List<Seance> upcomingSeances = allSeances.stream()
+                    .filter(s -> s.getDateSeance() != null && s.getDateSeance().equals(tomorrow))
+                    .collect(Collectors.toList());
+
+            if (upcomingSeances.isEmpty()) {
+                showAlert("Information", "Aucune séance prévue pour demain.");
+            } else {
+                StringBuilder reminderMessage = new StringBuilder("Rappel : Séances prévues pour demain :\n\n");
+                for (Seance seance : upcomingSeances) {
+                    String seanceInfo = (seance.getDuree() != null ? seance.getDuree().format(DateTimeFormatter.ofPattern("HH:mm")) : "N/A")
+                            + " - " + seance.getObjectifs() +
+                            " (Date: " + seance.getDateSeance().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + ")" +
+                            " [Cours: " + (seance.getCour() != null ? seance.getCour().getTypeCour() : "N/A") + "]";
+                    reminderMessage.append("- ").append(seanceInfo).append("\n");
+                }
+                showAlert("Rappel de séances", reminderMessage.toString());
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Erreur lors de la vérification des rappels", e);
+            showAlert("Erreur", "Erreur lors de la vérification des rappels : " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void showTomorrowSeances() {
+        showOnlyTomorrow = true;
+        updateCalendar();
     }
 
     @FXML
@@ -273,6 +347,7 @@ public class AffichageListSeancesFront {
             Month month = Month.valueOf(selectedMonth);
             currentMonth = YearMonth.of(selectedYear, month);
             LOGGER.info("Mois mis à jour via ComboBox : " + currentMonth);
+            showOnlyTomorrow = false; // Réinitialiser pour afficher le mois complet
             updateCalendar();
             datePicker.setValue(currentMonth.atDay(1));
         }
@@ -286,6 +361,7 @@ public class AffichageListSeancesFront {
             LOGGER.info("Mois mis à jour via DatePicker : " + currentMonth);
             monthComboBox.setValue(currentMonth.getMonth().toString());
             yearComboBox.setValue(currentMonth.getYear());
+            showOnlyTomorrow = false; // Réinitialiser pour afficher le mois complet
             updateCalendar();
         }
     }
@@ -293,13 +369,13 @@ public class AffichageListSeancesFront {
     @FXML
     private void handleSeanceAction() {
         LOGGER.info("Rafraîchissement du calendrier");
+        showOnlyTomorrow = false; // Réinitialiser pour afficher le mois complet
         updateCalendar();
     }
 
     @FXML
     private void applySearchAction() {
         LOGGER.info("Recherche appliquée : " + searchField.getText());
-        // Implémenter la logique de recherche ici
     }
 
     @FXML

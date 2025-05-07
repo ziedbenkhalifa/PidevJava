@@ -30,19 +30,18 @@ public class PopupParticipationController {
     private List<Cour> participations;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    // Setter for the stage
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
-    // Setter for the participations list
+
     public void setParticipations(List<Cour> participations) {
         this.participations = participations;
         populateCards();
     }
 
     private void populateCards() {
-        // Clear existing cards
+
         cardsContainer.getChildren().clear();
 
         if (participations == null || participations.isEmpty()) {
@@ -52,21 +51,21 @@ public class PopupParticipationController {
             return;
         }
 
-        // Create a card for each participation
+
         for (Cour cour : participations) {
-            // Create card
+
             VBox card = new VBox(8);
             card.setStyle("-fx-background-color: #34495e; -fx-background-radius: 8; -fx-padding: 15;");
             card.setEffect(new DropShadow(5, javafx.scene.paint.Color.color(0, 0, 0, 0.33)));
             card.setPrefWidth(280);
 
-            // Course title
+
             Label titleLabel = new Label(cour.getTypeCour());
             titleLabel.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
-            titleLabel.setFont(new Font("System Bold", 16));  // La taille de la police est définie ici
-            titleLabel.setStyle("-fx-font-size: 16px;");  // Assurer que la taille de la police est fixe
+            titleLabel.setFont(new Font("System Bold", 16));
+            titleLabel.setStyle("-fx-font-size: 16px;");
 
-            // Details
+
             Label detailsLabel = new Label(
                     "Coût: " + cour.getCout() + " DT\n" +
                             "Date Début: " + cour.getDateDebut().format(FORMATTER) + "\n" +
@@ -83,7 +82,7 @@ public class PopupParticipationController {
 
     @FXML
     private void handleClose() {
-        // Close the window
+
         if (stage != null) {
             stage.close();
         }
