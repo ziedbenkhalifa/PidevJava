@@ -1,5 +1,11 @@
 package tn.cinema.controllers;
 
+import jakarta.mail.*;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,16 +18,26 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.Cell;
 import tn.cinema.entities.Cour;
+import tn.cinema.entities.User;
 import tn.cinema.services.CourService;
+import tn.cinema.utils.SessionManager;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class AffichageListCoursFront extends FrontzController implements Initializable {
 
@@ -29,39 +45,199 @@ public class AffichageListCoursFront extends FrontzController implements Initial
     private GridPane coursGrid;
     @FXML
     private Button courSubButton;
-
     @FXML
     private Button seanceSubButton;
+    @FXML
+    private ComboBox<String> typeFilterComboBox;
+    @FXML
+    private DatePicker dateFilterPicker;
+    @FXML
+    private Button clearDateButton;
+    @FXML
+    private Button filmsButton;
+    @FXML
+    private Button produitsButton;
+    @FXML
+    private Button coursButton;
+    @FXML
+    private Button publicitesButton;
+    @FXML
+    private Button participationButton;
+    @FXML
+    private Button monCompteButton;
+    @FXML
+    private Button logoutButton;
+    @FXML
+    private Button retourButton;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private Button applySearchButton;
+    @FXML
+    private Label noResultsLabel;
 
     private CourService courService = new CourService();
-    private List<Cour> allCours = new ArrayList<>();
-    // ID du client par défaut
-    private final int clientId = 1;
-    // Liste des cour_id auxquels le client a participé
-    private List<Integer> participatedCoursIds;
+    public List<Cour> allCours = new ArrayList<>();
+    private List<Integer> participatedCoursIds = new ArrayList<>();
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            // Charger tous les cours
+            User loggedInUser = SessionManager.getInstance().getLoggedInUser();
+            if (loggedInUser == null) {
+                showAlert("Erreur", "Aucun utilisateur connecté. Veuillez vous connecter.");
+                return;
+            }
+
             allCours = courService.recuperer();
+            System.out.println("=== Début du chargement des cours ===");
+            System.out.println("Nombre total de cours récupérés : " + allCours.size());
+            for (Cour cour : allCours) {
+                System.out.println("Cours ID: " + cour.getId() + ", Type: '" + (cour.getTypeCour() != null ? cour.getTypeCour() : "NULL") +
+                        "', Coût: " + cour.getCout() + " DT, Date Début: " + (cour.getDateDebut() != null ? cour.getDateDebut().format(DATE_FORMATTER) : "NULL") +
+                        ", Date Fin: " + (cour.getDateFin() != null ? cour.getDateFin().format(DATE_FORMATTER) : "NULL"));
+            }
+            System.out.println("=== Fin du chargement des cours ===");
 
-            // Charger les participations pour le client par défaut
-            participatedCoursIds = courService.recupererParticipations();
-
-            // Afficher tous les cours directement
+            allCours.sort(Comparator.comparingDouble(Cour::getCout));
+            refreshParticipations();
             displayCours(allCours);
+
+            typeFilterComboBox.getSelectionModel().select("Tous");
+
+            searchField.textProperty().addListener((observable, oldValue, newValue) -> applyFilters());
+
+            if (coursGrid != null && coursGrid.getScene() != null && coursGrid.getScene().getWindow() != null) {
+                Stage stage = (Stage) coursGrid.getScene().getWindow();
+                stage.setOnCloseRequest(event -> {
+                    Platform.exit();
+                    System.exit(0);
+                });
+            }
         } catch (SQLException e) {
             showAlert("Erreur", "Erreur lors du chargement des cours : " + e.getMessage());
         }
     }
 
-    private void displayCours(List<Cour> coursList) {
+    public void refreshParticipations() {
+        try {
+            User loggedInUser = SessionManager.getInstance().getLoggedInUser();
+            if (loggedInUser != null) {
+                participatedCoursIds = courService.recupererParticipations(loggedInUser.getId());
+                System.out.println("Participations rafraîchies pour utilisateur ID " + loggedInUser.getId() + ": " + participatedCoursIds);
+            } else {
+                participatedCoursIds = new ArrayList<>();
+                System.out.println("Aucun utilisateur connecté, participatedCoursIds vidé.");
+                throw new IllegalStateException("Aucun utilisateur connecté.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors du rafraîchissement des participations : " + e.getMessage());
+            participatedCoursIds = new ArrayList<>();
+        }
+    }
+
+    private void applyFilters() {
+        String selectedType = typeFilterComboBox.getSelectionModel().getSelectedItem();
+        LocalDate selectedDate = dateFilterPicker.getValue();
+        String searchQuery = searchField.getText().trim().toLowerCase();
+        List<Cour> filteredCours = new ArrayList<>(allCours);
+
+        System.out.println("=== Début application des filtres ===");
+        System.out.println("Type sélectionné: " + selectedType);
+        System.out.println("Date sélectionnée: " + selectedDate);
+        System.out.println("Recherche: " + searchQuery);
+
+        if (selectedDate != null) {
+            filteredCours = filteredCours.stream()
+                    .filter(cour -> {
+                        if (cour.getDateDebut() == null || cour.getDateFin() == null) {
+                            return false;
+                        }
+                        LocalDate startDate = cour.getDateDebut().toLocalDate();
+                        LocalDate endDate = cour.getDateFin().toLocalDate();
+                        boolean matches = !selectedDate.isBefore(startDate) && !selectedDate.isAfter(endDate);
+                        return matches;
+                    })
+                    .collect(Collectors.toList());
+
+            if (filteredCours.isEmpty()) {
+                System.out.println("Aucun cours trouvé pour la date sélectionnée: " + selectedDate);
+                displayCours(filteredCours);
+                return;
+            }
+        }
+
+        if (selectedType != null && !"Tous".equals(selectedType)) {
+            String filterType = selectedType.toLowerCase().trim();
+            filteredCours = filteredCours.stream()
+                    .filter(cour -> {
+                        String typeCour = cour.getTypeCour() != null ? cour.getTypeCour().toLowerCase().trim() : "";
+                        return typeCour.equals(filterType);
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        if (!searchQuery.isEmpty()) {
+            filteredCours = filteredCours.stream()
+                    .filter(cour -> {
+                        String typeCour = cour.getTypeCour() != null ? cour.getTypeCour().toLowerCase().trim() : "";
+                        String cout = String.valueOf(cour.getCout()).toLowerCase();
+                        return typeCour.contains(searchQuery) || cout.contains(searchQuery);
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        filteredCours.sort(Comparator.comparingDouble(Cour::getCout));
+        System.out.println("Nombre de cours trouvés: " + filteredCours.size());
+        for (Cour cour : filteredCours) {
+            System.out.println("Cours filtré ID: " + cour.getId() + ", Type: '" + (cour.getTypeCour() != null ? cour.getTypeCour() : "NULL") +
+                    "', Coût: " + cour.getCout() + " DT");
+        }
+        System.out.println("=== Fin du filtrage ===");
+
+        displayCours(filteredCours);
+    }
+
+    @FXML
+    private void filterByDate() {
+        applyFilters();
+    }
+
+    @FXML
+    private void clearDateFilter() {
+        dateFilterPicker.setValue(null);
+        applyFilters();
+    }
+
+    @FXML
+    private void filterByType() {
+        applyFilters();
+    }
+
+    @FXML
+    private void applySearchAction() {
+        applyFilters();
+    }
+
+    public void displayCours(List<Cour> coursList) {
         coursGrid.getChildren().clear();
 
+        if (coursList.isEmpty()) {
+            LocalDate selectedDate = dateFilterPicker.getValue();
+            if (selectedDate != null) {
+                noResultsLabel.setText("Aucun cours trouvé pour la date : " + selectedDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            } else {
+                noResultsLabel.setText("Aucun cours trouvé");
+            }
+            noResultsLabel.setVisible(true);
+            System.out.println("Aucun cours à afficher - Affichage du label : " + noResultsLabel.getText());
+            return;
+        }
+
+        noResultsLabel.setVisible(false);
         int row = 0;
         int col = 0;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
         for (Cour cour : coursList) {
             VBox card = new VBox(10);
@@ -69,16 +245,16 @@ public class AffichageListCoursFront extends FrontzController implements Initial
             card.setPrefWidth(250);
             card.setPrefHeight(150);
 
-            Label typeLabel = new Label(cour.getTypeCour());
+            Label typeLabel = new Label(cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini");
             typeLabel.setStyle("-fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;");
 
             Label coutLabel = new Label(cour.getCout() + " DT");
             coutLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14;");
 
-            Label dateDebutLabel = new Label("Date Debut: " + cour.getDateDebut().format(formatter));
+            Label dateDebutLabel = new Label("Date Début: " + (cour.getDateDebut() != null ? cour.getDateDebut().format(DATE_FORMATTER) : "Non défini"));
             dateDebutLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12;");
 
-            Label dateFinLabel = new Label("Date Fin: " + cour.getDateFin().format(formatter));
+            Label dateFinLabel = new Label("Date Fin: " + (cour.getDateFin() != null ? cour.getDateFin().format(DATE_FORMATTER) : "Non défini"));
             dateFinLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12;");
 
             Button showButton = new Button("SHOW");
@@ -86,7 +262,9 @@ public class AffichageListCoursFront extends FrontzController implements Initial
             showButton.setOnAction(event -> handleShowAction(cour));
 
             Button actionButton;
-            if (participatedCoursIds.contains(cour.getId())) {
+            boolean isParticipated = participatedCoursIds.contains(cour.getId());
+            System.out.println("Affichage cours ID: " + cour.getId() + ", Participé: " + isParticipated);
+            if (isParticipated) {
                 actionButton = new Button("QUITTER");
                 actionButton.setStyle("-fx-background-color: #dc3545; -fx-text-fill: white; -fx-background-radius: 5;");
                 actionButton.setOnAction(event -> handleQuitterAction(cour));
@@ -100,9 +278,7 @@ public class AffichageListCoursFront extends FrontzController implements Initial
             buttonsBox.getChildren().addAll(showButton, actionButton);
             card.getChildren().addAll(typeLabel, coutLabel, dateDebutLabel, dateFinLabel, buttonsBox);
 
-            // Associer le cours à la carte pour pouvoir le récupérer lors du clic
             card.setUserData(cour);
-
             coursGrid.add(card, col, row);
 
             col++;
@@ -131,15 +307,78 @@ public class AffichageListCoursFront extends FrontzController implements Initial
 
     private void handleParticiperAction(Cour cour) {
         try {
-            // Ajouter le client à la liste des participants via le service
-            courService.ajouterParticipation( cour.getId());
+            User loggedInUser = SessionManager.getInstance().getLoggedInUser();
+            if (loggedInUser == null) {
+                showAlert("Erreur", "Aucun utilisateur connecté. Veuillez vous connecter.");
+                return;
+            }
 
-            // Mettre à jour la liste des participations
-            participatedCoursIds.add(cour.getId());
+            List<Integer> currentParticipations = courService.recupererParticipations(loggedInUser.getId());
+            if (currentParticipations.contains(cour.getId())) {
+                showAlert("Information", "Vous êtes déjà inscrit à ce cours : " + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini"));
+                return;
+            }
 
-            showAlert("Succès", "Vous avez participé au cours : " + cour.getTypeCour());
+            courService.ajouterParticipation(cour.getId());
+            refreshParticipations();
+            System.out.println("Participation ajoutée pour cours ID: " + cour.getId());
 
-            // Rafraîchir l'affichage
+            String userEmail = loggedInUser.getEmail();
+            String subject = "Confirmation de participation au cours";
+            String plainText = "Bonjour " + loggedInUser.getNom() + ",\n\n" +
+                    "Votre participation au cours \"" + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") + "\" a été confirmée avec succès !\n\n" +
+                    "Détails du cours :\n" +
+                    "- Cours : " + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") + "\n" +
+                    "- Coût : " + cour.getCout() + " DT\n" +
+                    "- Date de début : " + (cour.getDateDebut() != null ? cour.getDateDebut().format(DATE_FORMATTER) : "Non défini") + "\n" +
+                    "- Date de fin : " + (cour.getDateFin() != null ? cour.getDateFin().format(DATE_FORMATTER) : "Non défini") + "\n" +
+                    "- Email : " + userEmail + "\n\n" +
+                    "Nous vous remercions de votre participation et avons hâte de vous accueillir !\n" +
+                    "Cordialement,\nL'équipe Cinema";
+
+            String htmlContent = "<!DOCTYPE html>" +
+                    "<html><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'>" +
+                    "<style>body { font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }" +
+                    ".container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }" +
+                    ".header { background: #007bff; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }" +
+                    ".header h1 { color: #ffffff; margin: 10px 0; font-size: 24px; }" +
+                    ".content { padding: 20px; }" +
+                    ".content h2 { color: #333; font-size: 20px; }" +
+                    ".content p { color: #555; line-height: 1.6; }" +
+                    ".details-table { width: 100%; border-collapse: collapse; margin: 20px 0; }" +
+                    ".details-table th, .details-table td { padding: 10px; border: 1px solid #ddd; text-align: left; }" +
+                    ".details-table th { background: #007bff; color: #ffffff; }" +
+                    ".footer { background: #f4f4f4; padding: 10px; text-align: center; border-radius: 0 0 8px 8px; }" +
+                    ".footer p { color: #777; font-size: 12px; }" +
+                    ".footer a { color: #007bff; text-decoration: none; }" +
+                    "</style></head><body><div class='container'><div class='header'><h1>Confirmation de participation</h1></div>" +
+                    "<div class='content'><h2>Bonjour " + loggedInUser.getNom() + ",</h2>" +
+                    "<p>Votre participation au cours <strong>" + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") + "</strong> a été confirmée avec succès !</p>" +
+                    "<p>Voici les détails de votre participation :</p>" +
+                    "<table class='details-table'>" +
+                    "<tr><th>Cours</th><td>" + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") + "</td></tr>" +
+                    "<tr><th>Coût</th><td>" + cour.getCout() + " DT</td></tr>" +
+                    "<tr><th>Date de début</th><td>" + (cour.getDateDebut() != null ? cour.getDateDebut().format(DATE_FORMATTER) : "Non défini") + "</td></tr>" +
+                    "<tr><th>Date de fin</th><td>" + (cour.getDateFin() != null ? cour.getDateFin().format(DATE_FORMATTER) : "Non défini") + "</td></tr>" +
+                    "<tr><th>Email</th><td>" + userEmail + "</td></tr></table>" +
+                    "<p>Nous vous remercions de votre participation et avons hâte de vous accueillir !</p>" +
+                    "<p>Vous trouverez en pièce jointe un PDF contenant la confirmation de votre participation.</p></div>" +
+                    "<div class='footer'><p>Contactez-nous : <a href='mailto:support@cinema.com'>support@cinema.com</a></p>" +
+                    "<p>© 2025 Cinema. Tous droits réservés.</p></div></div></body></html>";
+
+            new Thread(() -> {
+                try {
+                    File pdfFile = generateConfirmationPdf(loggedInUser, cour, true);
+                    sendEmail(userEmail, subject, plainText, htmlContent, pdfFile);
+                    Platform.runLater(() -> showAlert("Succès", "Vous avez participé au cours : " +
+                            (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") +
+                            ". Un email de confirmation avec PDF a été envoyé à " + userEmail));
+                } catch (Exception e) {
+                    Platform.runLater(() -> showAlert("Avertissement", "Participation enregistrée, mais l'email de confirmation ou le PDF n'a pas pu être envoyé."));
+                    e.printStackTrace();
+                }
+            }).start();
+
             displayCours(allCours);
         } catch (SQLException e) {
             showAlert("Erreur", "Erreur lors de la participation au cours : " + e.getMessage());
@@ -148,18 +387,176 @@ public class AffichageListCoursFront extends FrontzController implements Initial
 
     private void handleQuitterAction(Cour cour) {
         try {
-            // Retirer le client de la liste des participants via le service
-            courService.supprimerParticipation( cour.getId());
+            User loggedInUser = SessionManager.getInstance().getLoggedInUser();
+            if (loggedInUser == null) {
+                showAlert("Erreur", "Aucun utilisateur connecté. Veuillez vous connecter.");
+                return;
+            }
 
-            // Mettre à jour la liste des participations
-            participatedCoursIds.remove(Integer.valueOf(cour.getId()));
+            int userId = loggedInUser.getId();
+            courService.supprimerParticipation(userId, cour.getId());
+            refreshParticipations();
+            System.out.println("Participation supprimée pour cours ID: " + cour.getId());
 
-            showAlert("Succès", "Vous avez quitté le cours : " + cour.getTypeCour());
+            String userEmail = loggedInUser.getEmail();
+            String subject = "Confirmation d'annulation de participation au cours";
+            String plainText = "Bonjour " + loggedInUser.getNom() + ",\n\n" +
+                    "Votre participation au cours \"" + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") + "\" a été annulée avec succès.\n\n" +
+                    "Détails du cours :\n" +
+                    "- Cours : " + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") + "\n" +
+                    "- Coût : " + cour.getCout() + " DT\n" +
+                    "- Date de début : " + (cour.getDateDebut() != null ? cour.getDateDebut().format(DATE_FORMATTER) : "Non défini") + "\n" +
+                    "- Date de fin : " + (cour.getDateFin() != null ? cour.getDateFin().format(DATE_FORMATTER) : "Non défini") + "\n" +
+                    "- Email : " + userEmail + "\n\n" +
+                    "Nous sommes désolés de vous voir partir. Si vous changez d'avis, vous pouvez vous réinscrire à tout moment.\n" +
+                    "Cordialement,\nL'équipe Cinema";
 
-            // Rafraîchir l'affichage
+            String htmlContent = "<!DOCTYPE html>" +
+                    "<html><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'>" +
+                    "<style>body { font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }" +
+                    ".container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }" +
+                    ".header { background: #dc3545; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }" +
+                    ".header h1 { color: #ffffff; margin: 10px 0; font-size: 24px; }" +
+                    ".content { padding: 20px; }" +
+                    ".content h2 { color: #333; font-size: 20px; }" +
+                    ".content p { color: #555; line-height: 1.6; }" +
+                    ".details-table { width: 100%; border-collapse: collapse; margin: 20px 0; }" +
+                    ".details-table th, .details-table td { padding: 10px; border: 1px solid #ddd; text-align: left; }" +
+                    ".details-table th { background: #dc3545; color: #ffffff; }" +
+                    ".footer { background: #f4f4f4; padding: 10px; text-align: center; border-radius: 0 0 8px 8px; }" +
+                    ".footer p { color: #777; font-size: 12px; }" +
+                    ".footer a { color: #dc3545; text-decoration: none; }" +
+                    "</style></head><body><div class='container'><div class='header'><h1>Confirmation d'annulation</h1></div>" +
+                    "<div class='content'><h2>Bonjour " + loggedInUser.getNom() + ",</h2>" +
+                    "<p>Votre participation au cours <strong>" + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") + "</strong> a été annulée avec succès.</p>" +
+                    "<p>Voici les détails du cours annulé :</p>" +
+                    "<table class='details-table'>" +
+                    "<tr><th>Cours</th><td>" + (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") + "</td></tr>" +
+                    "<tr><th>Coût</th><td>" + cour.getCout() + " DT</td></tr>" +
+                    "<tr><th>Date de début</th><td>" + (cour.getDateDebut() != null ? cour.getDateDebut().format(DATE_FORMATTER) : "Non défini") + "</td></tr>" +
+                    "<tr><th>Date de fin</th><td>" + (cour.getDateFin() != null ? cour.getDateFin().format(DATE_FORMATTER) : "Non défini") + "</td></tr>" +
+                    "<tr><th>Email</th><td>" + userEmail + "</td></tr></table>" +
+                    "<p>Nous sommes désolés de vous voir partir. Si vous changez d'avis, vous pouvez vous réinscrire à tout moment.</p>" +
+                    "<p>Vous trouverez en pièce jointe un PDF contenant la confirmation de votre annulation.</p></div>" +
+                    "<div class='footer'><p>Contactez-nous : <a href='mailto:support@cinema.com'>support@cinema.com</a></p>" +
+                    "<p>© 2025 Cinema. Tous droits réservés.</p></div></div></body></html>";
+
+            new Thread(() -> {
+                try {
+                    File pdfFile = generateConfirmationPdf(loggedInUser, cour, false);
+                    sendEmail(userEmail, subject, plainText, htmlContent, pdfFile);
+                    Platform.runLater(() -> showAlert("Succès", "Vous avez quitté le cours : " +
+                            (cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini") +
+                            ". Un email de confirmation avec PDF a été envoyé à " + userEmail));
+                } catch (Exception e) {
+                    Platform.runLater(() -> showAlert("Avertissement", "Annulation enregistrée, mais l'email de confirmation ou le PDF n'a pas pu être envoyé."));
+                    e.printStackTrace();
+                }
+            }).start();
+
             displayCours(allCours);
         } catch (SQLException e) {
             showAlert("Erreur", "Erreur lors de l'annulation de la participation : " + e.getMessage());
+        }
+    }
+
+    private File generateConfirmationPdf(User user, Cour cour, boolean isParticipation) throws Exception {
+        File tempFile = File.createTempFile("confirmation_", ".pdf");
+        PdfWriter writer = new PdfWriter(tempFile);
+        PdfDocument pdf = new PdfDocument(writer);
+        Document document = new Document(pdf);
+
+        document.add(new Paragraph(isParticipation ? "Confirmation de Participation" : "Confirmation d'Annulation")
+                .setFontSize(20).setBold());
+        document.add(new Paragraph("Bonjour " + user.getNom() + ",")
+                .setFontSize(14).setMarginTop(10));
+        document.add(new Paragraph("Voici les détails de votre " + (isParticipation ? "participation" : "annulation") + " au cours :")
+                .setFontSize(12).setMarginTop(5));
+
+        float[] columnWidths = {150, 300};
+        Table table = new Table(columnWidths);
+        table.addCell(new Cell().add(new Paragraph("Cours").setBold()));
+        table.addCell(new Cell().add(new Paragraph(cour.getTypeCour() != null ? cour.getTypeCour() : "Type non défini")));
+        table.addCell(new Cell().add(new Paragraph("Coût").setBold()));
+        table.addCell(new Cell().add(new Paragraph(cour.getCout() + " DT")));
+        table.addCell(new Cell().add(new Paragraph("Date de début").setBold()));
+        table.addCell(new Cell().add(new Paragraph(cour.getDateDebut() != null ? cour.getDateDebut().format(DATE_FORMATTER) : "Non défini")));
+        table.addCell(new Cell().add(new Paragraph("Date de fin").setBold()));
+        table.addCell(new Cell().add(new Paragraph(cour.getDateFin() != null ? cour.getDateFin().format(DATE_FORMATTER) : "Non défini")));
+        table.addCell(new Cell().add(new Paragraph("Email").setBold()));
+        table.addCell(new Cell().add(new Paragraph(user.getEmail())));
+        document.add(table);
+
+        document.add(new Paragraph(isParticipation ?
+                "Nous vous remercions de votre participation et avons hâte de vous accueillir !" :
+                "Nous sommes désolés de vous voir partir. Vous pouvez vous réinscrire à tout moment.")
+                .setFontSize(12).setMarginTop(10));
+        document.add(new Paragraph("Cordialement,\nL'équipe Cinema")
+                .setFontSize(12).setMarginTop(10));
+
+        document.close();
+        return tempFile;
+    }
+
+    private void sendEmail(String to, String subject, String plainText, String htmlContent, File pdfFile) throws MessagingException {
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.ssl.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "465");
+        props.put("mail.smtp.timeout", "10000");
+        props.put("mail.smtp.connectiontimeout", "10000");
+        props.put("mail.debug", "true");
+
+        final String username = "farahboukesra4@gmail.com";
+        final String password = "afgdmorpxwnlinxa";
+
+        Session session = Session.getInstance(props, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
+
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(username));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+            message.setSubject(subject);
+
+            Multipart multipart = new MimeMultipart("mixed");
+
+            // Partie texte et HTML
+            MimeMultipart contentPart = new MimeMultipart("alternative");
+            MimeBodyPart textPart = new MimeBodyPart();
+            textPart.setText(plainText);
+            MimeBodyPart htmlPart = new MimeBodyPart();
+            htmlPart.setContent(htmlContent, "text/html; charset=utf-8");
+            contentPart.addBodyPart(textPart);
+            contentPart.addBodyPart(htmlPart);
+
+            MimeBodyPart contentBodyPart = new MimeBodyPart();
+            contentBodyPart.setContent(contentPart);
+            multipart.addBodyPart(contentBodyPart);
+
+            // Partie pièce jointe (PDF)
+            MimeBodyPart pdfPart = new MimeBodyPart();
+            pdfPart.attachFile(pdfFile);
+            pdfPart.setFileName(pdfFile.getName());
+            multipart.addBodyPart(pdfPart);
+
+            message.setContent(multipart);
+
+            Transport.send(message);
+            System.out.println("Email with PDF sent successfully!");
+        } catch (Exception e) {
+            System.err.println("Failed to send email: " + e.getMessage());
+            throw new MessagingException("Failed to send email", e);
+        } finally {
+            // Supprimer le fichier temporaire après envoi
+            if (pdfFile != null && pdfFile.exists()) {
+                pdfFile.delete();
+            }
         }
     }
 
@@ -176,14 +573,32 @@ public class AffichageListCoursFront extends FrontzController implements Initial
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageListCoursFront.fxml"));
             Parent root = loader.load();
+            AffichageListCoursFront controller = loader.getController();
+            controller.refreshParticipations();
+            controller.displayCours(controller.allCours);
             Stage stage = (Stage) courSubButton.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
             showAlert("Erreur", "Erreur lors de la navigation vers la page Cours : " + e.getMessage());
         }
     }
+
+    @FXML
+    private void goSeanceAction() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageListSeancesFront.fxml"));
+            Parent root = loader.load();
+            AffichageListSeancesFront controller = loader.getController();
+            controller.initializeWithCour(null);
+            Stage stage = (Stage) seanceSubButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de la navigation vers la page Séances : " + e.getMessage());
+        }
+    }
+
     @FXML
     private void toggleSubButtons() {
         boolean areSubButtonsVisible = courSubButton.isVisible();
@@ -194,15 +609,63 @@ public class AffichageListCoursFront extends FrontzController implements Initial
     @FXML
     private void retourAccueilAction(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontZ.fxml")); // chemin vers ton fichier FXML d'accueil
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FrontZ.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors du retour à l'accueil : " + e.getMessage());
         }
     }
 
+    @FXML
+    private void goParticipationAction() {
+        try {
+            User loggedInUser = SessionManager.getInstance().getLoggedInUser();
+            if (loggedInUser == null) {
+                showAlert("Erreur", "Veuillez vous connecter pour voir vos participations.");
+                return;
+            }
+
+            List<Integer> participationIds = courService.recupererParticipations(loggedInUser.getId());
+            System.out.println("Participations récupérées pour popup (utilisateur ID " + loggedInUser.getId() + "): " + participationIds);
+            List<Cour> participatedCourses = new ArrayList<>();
+            for (Cour cour : allCours) {
+                if (participationIds.contains(cour.getId())) {
+                    participatedCourses.add(cour);
+                }
+            }
+            System.out.println("Cours participés pour popup: " + participatedCourses.size());
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/PopupParticipation.fxml"));
+            Parent root = loader.load();
+
+            PopupParticipationController controller = loader.getController();
+            controller.setParticipations(participatedCourses);
+
+            Stage popupStage = new Stage();
+            controller.setStage(popupStage);
+
+            Scene scene = new Scene(root);
+            popupStage.setTitle("Mes participations");
+            popupStage.setScene(scene);
+            popupStage.setResizable(false);
+            popupStage.show();
+
+            popupStage.setOnCloseRequest(event -> popupStage.close());
+        } catch (Exception e) {
+            showAlert("Erreur", "Erreur lors de l'affichage des participations : " + e.getMessage());
+        }
+    }
+
+
+
+    @FXML
+    private void logoutAction() {
+        SessionManager.getInstance().setLoggedInUser(null);
+        Platform.exit();
+        System.exit(0);
+    }
 }

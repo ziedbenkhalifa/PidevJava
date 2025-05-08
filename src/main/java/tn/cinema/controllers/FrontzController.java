@@ -230,4 +230,40 @@ public class FrontzController extends BaseController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+    @FXML
+    void handlePagePrincipale(ActionEvent event) {
+        System.out.println("clic bouton");
+        chargerPage("/tn/cinema/Views/Page1.fxml", "Page Principale", event);
+    }
+
+
+    // Méthode utilitaire pour charger une page et changer la scène
+    private void chargerPage(String cheminFxml, String titrePage, ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Page1.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setTitle(titrePage);
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur de chargement", "Impossible de charger la page : " + titrePage);
+        }
+    }
+
+    @FXML
+    private void goSeanceAction() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageListSeancesFront.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) seanceSubButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Erreur lors de la navigation vers la page Séances : " + e.getMessage());
+        }
+    }
 }

@@ -22,8 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
 
-
-public class AfficherCour extends Dashboard implements Initializable {
+public class AfficherCour implements Initializable {
 
     @FXML
     private TextField rtype;

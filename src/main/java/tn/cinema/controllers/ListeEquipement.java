@@ -1,5 +1,9 @@
 package tn.cinema.controllers;
 
+import javafx.event.ActionEvent;
+import javafx.scene.Node;
+import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
 import tn.cinema.entities.Equipement;
 import tn.cinema.services.EquipementService;
 import javafx.collections.FXCollections;
@@ -12,17 +16,34 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-public class ListeEquipement extends Dashboard{
+public class ListeEquipement {
 
     @FXML
     private ListView<Equipement> listViewEquipements;
+    @FXML
+    private ComboBox<String> cbEtat;
+
+
 
     @FXML
+    private Button btnTrier;
+    @FXML
     private Button btnAjouter;
+
+
+    @FXML
+    private TextField tfRechercheEquipement;
+
+    @FXML
+    private ImageView btnRechercherEquipement;
+
+
+
 
     @FXML
     public void initialize() {
@@ -90,11 +111,44 @@ public class ListeEquipement extends Dashboard{
                         setGraphic(row);
                     }
                 }
+
             });
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        btnTrier.setOnAction(event -> filtrerParEtat());
+
+        // Configuration de l'écouteur d'événements pour le clic sur l'ImageView
+        btnRechercherEquipement.setOnMouseClicked(event -> rechercherEquipementsParNom());
+    }
+    @FXML
+    private void showNotificationList() {
+        try {
+            // Charger Notification.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/Notification.fxml"));
+            Parent root = loader.load();
+
+            // Créer une nouvelle fenêtre pour la liste des notifications
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Liste des Notifications");
+            stage.initModality(Modality.APPLICATION_MODAL); // Fenêtre modale
+            stage.setResizable(false); // Non redimensionnable
+            stage.show();
+        } catch (IOException e) {
+            // Afficher une alerte en cas d'erreur
+            showErrorAlert(e);
+        }
+    }
+
+    private void showErrorAlert(Exception e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Erreur de chargement");
+        alert.setHeaderText("Impossible de charger la liste des notifications");
+        alert.setContentText(e.getMessage());
+        alert.showAndWait();
     }
 
     @FXML
@@ -115,6 +169,17 @@ public class ListeEquipement extends Dashboard{
             alert.setHeaderText("Impossible d'ouvrir la page des salles");
             alert.setContentText(e.getMessage());
             alert.showAndWait();
+        }
+    }
+    @FXML
+    private void allerVersNouvellePage(ActionEvent event) {
+        try {
+            Parent nouvellePage = FXMLLoader.load(getClass().getResource("/Views/GestionPanne.fxml"));
+            Scene scene = ((Node) event.getSource()).getScene();
+            Stage stage = (Stage) scene.getWindow();
+            stage.getScene().setRoot(nouvellePage);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -163,6 +228,60 @@ public class ListeEquipement extends Dashboard{
             alert.showAndWait();
         }
     }
+
+
+
+    @FXML
+
+    private void showErrorAlert(String titre, String header, Exception e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(titre);
+        alert.setHeaderText(header);
+        alert.setContentText(e.getMessage());
+        alert.showAndWait();
+    }
+
+
+
+    @FXML
+    private void rechercherEquipementsParNom() {
+        String nom = tfRechercheEquipement.getText().trim();
+        if (nom.isEmpty()) {
+            return;
+        }
+
+        try {
+            EquipementService service = new EquipementService();
+            List<Equipement> resultats = service.rechercherParNom(nom);
+            listViewEquipements.setItems(FXCollections.observableArrayList(resultats));
+        } catch (SQLException e) {
+            showErrorAlert("Erreur", "Erreur lors de la recherche", e);
+        }
+    }
+
+    @FXML
+    private void filtrerParEtat() {
+        String etatSelectionne = cbEtat.getValue();
+
+        try {
+            EquipementService service = new EquipementService();
+            List<Equipement> tous = service.recuperer();
+
+            if (etatSelectionne == null || etatSelectionne.isEmpty()) {
+                listViewEquipements.getItems().setAll(tous);
+            } else {
+                List<Equipement> filtres = tous.stream()
+                        .filter(e -> e.getEtat().equalsIgnoreCase(etatSelectionne))
+                        .toList();
+                listViewEquipements.getItems().setAll(filtres);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
     private void supprimerEquipement(Equipement equipement) {
         System.out.println("🗑️ Supprimer : " + equipement.getNom());

@@ -49,6 +49,31 @@ public class SalleService implements IServices<Salle> {
             }
         }
     }
+    public List<Salle> rechercherParNom(String nomRecherche) throws SQLException {
+        List<Salle> salles = new ArrayList<>();
+        String sql = "SELECT * FROM salle WHERE LOWER(nom_salle) LIKE ?";
+        PreparedStatement ps = cnx.prepareStatement(sql); // cnx est déjà existante
+        ps.setString(1, "%" + nomRecherche.toLowerCase() + "%");
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            Salle s = new Salle(
+                    rs.getInt("id_salle"),
+                    rs.getInt("nombre_de_place"),
+                    rs.getString("nom_salle"),
+                    rs.getString("type_salle"),
+                    rs.getString("disponibilite"),
+                    rs.getString("statut"),
+                    rs.getString("emplacement")
+            );
+            salles.add(s);
+        }
+
+        return salles;
+    }
+
+
+
 
     public void modifier(Salle salle) throws SQLException {
         String sql = "UPDATE salle SET nom_salle = ?, disponibilite = ?, emplacement = ?, statut = ?, type_salle = ?, nombre_de_place = ? WHERE id_salle = ?";
@@ -69,6 +94,30 @@ public class SalleService implements IServices<Salle> {
             }
         }
     }
+    public List<Salle> getSallesParEtage(String etage) throws SQLException {
+        List<Salle> salles = new ArrayList<>();
+        String sql = "SELECT * FROM salle WHERE emplacement = ?";
+        PreparedStatement ps = cnx.prepareStatement(sql);
+        ps.setString(1, etage);
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            Salle s = new Salle(
+                    rs.getInt("id_salle"),
+                    rs.getInt("nombre_de_place"),
+                    rs.getString("nom_salle"),
+                    rs.getString("type_salle"),
+                    rs.getString("disponibilite"),
+                    rs.getString("statut"),
+                    rs.getString("emplacement")
+            );
+            salles.add(s);
+        }
+
+        return salles;
+    }
+
+
 
 
     public List<Salle> recuperer() throws SQLException {

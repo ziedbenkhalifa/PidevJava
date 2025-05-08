@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #080b21;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.AffichageListSeancesFront">
+    <children>
+        <!-- Navbar -->
+        <AnchorPane layoutX="31.0" layoutY="14.0" prefHeight="188.0" prefWidth="1257.0" style="-fx-background-color: #021b50; -fx-background-radius: 30;">
+            <children>
+                <Button fx:id="filmsButton" layoutX="195.0" layoutY="46.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Films" textFill="WHITE" />
+                <Button fx:id="produitsButton" layoutX="326.0" layoutY="46.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Produits" textFill="WHITE" />
+                <Button fx:id="coursButton" layoutX="449.0" layoutY="46.0" mnemonicParsing="false" onAction="#toggleSubButtons" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Cours" textFill="WHITE" />
+                <Button fx:id="courSubButton" layoutX="391.0" layoutY="80.0" mnemonicParsing="false" onAction="#goCourAction" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #5a3a8b;" text="Cour" textFill="WHITE" visible="false" />
+                <Button fx:id="seanceSubButton" layoutX="507.0" layoutY="80.0" mnemonicParsing="false" onAction="#handleSeanceAction" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #5a3a8b;" text="Séance" textFill="WHITE" visible="false" />
+                <Button fx:id="publicitesButton" layoutX="573.0" layoutY="46.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Publicités" textFill="WHITE" />
+                <Button fx:id="participationButton" layoutX="870.0" layoutY="46.0" mnemonicParsing="false" onAction="#goParticipationAction" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Participation" textFill="WHITE" />
+                <Button fx:id="monCompteButton" layoutX="992.0" layoutY="46.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #021b50;" text="Mon Compte" textFill="WHITE" />
+                <Button fx:id="logoutButton" layoutX="1117.0" layoutY="46.0" mnemonicParsing="false" onAction="#logoutAction" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #fa4651;" text="LogOut" textFill="WHITE" />
+                <ImageView fitHeight="34.0" fitWidth="34.0" layoutX="1031.0" layoutY="14.0">
+                    <image>
+                        <Image url="@images/userwhite.png" />
+                    </image>
+                </ImageView>
+                <!-- Barre de recherche -->
+                <AnchorPane layoutX="12.0" layoutY="118.0" prefHeight="61.0" prefWidth="1234.0" style="-fx-background-color: #080b21;">
+                    <children>
+                        <TextField fx:id="searchField" layoutX="130.0" layoutY="9.0" prefHeight="43.0" prefWidth="1089.0" promptText="         Search Seance" style="-fx-background-color: #021b50;">
+                            <font>
+                                <Font name="System Bold" size="18.0" />
+                            </font>
+                        </TextField>
+                        <Button fx:id="applySearchButton" layoutX="1064.0" layoutY="19.0" mnemonicParsing="false" onAction="#applySearchAction" prefHeight="24.0" prefWidth="121.0" style="-fx-background-color: #080b21;" text="Appliquer" textFill="WHITE" />
+                    </children>
+                </AnchorPane>
+            </children>
+        </AnchorPane>
+        <!-- Logo -->
+        <ImageView fitHeight="204.0" fitWidth="207.0" layoutX="-7.0" layoutY="19.0">
+            <image>
+                <Image url="@images/showtime-removebg-preview.png" />
+            </image>
+        </ImageView>
+        <Label layoutX="103.0" layoutY="150.0" text="Enjoy" textFill="#d3b4b4">
+            <font>
+                <Font name="System Bold" size="18.0" />
+            </font>
+        </Label>
+        <!-- Section principale (contenu des séances) -->
+        <AnchorPane layoutX="17.0" layoutY="225.0" prefHeight="416.0" prefWidth="1268.0" style="-fx-background-color: #021b50; -fx-background-radius: 20;">
+            <children>
+                <!-- Footer -->
+                <Button layoutX="846.0" layoutY="373.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Contact" textFill="WHITE" />
+                <Button layoutX="964.0" layoutY="373.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="112.0" style="-fx-background-color: #3e2063;" text="Help" textFill="WHITE" />
+                <ImageView fitHeight="34.0" fitWidth="34.0" layoutX="1076.0" layoutY="368.0">
+                    <image>
+                        <Image url="@images/icons8-facebook-logo-48.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="34.0" fitWidth="34.0" layoutX="1110.0" layoutY="368.0">
+                    <image>
+                        <Image url="@images/icons8-instagram-logo-94.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="34.0" fitWidth="34.0" layoutX="1144.0" layoutY="368.0">
+                    <image>
+                        <Image url="@images/icons8-youtube-logo-48.png" />
+                    </image>
+                </ImageView>
+                <Label layoutX="1178.0" layoutY="376.0" text="CopyRight" textFill="#e19d9d">
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                </Label>
+                <!-- Bouton Retour -->
+
+                <Button fx:id="retourButton" layoutX="20.0" layoutY="370.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #a9a9a9; -fx-text-fill: black; -fx-font-weight: bold;" text="← Retour" onAction="#retourCoursAction" />
+
+                <!-- Contenu du calendrier -->
+                <AnchorPane layoutX="16.0" layoutY="9.0" prefHeight="355.0" prefWidth="1234.0" styleClass="calendar-pane">
+                    <children>
+                        <!-- ComboBox pour filtrer par cours -->
+                        <ComboBox fx:id="courComboBox" layoutX="20.0" layoutY="20.0" prefWidth="200.0" promptText="Tous les cours" />
+                        <!-- ComboBox pour sélectionner le mois -->
+                        <ComboBox fx:id="monthComboBox" layoutX="230.0" layoutY="20.0" onAction="#updateMonthFromComboBox" prefWidth="120.0" promptText="Mois" />
+                        <!-- ComboBox pour sélectionner l'année -->
+                        <ComboBox fx:id="yearComboBox" layoutX="360.0" layoutY="20.0" onAction="#updateMonthFromComboBox" prefWidth="80.0" promptText="Année" />
+                        <!-- DatePicker pour sélectionner une date -->
+                        <DatePicker fx:id="datePicker" layoutX="450.0" layoutY="20.0" onAction="#updateMonthFromDatePicker" prefWidth="150.0" />
+                        <!-- Mois -->
+                        <Label fx:id="monthLabel" layoutX="620.0" layoutY="20.0" text="Octobre 2025" />
+                        <!-- Calendrier -->
+                        <GridPane fx:id="calendarGrid" layoutY="60.0" prefHeight="280.0" prefWidth="1234.0">
+                            <children>
+                                <Label styleClass="day-header" text="Dim" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <Label styleClass="day-header" text="Lun" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                <Label styleClass="day-header" text="Mar" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                                <Label styleClass="day-header" text="Mer" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+                                <Label styleClass="day-header" text="Jeu" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+                                <Label styleClass="day-header" text="Ven" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+                                <Label styleClass="day-header" text="Sam" GridPane.columnIndex="6" GridPane.rowIndex="0" />
+                            </children>
+                            <columnConstraints>
+                                <ColumnConstraints />
+                                <ColumnConstraints />
+                                <ColumnConstraints />
+                                <ColumnConstraints />
+                                <ColumnConstraints />
+                                <ColumnConstraints />
+                                <ColumnConstraints />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints />
+                            </rowConstraints>
+                        </GridPane>
+                    </children>
+                </AnchorPane>
+            </children>
+        </AnchorPane>
+    </children>
+    <stylesheets>
+        <String fx:value="/styles/farah/style.css" />
+    </stylesheets>
+</AnchorPane>

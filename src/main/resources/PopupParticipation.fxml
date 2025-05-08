@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="531.0" prefWidth="375.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.PopupParticipationController">
+    <BorderPane prefHeight="526.0" prefWidth="373.0" style="-fx-background-color: transparent; -fx-background-radius: 15;">
+        <effect>
+            <DropShadow color="#000000" radius="10" spread="0.05" />
+        </effect>
+        <center>
+            <VBox prefHeight="494.0" prefWidth="370.0" spacing="15" style="-fx-background-color: linear-gradient(to bottom, #2c3e50, #1a2530); -fx-background-radius: 15; -fx-padding: 20;">
+                <!-- Header with title and close button -->
+                <HBox alignment="CENTER">
+                    <VBox.margin>
+                        <Insets bottom="15" />
+                    </VBox.margin>
+                    <Label fx:id="titleLabel" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px;" text="Mes Participations" textFill="WHITE" HBox.hgrow="ALWAYS">
+                        <font>
+                            <Font name="System Bold" size="22.0" />
+                        </font>
+                    </Label>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Button fx:id="closeButton" onAction="#handleClose" text="✖" style="-fx-background-color: transparent; -fx-text-fill: #e74c3c; -fx-font-size: 20px; -fx-font-weight: bold; -fx-padding: 5;">
+                        <font>
+                            <Font name="System" size="20.0" />
+                        </font>
+                    </Button>
+                </HBox>
+
+                <!-- ScrollPane for participation cards -->
+                <ScrollPane fx:id="scrollPane" fitToWidth="true" prefHeight="481.0" prefWidth="408.0" style="-fx-background-color: transparent; -fx-background: transparent;" VBox.vgrow="ALWAYS">
+                    <content>
+                        <VBox fx:id="cardsContainer" spacing="10" style="-fx-padding: 10;">
+                            <!-- Cards will be added dynamically in the controller -->
+                        </VBox>
+                    </content>
+                </ScrollPane>
+
+            </VBox>
+        </center>
+    </BorderPane>
+</AnchorPane>
+

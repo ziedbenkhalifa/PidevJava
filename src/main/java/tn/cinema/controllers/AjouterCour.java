@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-public class AjouterCour extends Dashboard{
+public class AjouterCour extends Dashboard {
 
     @FXML
     private ComboBox<String> typeCourComboBox;
@@ -34,30 +34,34 @@ public class AjouterCour extends Dashboard{
     private DatePicker dateDebutPicker;
 
     @FXML
-    private TextField dateDebutTimeField; // New field for time input
+    private TextField dateDebutTimeField; // Champ pour l'heure de début
 
     @FXML
     private DatePicker dateFinPicker;
 
     @FXML
-    private TextField dateFinTimeField; // New field for time input
+    private TextField dateFinTimeField; // Champ pour l'heure de fin
 
-    CourService courService = new CourService();
+    private CourService courService = new CourService();
 
     @FXML
     private void ajoutercour() throws SQLException {
         try {
-
+            // Validation du type de cours
             String typeCour = typeCourComboBox.getValue();
             if (typeCour == null || typeCour.trim().isEmpty()) {
                 throw new IllegalArgumentException("Type de Cour doit être sélectionné.");
             }
 
+
             double cout;
             try {
                 cout = Double.parseDouble(coutField.getText());
-                if (cout < 0) {
-                    throw new IllegalArgumentException("Le Coût doit être un nombre positif.");
+                if (cout == 0) {
+                    throw new IllegalArgumentException("Le Coût ne peut pas être égal à 0.");
+                }
+                if (cout < 50 || cout > 999) {
+                    throw new IllegalArgumentException("Le Coût doit être compris entre 50 et 999.");
                 }
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Le Coût doit être un nombre valide.");
@@ -81,9 +85,14 @@ public class AjouterCour extends Dashboard{
             LocalDateTime dateDebutTimeFinal = LocalDateTime.of(dateDebut, dateDebutTime);
 
 
-            if (dateDebutTimeFinal.isBefore(LocalDateTime.now())) {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDate today = LocalDate.now();
+            if (dateDebut.isBefore(today)) {
                 throw new IllegalArgumentException("La Date de Début doit être aujourd'hui ou dans le futur.");
+            } else if (dateDebut.isEqual(today) && dateDebutTimeFinal.isBefore(now)) {
+                throw new IllegalArgumentException("L'heure de début pour aujourd'hui doit être postérieure à l'heure actuelle (" + now.format(DateTimeFormatter.ofPattern("HH:mm")) + ").");
             }
+
 
             LocalDate dateFin = dateFinPicker.getValue();
             if (dateFin == null) {
@@ -101,10 +110,17 @@ public class AjouterCour extends Dashboard{
             }
             LocalDateTime dateFinTimeFinal = LocalDateTime.of(dateFin, dateFinTime);
 
-
-            if (dateFinTimeFinal.isBefore(dateDebutTimeFinal)) {
-                throw new IllegalArgumentException("La Date de Fin doit être postérieure à la Date de Début.");
+            if (dateFin.isBefore(today)) {
+                throw new IllegalArgumentException("La Date de Fin doit être aujourd'hui ou dans le futur.");
+            } else if (dateFin.isEqual(today) && dateFinTimeFinal.isBefore(now)) {
+                throw new IllegalArgumentException("L'heure de fin pour aujourd'hui doit être postérieure à l'heure actuelle (" + now.format(DateTimeFormatter.ofPattern("HH:mm")) + ").");
             }
+
+
+            if (dateFinTimeFinal.isBefore(dateDebutTimeFinal) || dateFinTimeFinal.isEqual(dateDebutTimeFinal)) {
+                throw new IllegalArgumentException("La Date de Fin doit être strictement postérieure à la Date de Début.");
+            }
+
 
             Cour cour = new Cour(typeCour, cout, dateDebutTimeFinal, dateFinTimeFinal);
             courService.ajouter(cour);
@@ -119,7 +135,6 @@ public class AjouterCour extends Dashboard{
             ac.setRcout(cout);
             ac.setRdatedebut(dateDebut);
             ac.setRdatefin(dateFin);
-
 
             List<Cour> coursList = courService.recuperer();
             ac.setRlistItems(coursList);

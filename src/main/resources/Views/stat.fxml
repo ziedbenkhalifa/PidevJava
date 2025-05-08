@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.cinema.controllers.Statistique"
+            prefHeight="600.0" prefWidth="800.0"
+            style="-fx-background-color: #f0f5f9;">
+    <children>
+        <!-- Conteneur principal pour les graphiques -->
+        <VBox fx:id="chartContainer"
+              layoutX="50.0"
+              layoutY="50.0"
+              prefHeight="500.0"
+              prefWidth="700.0"
+              spacing="20.0"
+              style="-fx-background-color: #ffffff; -fx-padding: 25; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0.2, 0, 3);">
+
+            <!-- Titre avec nouvel style -->
+            <Label text="📊 Répartition des salles selon leur étatssss"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #ff7eb6;"/>
+
+            <!-- Sous-titre -->
+            <Label text="Vue d'ensemble des statistiques"
+                   style="-fx-font-size: 14px; -fx-font-style: italic; -fx-text-fill: #c3c3c3;"/>
+
+            <!-- Graphique circulaire pour les salles avec nouvelle couleur de fond -->
+            <PieChart fx:id="pieChart"
+                      style="-fx-background-color: transparent; -fx-pie-label-visible: true; -fx-legend-visible: true;"
+                      legendVisible="true"/>
+
+            <!-- Label indiquant la section des équipements -->
+            <Label text="État des équipements"
+                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #7fdbda;">
+                <VBox.margin>
+                    <Insets top="10.0" />
+                </VBox.margin>
+            </Label>
+
+            <!-- Graphique en barres pour les équipements avec nouvelles couleurs -->
+            <BarChart fx:id="barChart" style="-fx-background-color: transparent; -fx-bar-fill: #7fdbda;">
+                <xAxis>
+                    <CategoryAxis fx:id="xAxis" label="État de l'équipement" style="-fx-tick-label-fill: #a6a6a6;"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis fx:id="yAxis" label="Nombre d'équipements" style="-fx-tick-label-fill: #a6a6a6;"/>
+                </yAxis>
+            </BarChart>
+
+            <!-- Section résumé avec HBox pour meilleur alignement -->
+            <HBox spacing="15.0" alignment="CENTER_LEFT" style="-fx-background-color: #f7f7f7; -fx-padding: 10; -fx-background-radius: 8;">
+                <!-- Label pour afficher le nombre total de salles -->
+                <Label fx:id="totalSallesLabel" style="-fx-font-size: 14px; -fx-text-fill: #707070;"/>
+
+                <!-- Ajout d'un label pour les équipements totaux -->
+                <Label fx:id="totalEquipLabel" style="-fx-font-size: 14px; -fx-text-fill: #707070;"/>
+            </HBox>
+
+            <!-- Bouton retour -->
+            <Button text="Retour au tableau de bord"
+                    style="-fx-background-color: #ff9ec0; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20;">
+                <VBox.margin>
+                    <Insets top="10.0" />
+                </VBox.margin>
+            </Button>
+        </VBox>
+    </children>
+</AnchorPane>

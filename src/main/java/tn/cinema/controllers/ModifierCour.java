@@ -18,7 +18,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-public class ModifierCour extends Dashboard {
+public class ModifierCour {
 
     @FXML
     private ComboBox<String> typeCourComboBox;
@@ -40,7 +40,6 @@ public class ModifierCour extends Dashboard {
     private Cour cour;
     private final CourService courService = new CourService();
 
-
     public void setCour(Cour cour) {
         this.cour = cour;
 
@@ -55,72 +54,92 @@ public class ModifierCour extends Dashboard {
     @FXML
     private void modifierCour() {
         try {
-
+            // Validation du type de cours
             String typeCour = typeCourComboBox.getValue();
             if (typeCour == null || typeCour.trim().isEmpty()) {
-                throw new IllegalArgumentException("Type de Cour must be selected.");
+                throw new IllegalArgumentException("Type de Cour doit être sélectionné.");
             }
 
+            // Validation du coût (doit être entre 50 et 999)
             double cout;
             try {
                 cout = Double.parseDouble(coutField.getText());
-                if (cout < 0) {
-                    throw new IllegalArgumentException("Coût must be a positive number.");
+                if (cout <= 0) {
+                    throw new IllegalArgumentException("Le Coût doit être un nombre supérieur à 0.");
+                }
+                if (cout < 50 || cout > 999) {
+                    throw new IllegalArgumentException("Le Coût doit être compris entre 50 et 999.");
                 }
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Coût must be a valid number.");
+                throw new IllegalArgumentException("Le Coût doit être un nombre valide.");
             }
 
-
+            // Validation de la date de début
             LocalDate dateDebut = dateDebutPicker.getValue();
             if (dateDebut == null) {
-                throw new IllegalArgumentException("Date de Début must be selected.");
+                throw new IllegalArgumentException("La Date de Début doit être sélectionnée.");
             }
             String dateDebutTimeStr = dateDebutTimeField.getText();
             if (dateDebutTimeStr == null || dateDebutTimeStr.trim().isEmpty()) {
-                throw new IllegalArgumentException("Time for Date de Début must be specified (e.g., 14:30).");
+                throw new IllegalArgumentException("L'heure pour la Date de Début doit être spécifiée (ex. : 14:30).");
             }
             LocalTime dateDebutTime;
             try {
                 dateDebutTime = LocalTime.parse(dateDebutTimeStr, DateTimeFormatter.ofPattern("HH:mm"));
             } catch (DateTimeParseException e) {
-                throw new IllegalArgumentException("Time for Date de Début must be in the format 'HH:mm' (e.g., 14:30).");
+                throw new IllegalArgumentException("L'heure pour la Date de Début doit être au format 'HH:mm' (ex. : 14:30).");
             }
             LocalDateTime dateDebutTimeFinal = LocalDateTime.of(dateDebut, dateDebutTime);
 
+            // Vérification si la date de début est aujourd'hui ou dans le futur
+            LocalDateTime now = LocalDateTime.now();
+            LocalDate today = LocalDate.now();
+            if (dateDebut.isBefore(today)) {
+                throw new IllegalArgumentException("La Date de Début doit être aujourd'hui ou dans le futur.");
+            } else if (dateDebut.isEqual(today) && dateDebutTimeFinal.isBefore(now)) {
+                throw new IllegalArgumentException("L'heure de début pour aujourd'hui doit être postérieure à l'heure actuelle (" + now.format(DateTimeFormatter.ofPattern("HH:mm")) + ").");
+            }
 
+            // Validation de la date de fin
             LocalDate dateFin = dateFinPicker.getValue();
             if (dateFin == null) {
-                throw new IllegalArgumentException("Date de Fin must be selected.");
+                throw new IllegalArgumentException("La Date de Fin doit être sélectionnée.");
             }
             String dateFinTimeStr = dateFinTimeField.getText();
             if (dateFinTimeStr == null || dateFinTimeStr.trim().isEmpty()) {
-                throw new IllegalArgumentException("Time for Date de Fin must be specified (e.g., 16:30).");
+                throw new IllegalArgumentException("L'heure pour la Date de Fin doit être spécifiée (ex. : 16:30).");
             }
             LocalTime dateFinTime;
             try {
                 dateFinTime = LocalTime.parse(dateFinTimeStr, DateTimeFormatter.ofPattern("HH:mm"));
             } catch (DateTimeParseException e) {
-                throw new IllegalArgumentException("Time for Date de Fin must be in the format 'HH:mm' (e.g., 16:30).");
+                throw new IllegalArgumentException("L'heure pour la Date de Fin doit être au format 'HH:mm' (ex. : 16:30).");
             }
             LocalDateTime dateFinTimeFinal = LocalDateTime.of(dateFin, dateFinTime);
 
-
-            if (dateFinTimeFinal.isBefore(dateDebutTimeFinal)) {
-                throw new IllegalArgumentException("Date de Fin must be after Date de Début.");
+            // Vérification si la date de fin est aujourd'hui ou dans le futur
+            if (dateFin.isBefore(today)) {
+                throw new IllegalArgumentException("La Date de Fin doit être aujourd'hui ou dans le futur.");
+            } else if (dateFin.isEqual(today) && dateFinTimeFinal.isBefore(now)) {
+                throw new IllegalArgumentException("L'heure de fin pour aujourd'hui doit être postérieure à l'heure actuelle (" + now.format(DateTimeFormatter.ofPattern("HH:mm")) + ").");
             }
 
+            // Vérification que la date de fin est postérieure à la date de début
+            if (dateFinTimeFinal.isBefore(dateDebutTimeFinal) || dateFinTimeFinal.isEqual(dateDebutTimeFinal)) {
+                throw new IllegalArgumentException("La Date de Fin doit être strictement postérieure à la Date de Début.");
+            }
 
+            // Mise à jour des champs de l'objet Cour
             cour.setTypeCour(typeCour);
             cour.setCout(cout);
             cour.setDateDebut(dateDebutTimeFinal);
             cour.setDateFin(dateFinTimeFinal);
 
-
+            // Appel au service pour modifier le cours
             courService.modifier(cour);
             System.out.println("Cours modifié: " + cour);
 
-
+            // Redirection vers la liste des cours
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/affichageListCours.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) coutField.getScene().getWindow();

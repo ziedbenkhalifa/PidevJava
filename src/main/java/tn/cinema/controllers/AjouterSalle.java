@@ -10,14 +10,16 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.DatePicker;
 import javafx.stage.Stage;
-import tn.cinema.entities.Salle; // Ajouter l'import pour Salle
+import tn.cinema.entities.Salle;
 import tn.cinema.services.SalleService;
 import javafx.scene.control.ButtonType;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 public class AjouterSalle implements Initializable {
@@ -29,7 +31,7 @@ public class AjouterSalle implements Initializable {
     private ComboBox<String> cbDisponibilite;
 
     @FXML
-    private ComboBox<String> tfEmplacement; // Correction: ComboBox<String>
+    private ComboBox<String> tfEmplacement;
 
     @FXML
     private ComboBox<String> cbStatut;
@@ -46,11 +48,13 @@ public class AjouterSalle implements Initializable {
     @FXML
     private Button btnResetSalle;
 
+    @FXML
+    private DatePicker dateMaintenance; // 🔥 Ajout du DatePicker
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        // Tu peux initialiser ici si besoin
     }
-
 
     @FXML
     public void ajouteSalle() {
@@ -61,8 +65,9 @@ public class AjouterSalle implements Initializable {
         String emplacement = tfEmplacement.getValue();
         String statut = cbStatut.getValue();
         String placesStr = tfPlaces.getText();
+        LocalDate dateMaintenanceValue = dateMaintenance.getValue(); // 🔥 récupérer la date
 
-        // Validation du nom de la salle (lettres et chiffres uniquement)
+        // Validation du nom de la salle
         if (!isNomSalleValide(nom)) {
             afficherErreur("❌ Le nom de la salle doit contenir uniquement des lettres et des chiffres.");
             return;
@@ -87,6 +92,12 @@ public class AjouterSalle implements Initializable {
             return;
         }
 
+        // Vérifier que la date de maintenance est sélectionnée
+        if (dateMaintenanceValue == null) {
+            afficherErreur("❌ Veuillez choisir une date de maintenance.");
+            return;
+        }
+
         // Confirmation avant ajout
         Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmationAlert.setTitle("Confirmation");
@@ -104,6 +115,9 @@ public class AjouterSalle implements Initializable {
         nouvelleSalle.setEmplacement(emplacement);
         nouvelleSalle.setStatut(statut);
         nouvelleSalle.setNombre_de_place(places);
+
+        // ⚠️ La date de maintenance est juste stockée en mémoire (pas en base)
+        System.out.println("Date de maintenance prévue : " + dateMaintenanceValue); // Affichage dans la console pour debug
 
         // Ajout à la base de données
         try {
@@ -131,35 +145,21 @@ public class AjouterSalle implements Initializable {
         }
     }
 
-
     @FXML
-        public void resetForm() {
-            // Réinitialiser le nom de la salle
-            tfNomSalle.clear();
-
-            // Réinitialiser le type de la salle
-            tfType.getSelectionModel().clearSelection();
-
-            // Réinitialiser le nombre de places
-            tfPlaces.clear();
-
-            // Réinitialiser la disponibilité
-            cbDisponibilite.getSelectionModel().clearSelection();
-
-            // Réinitialiser le statut
-            cbStatut.getSelectionModel().clearSelection();
-
-            // Réinitialiser l'emplacement
-            tfEmplacement.getSelectionModel().clearSelection();
-
+    public void resetForm() {
+        tfNomSalle.clear();
+        tfType.getSelectionModel().clearSelection();
+        tfPlaces.clear();
+        cbDisponibilite.getSelectionModel().clearSelection();
+        cbStatut.getSelectionModel().clearSelection();
+        tfEmplacement.getSelectionModel().clearSelection();
+        dateMaintenance.setValue(null); // 🔥 Réinitialiser aussi la date
     }
 
-    // Méthode pour valider le nom de la salle : lettres et chiffres uniquement
     private boolean isNomSalleValide(String nom) {
         return nom.matches("[a-zA-Z0-9]+");
     }
 
-    // Méthode pour afficher un message d'erreur
     private void afficherErreur(String message) {
         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
         errorAlert.setTitle("Erreur");
@@ -168,7 +168,7 @@ public class AjouterSalle implements Initializable {
         errorAlert.showAndWait();
     }
 
-    // Getters et setters pour les champs (pas nécessaires dans ce cas, mais pour éviter des erreurs si utilisés ailleurs)
+    // Setters
     public void setTfNomSalle(TextField tfNomSalle) {
         this.tfNomSalle = tfNomSalle;
     }
@@ -201,5 +201,7 @@ public class AjouterSalle implements Initializable {
         this.btnResetSalle = btnResetSalle;
     }
 
-
+    public void setDateMaintenance(DatePicker dateMaintenance) {
+        this.dateMaintenance = dateMaintenance;
+    }
 }

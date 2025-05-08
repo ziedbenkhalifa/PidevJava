@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #0b0f29;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.ModifierSeance">
+<AnchorPane prefHeight="650.0" prefWidth="1300.0" style="-fx-background-color: #0b0f29;" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.cinema.controllers.ModifierSeance">
     <children>
         <!-- Sidebar gauche -->
         <AnchorPane layoutY="-8.0" prefHeight="651.0" prefWidth="200.0" style="-fx-background-color: #021b50; -fx-background-radius: 10;">
@@ -18,24 +18,13 @@
                         <Image url="@images/icons8-user-64.png" />
                     </image>
                 </ImageView>
-                <Button fx:id="gestionUserButton" layoutX="56.0" layoutY="181.0" mnemonicParsing="false" onAction="#handleGestionUserAction" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion User" textFill="#d7d7d9" />
-                <Button layoutX="57.0" layoutY="235.0" mnemonicParsing="false" onAction="#gestionFilm" prefHeight="26.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Film" textFill="#d7d7d9" />
-                <Button fx:id="gestionPubButton" layoutX="57.0" layoutY="346.0" mnemonicParsing="false" onAction="#goToInterfaceChoixGP" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Pub" textFill="#d7d7d9" />
-                <Button layoutX="57.0" layoutY="399.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" onAction="#handleGestinCour" text="Gestion Cour" textFill="#d7d7d9" />
-                <Button layoutX="58.0" layoutY="293.0" mnemonicParsing="false" onAction="#affichage" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Produit" textFill="#d7d7d9" />
-                <Button
-                        fx:id="btnAjouterEquipement"
-                        layoutX="55.0"
-                        layoutY="454.0"
-                        mnemonicParsing="false"
-                        prefHeight="24.0"
-                        prefWidth="120.0"
-                        style="-fx-background-color: #3e2063;"
-                        text="Gestion Salle"
-                        textFill="#d7d7d9"
-                        onAction="#ouvrirInterfaceAjout"
-                />
-                <Button fx:id="monCompteButton" layoutX="74.0" layoutY="31.0" mnemonicParsing="false" onAction="#handleMonCompteAction" prefHeight="64.0" prefWidth="126.0" style="-fx-background-color: #021b50;" text="Mon Compte" textFill="#d7d7d9">
+                <Button layoutX="56.0" layoutY="181.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion User" textFill="#d7d7d9" />
+                <Button layoutX="57.0" layoutY="237.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Film" textFill="#d7d7d9" />
+                <Button layoutX="58.0" layoutY="293.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Produit" textFill="#d7d7d9" />
+                <Button layoutX="57.0" layoutY="346.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Pub" textFill="#d7d7d9" />
+                <Button layoutX="57.0" layoutY="399.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" onAction="#handleGererCour" text="Gestion Cour" textFill="#d7d7d9" />
+                <Button layoutX="55.0" layoutY="454.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="120.0" style="-fx-background-color: #3e2063;" text="Gestion Salle" textFill="#d7d7d9" />
+                <Button layoutX="74.0" layoutY="31.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="126.0" style="-fx-background-color: #021b50;" text="Mon Compte" textFill="#d7d7d9">
                     <font>
                         <Font size="16.0" />
                     </font>
@@ -161,8 +150,8 @@
 
                                 <!-- Buttons -->
                                 <HBox alignment="CENTER" spacing="30" layoutY="30">
-                                    <Button onAction="#annuler" prefWidth="120" prefHeight="35"  style="-fx-background-color: #89849c; -fx-text-fill: white; -fx-font-size: 14; -fx-background-radius: 10;" text="Annuler" />
-                                    <Button onAction="#modifierSeance" prefWidth="120" prefHeight="35" style="-fx-background-color: #0e3b9c;  -fx-text-fill: white; -fx-font-size: 14; -fx-background-radius: 10;" text="Enregistrer" />
+                                    <Button onAction="#annuler" prefWidth="120" prefHeight="35" style="-fx-background-color: #89849c; -fx-text-fill: white; -fx-font-size: 14; -fx-background-radius: 10;" text="Annuler" />
+                                    <Button onAction="#modifierSeance" prefWidth="120" prefHeight="35" style="-fx-background-color: #0e3b9c; -fx-text-fill: white; -fx-font-size: 14; -fx-background-radius: 10;" text="Enregistrer" />
                                 </HBox>
                             </children>
                         </VBox>
@@ -171,7 +160,6 @@
             </children>
         </AnchorPane>
     </children>
-
 
     <stylesheets>
         <String fx:value="/styles/style.css" />

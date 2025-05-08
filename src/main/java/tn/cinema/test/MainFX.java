@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import tn.cinema.controllers.Login;
 
 public class MainFX extends Application {
    /* @Override
@@ -61,10 +62,18 @@ public class MainFX extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Showtime Dashboard");
         primaryStage.show();
+
+        Login loginController = loader.getController();
+
+        // Run this once to initialize face tokens for all existing users.
+        // After it runs successfully, comment out this line to avoid redundant execution.
+        loginController.regenerateAllFaceTokens();
     }
 
     public static void main(String[] args) {
         launch(args);
 
     }
+
+
 }

@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class AfficherSeance extends Dashboard implements Initializable {
+public class AfficherSeance implements Initializable {
 
     @FXML
     private TextField rdateSeance;
